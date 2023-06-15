@@ -9,9 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mapbox/mapbox-gl-language": "^1.0.1",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.13.5",
     "autoprefixer": "10.4.14",
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.5",
+    "mapbox-gl": "^2.15.0",
     "next": "13.4.5",
     "postcss": "8.4.24",
     "react": "18.2.0",
