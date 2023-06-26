@@ -1,469 +1,70 @@
-"use client"
-import React, { useRef, useEffect, useState } from 'react';
-import mapboxgl from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
-import MapboxLanguage from '@mapbox/mapbox-gl-language';
-import ReactDOMServer from 'react-dom/server';
-import Image from 'next/image';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
-mapboxgl.accessToken = 'pk.eyJ1IjoiZGV2amRlZWQiLCJhIjoiY2xpczBneWh6MTIydDNlazlmNmJ3M2twMiJ9.JXeq6EXsQdcleRgNzB76Lw';
-mapboxgl.setRTLTextPlugin('https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js');
+// local Components
+import Sidebar from './Components/Sidebar';
+import Map from './Components/map';
+import NavBar from './Components/NavBar';
+import Sell from './Components/Sell';
+// Firebase
+import { collection, getDocs } from "firebase/firestore";
+import { firebasedb } from './utils/InitFirebase';
 
-const Listings = {
-  "features": [
-    {
-      "type": "Feature",
-      "id": 1,
-      "properties": {
-        "title": " 2 Bedroom Unit",
-        "description": "A Luxury unit in the heart of downtown Amman",
-        "price": "$250",
-        "id": 1,
-      },
-      "geometry": {
-        "coordinates": [35.8447541, 32.0023618],
-        "type": "Point"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": 2,
-      "properties": {
-        "title": " 1 Bedroom Unit",
-        "description": "A spacious 1 bedroom with city views",
-        "price": "$350",
-        "id": 2,
-      },
-      "geometry": {
-        "coordinates": [35.8411112, 31.9971146],
-        "type": "Point"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": 3,
-      "properties": {
-        "title": " 3 Bedroom Unit",
-        "description": "Luxurious 3 Bdr, located close from City mall ",
-        "price": "$550",
-        "id": 3,
-      },
-      "geometry": {
-        "coordinates": [35.81308394, 31.99493461],
-        "type": "Point"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": 4,
-      "properties": {
-        "title": "Jackson Park",
-        "description": "A lakeside park that was the site of the 1893 World's Fair",
-        "price": "$350",
-        "id": 4,
-      },
-      "geometry": {
-        "coordinates": [35.83569087, 32.00001951],
-        "type": "Point"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": 5,
-      "properties": {
-        "title": "Columbus Park",
-        "description": "A large park in Chicago's Austin neighborhood",
-        "price": "$750",
-        "id": 5,
-      },
-      "geometry": {
-        "coordinates": [35.81222175, 31.99402873],
-        "type": "Point"
-      }
-    }
-  ],
-  "type": "ListingsCollection"
-}
+export default async function Home() {
 
-export default function Home() {
-
-  const mapContainer = useRef(null);
-  const map = useRef(null);
-  const [lng, setLng] = useState(35.90719);
-  const [lat, setLat] = useState(31.97182);
-  const [zoom, setZoom] = useState(11.5);
-  // Colors
+  // Cluster Colors
   // '#07364B', // HOVER color
   // '#0097A7' // Normal color
+  // '#102C3A' // HOVER HOVER color
+  // Text
+  // #263238 Header
+  // Divider
+  // #E3EFF1 
 
-  //
-  // useEffect(() => {
-  //   if (map.current) return; // initialize map only once
-  //   map.current = new mapboxgl.Map({
-  //     container: mapContainer.current,
-  //     style: 'mapbox://styles/mapbox/streets-v11',
-  //     center: [lng, lat],
-  //     zoom: zoom,
-  //     hash: true,
-  //     // bounds:[]
-  //   });
+  let docID;
 
-  //   const language = new MapboxLanguage({
-  //     defaultLanguage: 'en'
-  //   });
-  //   map.current.addControl(language);
-  //   // Zoom Button
-  //   map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+  const getlistings = async () => {
 
-  //   map.current.on('load', () => {
-  //     // Add a new source from our GeoJSON data and
-  //     // set the 'cluster' option to true. GL-JS will
-  //     // add the point_count property to your source data.
-  //     map.current.addSource('listings', {
-  //       type: 'geojson',
-  //       data: Listings,
-  //       cluster: true,
-  //       clusterMaxZoom: 14, // Max zoom to cluster points on
-  //       clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
-  //     });
-  //     // Setting up Clusters - Color scale styling based on size of Cluseters
-  //     map.current.addLayer({
-  //       id: 'clusters',
-  //       type: 'circle',
-  //       source: 'listings',
-  //       filter: ['has', 'point_count'],
-  //       paint: {
-  //         // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
-  //         // with three steps to implement three types of circles:
-  //         //   * Blue, 20px circles when point count is less than 100
-  //         //   * Yellow, 30px circles when point count is between 100 and 750
-  //         //   * Pink, 40px circles when point count is greater than or equal to 750
-  //         // [
-  //         //   'step',
-  //         //   ['get', 'point_count'],
-  //         //   '#51bbd6',
-  //         //   100,
-  //         //   '#f1f075',
-  //         //   750,
-  //         //   '#f28cb1'
-  //         // ],
-  //         'circle-color': [
-  //           'case',
-  //           ['boolean', ['feature-state', 'hover'], false],
-  //           '#07364B', // Replace with the desired hover halo color
-  //           '#0097A7' // Replace with the default halo color
-  //         ],
-  //         'circle-radius': [
-  //           'step',
-  //           ['get', 'point_count'],
-  //           20,
-  //           100,
-  //           30,
-  //           750,
-  //           40
-  //         ]
-  //       }
-  //     });
-  //     // Adds hover effect on Cluster
-  //     let clusterState = null;
-  //     map.current.on('mouseenter', 'clusters', function (e) {
-  //       console.log(e)
-  //       clusterState = e.features[0].properties.cluster_id;
-  //       map.current.getCanvas().style.cursor = 'pointer';
-  //       map.current.setFeatureState(
-  //         { source: 'listings', id: clusterState },
-  //         { hover: true }
-  //       );
-  //     });
-  //     // Removes hover effect on Cluster 
-  //     map.current.on('mouseleave', 'clusters', function () {
-  //       map.current.getCanvas().style.cursor = '';
-  //       map.current.setFeatureState(
-  //         { source: 'listings', id: clusterState },
-  //         { hover: false }
-  //       );
-  //       clusterState = null
-  //     });
-  //     // Add Cluster Count to Clusters Circles 
-  //     map.current.addLayer({
-  //       id: 'cluster-count',
-  //       type: 'symbol',
-  //       source: 'listings',
-  //       filter: ['has', 'point_count'],
-  //       layout: {
-  //         'text-field': ['get', 'point_count_abbreviated'],
-  //         'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-  //         'text-size': 12,
-  //       },
-  //       paint: {
-  //         'text-color': 'white'
-  //       }
-  //     });
-  //     // Unclustrered; Single Listing Styling
-  //     map.current.addLayer({
-  //       id: 'unclustered-point',
-  //       type: 'symbol',
-  //       source: 'listings',
-  //       filter: ['!', ['has', 'point_count']],
-  //       paint: {
-  //         'text-color': 'white',
-  //         'text-halo-width': 5, // Adjust the halo width as needed
-  //         'text-halo-color': [
-  //           'case',
-  //           ['boolean', ['feature-state', 'hover'], false],
-  //           '#07364B', // Replace with the desired hover halo color
-  //           '#0097A7' // Replace with the default halo color
-  //         ],
-  //       },
-  //       layout: {
-  //         'text-field': ['get', 'price'],
-  //         'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-  //         'text-size': 25,
-  //         'text-offset': [0, 0.6], // Adjust the offset as needed
-  //         'text-anchor': 'top',
-  //         'text-allow-overlap': true
-  //       },
-  //     });
+    // setLoading(true)
+    const colRef = collection(firebasedb, "Listings");
+    const querySnapshot = await getDocs(colRef);
+    let active_Lisitings = [];
 
-  //     let state = null
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      // console.log(doc.id, " => ", doc.data());
+      docID = doc.id;
 
-  //     // Adds hover effect to single listing
-  //     map.current.on('mouseenter', 'unclustered-point', function (e) {
-  //       state = e.features[0].properties.id;
-  //       map.current.getCanvas().style.cursor = 'pointer';
-  //       map.current.setFeatureState(
-  //         { source: 'listings', id: state },
-  //         { hover: true }
-  //       );
-  //     });
-  //     // Removes hover effect on single listing 
-  //     map.current.on('mouseleave', 'unclustered-point', function () {
-  //       map.current.getCanvas().style.cursor = '';
-  //       map.current.setFeatureState(
-  //         { source: 'listings', id: state },
-  //         { hover: false }
-  //       );
-  //       state = null
-  //     });
+      let listing = {}
+      listing = doc.data();
 
-  //     // Highlights Area
-  //     // Adds Area Coordinates to Outline Data 
-  //     map.current.addSource('Amman', {
-  //       'type': 'geojson',
-  //       'data': {
-  //         'type': 'Feature',
-  //         'geometry': {
-  //           'type': 'Polygon',
-  //           // These coordinates outline Amman. 31.856/36.13
-  //           'coordinates': [
-  //             ammanCoordinates
-  //           ]
-  //         }
-  //       }
-  //     })
-  //     // Add a new layer to visualize the polygon.
-  //     map.current.addLayer({
-  //       'id': 'Amman',
-  //       'type': 'fill',
-  //       'source': 'Amman', // reference the data source
-  //       'layout': {},
-  //       'paint': {
-  //         'fill-color': '#A9D7DC', // #0080ff blue color fill OPTION 2 #A9D7DC Light Blue 
-  //         'fill-opacity': 0.5
-  //       }
-  //     });
-  //     // Add a black outline around the polygon.
-  //     map.current.addLayer({
-  //       'id': 'outline',
-  //       'type': 'line',
-  //       'source': 'Amman',
-  //       'layout': {},
-  //       'paint': {
-  //         'line-color': '#000',
-  //         'line-width': 3
-  //       }
-  //     });
+      active_Lisitings.push(listing);
+    });
 
-  //     // inspect a cluster on click
-  //     map.current.on('click', 'clusters', (e) => {
-  //       const features = map.current.queryRenderedFeatures(e.point, {
-  //         layers: ['clusters']
-  //       });
-  //       const clusterId = features[0].properties.cluster_id;
-  //       map.current.getSource('listings').getClusterExpansionZoom(
-  //         clusterId,
-  //         (err, zoom) => {
-  //           if (err) return;
+    // console.log('ActiveListings:',active_Lisitings)
 
-  //           map.current.easeTo({
-  //             center: features[0].geometry.coordinates,
-  //             zoom: zoom
-  //           });
-  //         }
-  //       );
-  //     });
+    // active_Orders.sort((a, b) => a.deliveryDate - b.deliveryDate);
+    // past_Orders.sort((a, b) => a.deliveryDate - b.deliveryDate);
 
-  //     // When a click event occurs on a feature in
-  //     // the unclustered-point layer, open a popup at
-  //     // the location of the feature, with
-  //     // description HTML from its properties.
-  //     map.current.on('click', 'unclustered-point', (e) => {
-  //       const coordinates = e.features[0].geometry.coordinates.slice();
-  //       const price = e.features[0].properties.price;
-  //       const tsunami = e.features[0].properties.description;
+    // setActiveOrders(active_Orders);
+    // setLoading(false)
+    return active_Lisitings
+  }
 
-  //       const JSXTooltip = () => {
-  //         return (
-  //           <div onClick={() => {
-  //             console.log('hey')
-  //           }} className={`w-full grid shadow-md shadow-slate-500 rounded-[10px]`}>
-
-  //             <span className={`flex`}>
-  //               <div style={{ width: '120px', height: '120px', border: '1px solid #ccc', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
-  //                 <Image
-  //                   src="/Building.jpg"
-  //                   alt="Building"
-  //                   width={120}
-  //                   height={120}
-  //                 // className={`m-1`}
-  //                 />
-  //               </div>
-
-  //               <span className={`grid ml-2 self-center flex-1`}>
-
-  //                 <span className={`flex p-1 self-center `}>
-  //                   <p className={`text-black text-base font-bold mr-auto`}>
-  //                     {price}
-  //                   </p>
-  //                   <p className={`text-[grey] ml-auto`}>
-  //                     5 days
-  //                   </p>
-  //                 </span>
-
-  //                 <span className={`flex py-1 self-center `}>
-  //                   <p className={`text-[grey] inline`}>
-  //                     Address - 100 Harbour St.
-  //                   </p>
-  //                 </span>
-
-  //                 <span className={`flex py-1 self-center `}>
-  //                   <p className={`text-[grey] inline`}>
-  //                     Overview - 1BD 1BA 0 Parking 800sqft
-  //                   </p>
-  //                 </span>
-
-  //               </span>
-
-  //             </span>
-
-  //             <span className={`bg-[#F8F8F8] flex `}>
-
-  //               <span className={`flex mx-auto`}>
-  //                 <p className={`text-[#A0D6DB]`}>
-  //                   Building Name
-  //                 </p>
-  //                 <p className={`text-[grey] ml-2`}>
-  //                   1 For Rent
-  //                 </p>
-  //               </span>
-
-  //             </span>
-
-  //           </div>
-  //         )
-  //       }
-  //       let htmlString = ReactDOMServer.renderToString(JSXTooltip())
-
-  //       // Ensure that if the map is zoomed out such that
-  //       // multiple copies of the feature are visible, the
-  //       // popup appears over the copy being pointed to.
-  //       while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-  //         coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-  //       }
-
-  //       new mapboxgl.Popup()
-  //         .setLngLat(coordinates)
-  //         .setHTML(
-  //           htmlString
-  //         )
-  //         .addTo(map.current);
-  //     });
-
-  //   });
-
-  //   // Displays buildings in 3D
-  //   map.current.on('style.load', () => {
-  //     // Insert the layer beneath any symbol layer.
-  //     const layers = map.current.getStyle().layers;
-  //     const labelLayerId = layers.find(
-  //       (layer) => layer.type === 'symbol' && layer.layout['text-field']
-  //     ).id;
-
-  //     // The 'building' layer in the Mapbox Streets
-  //     // vector tileset contains building height data
-  //     // from OpenStreetMap.
-  //     map.current.addLayer(
-  //       {
-  //         'id': 'add-3d-buildings',
-  //         'source': 'composite',
-  //         'source-layer': 'building',
-  //         'filter': ['==', 'extrude', 'true'],
-  //         'type': 'fill-extrusion',
-  //         'minzoom': 15,
-  //         'paint': {
-  //           'fill-extrusion-color': '#aaa',
-
-  //           // Use an 'interpolate' expression to
-  //           // add a smooth transition effect to
-  //           // the buildings as the user zooms in.
-  //           'fill-extrusion-height': [
-  //             'interpolate',
-  //             ['linear'],
-  //             ['zoom'],
-  //             15,
-  //             0,
-  //             15.05,
-  //             ['get', 'height']
-  //           ],
-  //           'fill-extrusion-base': [
-  //             'interpolate',
-  //             ['linear'],
-  //             ['zoom'],
-  //             15,
-  //             0,
-  //             15.05,
-  //             ['get', 'min_height']
-  //           ],
-  //           'fill-extrusion-opacity': 0.6
-  //         }
-  //       },
-  //       labelLayerId
-  //     );
-  //   });
-
-  //   // Clean up on unmount
-  //   return () => map.current.remove();
-
-  // }, []);
-
+  const Listings = await getlistings();
 
   return (
 
-    <div className={`w-full h-full min-h-full grid grid-cols-7 grid-rows-[100px,500px,100px]`} >
+    <div className={`w-full h-full min-h-full grid grid-cols-7 grid-rows-[60px,1fr,auto] `} >
 
-      {/* <div ref={mapContainer} className={`map-container row-start-2 row-end-3 col-start-1 col-end-8 `} /> */}
+      <NavBar />
+      <Map Listings={Listings} Governorates={Governorates} JordanCoordinates={JordanCoordinates} ammanCoordinates={ammanCoordinates} />
+      <Sidebar Listings={Listings} />
+      <Sell Governorates={Governorates} docID={docID} />
 
-      <div className={`row-start-2 row-end-3 col-start-1 col-end-8 max-w-[80px] grid grid-rows-[60px,auto] bg-[beige] z-[100]`}>
-        <span className={`self-center justify-self-center `}>
-          <ArrowForwardIosIcon sx={{color:'#0097A7'}} />
-        </span>
-
-      </div>
     </div>
   )
 }
 
-
+const Governorates = ['Amman', 'Irbid', 'Zarqa', 'Mafraq', 'Ajloun', 'Jerash', 'Madaba', 'Balqa', 'Karak', 'Tafileh', 'Maan', 'Aqaba']
 const JordanCoordinates = [
   [35.0017, 29.6052], [35.0195, 29.6167], [35.0327, 29.6307],
   [35.0324, 29.6502], [35.0298, 29.6713], [35.0297, 29.705],
@@ -677,4 +278,81 @@ const ammanCoordinates = [[36.0433, 31.9921], [36.0514, 31.9868],
 [35.9506, 32.064], [35.9736, 32.0682],
 [35.9792, 32.0677], [35.9891, 32.0638],
 [36.026, 32.0321], [36.0293, 32.0104],
-[36.0343, 31.9961], [36.0433, 31.9921]]
+[36.0343, 31.9961], [36.0433, 31.9921]];
+
+
+const ListingsDemo = {
+  "features": [
+    {
+      "type": "Feature",
+      "id": 1,
+      "properties": {
+        "title": " 2 Bedroom Unit",
+        "description": "A Luxury unit close next to Mcdonald's Amman",
+        "price": "$250",
+        "id": 1,
+      },
+      "geometry": {
+        "coordinates": [35.8447541, 32.0023618],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 2,
+      "properties": {
+        "title": " 1 Bedroom Unit",
+        "description": "A spacious 1 bedroom with city views",
+        "price": "$350",
+        "id": 2,
+      },
+      "geometry": {
+        "coordinates": [35.8411112, 31.9971146],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 3,
+      "properties": {
+        "title": " 3 Bedroom Unit",
+        "description": "Luxurious 3 Bdr, located close from City mall ",
+        "price": "$550",
+        "id": 3,
+      },
+      "geometry": {
+        "coordinates": [35.81308394, 31.99493461],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4,
+      "properties": {
+        "title": "Jackson Park",
+        "description": "A lakeside park that was the site of the 1893 World's Fair",
+        "price": "$350",
+        "id": 4,
+      },
+      "geometry": {
+        "coordinates": [35.83569087, 32.00001951],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5,
+      "properties": {
+        "title": "Columbus Park",
+        "description": "A large park in Chicago's Austin neighborhood",
+        "price": "$750",
+        "id": 5,
+      },
+      "geometry": {
+        "coordinates": [35.81222175, 31.99402873],
+        "type": "Point"
+      }
+    }
+  ],
+  "type": "ListingsCollection"
+};

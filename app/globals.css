@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Mapbox  */
 .mapboxgl-popup-close-button{
     display: none !important;
 }
@@ -14,4 +15,43 @@
     padding: 0px !important;
     min-width: 400px;
     border-radius: 10px !important;
+}
+
+/* Swiper */
+.swiper-button-next::after{
+    color: white !important;
+    font-size: 22px !important;
+}
+.swiper-button-prev::after{
+    color: white !important;
+    font-size: 22px !important;
+}
+
+.swiper-pagination-fraction{
+    margin-left: 175px;
+    margin-bottom: 5px;
+    background: rgba(16, 16, 16, 0.6)
+}
+
+.swiper-pagination-horizontal{
+    display: flex;
+    width: 50px !important;
+    color: whitesmoke !important;
+    font-size: small;
+}
+.swiper-pagination-current {
+    margin: auto;
+
+}
+.swiper-pagination-total{
+    margin: auto;
+
+}
+
+/* PrimeReact  */
+.p-button {
+    background-color: #07364B !important;
+}
+.p-button:hover{
+    background-color: #102C3A !important;
 }
