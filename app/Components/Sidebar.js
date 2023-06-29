@@ -8,6 +8,13 @@ import React, { useRef, useEffect, useState } from 'react';
 
 // Local Components
 import { useAuth } from '@/app/utils/Authenticator';
+// Firebase
+import { firebasedb, storage } from "../utils/InitFirebase";
+// db
+import { doc, updateDoc, arrayUnion, arrayRemove, getDoc } from "firebase/firestore";
+// storage
+import { getStorage, ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
+
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
@@ -25,10 +32,8 @@ import TuneIcon from '@mui/icons-material/Tune';
 import Slider from '@mui/material/Slider';
 import FilterListIcon from '@mui/icons-material/FilterList';
 
-const Sidebar = ({ Listings }) => {
+const Sidebar = ({ Listings, open, setOpen }) => {
 
-    // Sidebar 
-    const [open, setOpen] = useState(false);
     // category Popup 
     const [categoryPopup, setCategoryPopup] = useState(false);
     const categoryPopupRef = useRef(null);
@@ -134,9 +139,9 @@ const Sidebar = ({ Listings }) => {
         }
     }
 
-
     const user = useAuth();
     const router = useRouter();
+
 
     return (
         <>
@@ -371,8 +376,27 @@ const Sidebar = ({ Listings }) => {
 
                         {Listings[0].features.map((feature) => {
 
+                            // const listRef = ref(storage, `${feature.id}/`);
+                            // feature.listingImages = [];
+                            // // Find all images for listing.
+                            // listAll(listRef)
+                            //     .then((res) => {
+                            //         res.items.forEach((itemRef) => {
+                            //             getDownloadURL(itemRef).then((url) => {
+                            //                 feature.listingImages.push(url)
+                            //             })
+                            //         });
+
+                            //     }).catch((error) => {
+                            //         console.log(error)
+                            //         // Uh-oh, an error occurred!
+                            //     });
+                            // console.log(feature)
+                            // console.log(feature.listingImages)
+
                             return (
                                 <div key={feature.id} className={`m-2 shadow-md shadow-slate-200 border-[1px] border-[#E3EFF1] w-[240px] h-[auto] rounded`}>
+
                                     <Swiper modules={[Navigation, Pagination, Scrollbar, A11y]}
                                         navigation={true}
                                         pagination={{
@@ -380,45 +404,28 @@ const Sidebar = ({ Listings }) => {
                                         }}
                                         spaceBetween={50}
                                         slidesPerView={1}
-                                        onSlideChange={() => console.log('slide change')}
-                                        onSwiper={(swiper) => console.log(swiper)}
+                                        onSlideChange={() => {
+
+                                        }}
+                                        onSwiper={(swiper) => {
+
+                                        }}
                                     >
-                                        <SwiperSlide>
-                                            <Image
-                                                src="/Building.jpg"
-                                                alt="Building"
-                                                width={220}
-                                                height={160}
-                                                className={`m-2 rounded select-none`}
-                                            />
-                                        </SwiperSlide>
-                                        <SwiperSlide>
-                                            <Image
-                                                src="/Building.jpg"
-                                                alt="Building"
-                                                width={220}
-                                                height={160}
-                                                className={`m-2 rounded select-none`}
-                                            />
-                                        </SwiperSlide>
-                                        <SwiperSlide>
-                                            <Image
-                                                src="/Building.jpg"
-                                                alt="Building"
-                                                width={220}
-                                                height={160}
-                                                className={`m-2 rounded select-none`}
-                                            />
-                                        </SwiperSlide>
-                                        <SwiperSlide>
-                                            <Image
-                                                src="/Building.jpg"
-                                                alt="Building"
-                                                width={220}
-                                                height={160}
-                                                className={`m-2 rounded select-none`}
-                                            />
-                                        </SwiperSlide>
+
+                                        {[0, 0, 0].map((url) => {
+                                            console.log('dsadsasaa')
+                                            return (
+                                                <SwiperSlide>
+                                                    <Image
+                                                        src={'/Building.jpg'}
+                                                        width={220}
+                                                        height={160}
+                                                        className={`m-2 rounded select-none`}
+                                                    />
+                                                </SwiperSlide>
+                                            )
+                                        }
+                                        )}
                                     </Swiper>
 
                                     <span className={`flex m-2`}>
@@ -444,6 +451,8 @@ const Sidebar = ({ Listings }) => {
 
                                 </div>
                             )
+
+
                         })}
                         {/* <div className={`m-2 shadow-md shadow-slate-200 border-[1px] border-[#E3EFF1] w-[240px] h-[auto] rounded`}>
                             <Swiper modules={[Navigation, Pagination, Scrollbar, A11y]}
@@ -661,12 +670,12 @@ const Sidebar = ({ Listings }) => {
 
                         </div> */}
 
-                    </span>
+                    </span >
 
                     <span className={`bg-[#E3EFF1]`} >
 
                     </span>
-                </div>
+                </div >
             }
         </>
     )

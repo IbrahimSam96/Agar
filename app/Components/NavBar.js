@@ -1,6 +1,6 @@
 "use client"
 import React, { useRef, useEffect, useState } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { useRouter, usePathname, useSearchParams, useParams } from 'next/navigation'
 
 import { useAuth } from '@/app/utils/Authenticator';
 import { firebaseauth } from '@/app/utils/InitFirebase';
@@ -9,12 +9,16 @@ import { signOut } from "firebase/auth";
 
 import LocationCityOutlinedIcon from '@mui/icons-material/LocationCityOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
+import LoopIcon from '@mui/icons-material/Loop';
 
-const NavBar = () => {
+const NavBar = ({ open, setOpen }) => {
 
+  const [loading, setLoading] = useState(false);
 
   const user = useAuth();
   const router = useRouter();
+  const params = useParams();
+  const path = usePathname();
 
   const SignOut = () => {
     signOut(firebaseauth).then(() => {
@@ -31,7 +35,9 @@ const NavBar = () => {
 
     <div className={`col-start-1 col-end-8 bg-[#07364B] flex sticky top-0 z-[500]`}>
 
-      <span className={`my-auto mr-auto ml-4 flex `}>
+      <span onClick={() => {
+        router.push('/')
+      }} className={`my-auto mr-auto ml-4 flex cursor-pointer`}>
         <LocationCityOutlinedIcon className={`mx-2 text-[#0097A7] text-[40px] my-auto`} />
         <p className={`font-mono text-white text-[30px] inline my-auto `}>
           shoqaq.jo
@@ -41,8 +47,8 @@ const NavBar = () => {
 
       {user.user ?
         <span className={`my-auto ml-auto flex`}>
-          
-          <p className={`my-auto text-base inline text-[white] mr-2 font-['Montserrat',sans-serif]`}> Sell </p>
+
+          <p onClick={() => { setOpen(!open) }} className={`my-auto text-base inline text-[white] mr-2 font-['Montserrat',sans-serif] hover:cursor-pointer`}> Sell </p>
 
           <span className={`border-r-[2px] border-[#0097A7] mx-2`}>
 
@@ -73,14 +79,22 @@ const NavBar = () => {
           </span>
         </span>
         :
-        <span onClick={() => router.push('/login')} className={`my-auto ml-auto mr-4 py-2 px-8 border-[1px] border-[#0097A7]  hover:border-[2px] hover:cursor-pointer group`}>
+        <span onClick={() => {
+          if (path != '/login') {
+            setLoading(!loading)
+            router.push('/login')
+          }
+        }} className={`my-auto ml-auto mr-4 py-2 px-8 border-[1px] border-[#0097A7]  hover:border-[2px] hover:cursor-pointer group`}>
           <p className={`text-[white] text-sm font-['Montserrat',sans-serif]`}>
-            Log In
+            {loading ?
+              <LoopIcon className={`animate-spin text-[white] text-2xl inline mx-2`} />
+              :
+              'Log In'
+            }
           </p>
+
         </span>
       }
-
-
 
     </div>
   )

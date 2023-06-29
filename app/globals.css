@@ -18,12 +18,13 @@
 }
 
 /* Swiper */
+
 .swiper-button-next::after{
-    color: white !important;
+    color: #0097A7 !important;
     font-size: 22px !important;
 }
 .swiper-button-prev::after{
-    color: white !important;
+    color: #0097A7 !important;
     font-size: 22px !important;
 }
 
