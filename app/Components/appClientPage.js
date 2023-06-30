@@ -1,7 +1,9 @@
 'use client'
 // React 
-import { useState } from "react";
-
+import { useEffect, useRef, useState } from "react";
+// Firebase
+import { collection, doc, getDocs, onSnapshot } from "firebase/firestore";
+import { firebasedb } from "../utils/InitFirebase";
 // App Client Components
 import Map from "./map";
 import NavBar from "./NavBar";
@@ -25,12 +27,40 @@ const AppClientPage = ({ docID, Listings }) => {
     // Sell Page 
     const [sellOpen, setSellOpen] = useState(false);
 
+    const [UpdatedListings, setUpdatedListings] = useState(Listings);
+
+
+    const getListings = async () => {
+
+        const unsubscribe = onSnapshot(doc(firebasedb, "Listings", docID), (doc) => {
+            console.log("Snapshot Data Fired: ", doc.data());
+            setUpdatedListings([doc.data()])
+        });
+
+    }
+
+
+    useEffect(() => {
+        let unsubscribe;
+
+        const getListingsAndSubscribe = async () => {
+            unsubscribe = await getListings();
+        }
+
+        getListingsAndSubscribe();
+
+        return () => {
+            unsubscribe?.();
+        };
+    }, []);
+
+
 
     return (
         <>
             <NavBar open={sellOpen} setOpen={setSellOpen} />
-            <Map Listings={Listings} Governorates={Governorates} JordanCoordinates={JordanCoordinates} ammanCoordinates={ammanCoordinates} />
-            <Sidebar Listings={Listings} open={sideBarOpen} setOpen={setSideBarOpen} />
+            <Map Listings={UpdatedListings} Governorates={Governorates} JordanCoordinates={JordanCoordinates} ammanCoordinates={ammanCoordinates} />
+            <Sidebar Listings={UpdatedListings} open={sideBarOpen} setOpen={setSideBarOpen} />
             <Sell open={sellOpen} setOpen={setSellOpen} Governorates={Governorates} docID={docID} />
         </>
     )

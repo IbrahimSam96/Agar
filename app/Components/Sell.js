@@ -125,9 +125,9 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
     const [unitDescription, setUnitDescription] = useState('');
 
 
-    // Latitude / Longitude
-    const [latitude, setLatitude] = useState('');
+    // Longitude / Latitude 
     const [longitude, setLongitude] = useState('');
+    const [latitude, setLatitude] = useState('');
 
     const [geoLocationError, setGeoLocationError] = useState(false);
 
@@ -161,6 +161,8 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
     }
     // Listing Id
     const [id, setId] = useState('')
+    // loader for creating listing.
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         setId(uid())
@@ -171,13 +173,8 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
     const [mediaList, setMediaList] = useState([]);
     // Preview Listing before Creating 
     const [preview, setPreview] = useState(false);
-    // loader for creating listing.
-    const [loading, setLoading] = useState(false)
 
     const toastId = useRef(null);
-
-    // console.log(mediaList)
-    // console.log(urls,'urls')
 
     useEffect(() => {
 
@@ -759,53 +756,10 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                         toastId.current = toast.error("A minimum of 3 pictures is required to upload", { autoClose: true });
                                     }
                                     else {
+                                        // Every Condition satisfied
                                         // Display Preview 
                                         setPreview(true);
 
-                                        // // Every Condition satisfied
-                                        // e.preventDefault();
-                                        // console.log(docID);
-                                        // // Upload mediaList to firebase storage 
-                                        // mediaList.map((image) => {
-                                        //     const storageRef = ref(storage, `${id}/${image.name}`);
-                                        //     uploadBytes(storageRef, image).then((snapshot) => {
-                                        //         console.log('Uploaded a blob or file!');
-                                        //         console.log(snapshot);
-                                        //     }).catch((err) => {
-                                        //         console.log('Something happened with uploading an image', err)
-                                        //     })
-                                        // })
-                                        // // Create Listing - Add it to features Array using arrayUnion
-                                        // const docRef = doc(firebasedb, "Listings", docID);
-
-                                        // await updateDoc(docRef, {
-                                        //     features: arrayUnion({
-                                        //         id: id,
-                                        //         type: 'Feature',
-                                        //         geometry: {
-                                        //             id: id,
-                                        //             type: 'Point',
-                                        //             coordinates: [latitude, longitude],
-                                        //         },
-                                        //         properties: {
-                                        //             id: id,
-                                        //             type: rent,
-                                        //             price: value,
-                                        //             streetName: streetName,
-                                        //             buildingNumber: buildingNumber,
-                                        //             area: area,
-                                        //             city: city,
-                                        //             bedrooms: numberOfBedrooms,
-                                        //             bathrooms: numberOfBathrooms,
-                                        //             parking: parking,
-                                        //             description: unitDescription,
-                                        //         }
-                                        //     })
-                                        // }).then((res) => {
-                                        //     console.log('Listing Created')
-                                        // }).catch((err) => {
-                                        //     console.log('Something went wrong with uploading ', err)
-                                        // });
                                     }
                                 }} className={`w-full p-4 my-auto mx-4 bg-[#07364B] border-[1px] border-[#102C3A] text-white text-center hover:cursor-pointer`}>
                                     Preview Listing
@@ -839,7 +793,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                                         alt={feature.name}
                                                         width={220}
                                                         height={160}
-                                                        className={`m-2 rounded select-none`}
+                                                        className={`m-2 rounded select-none `}
                                                     />
                                                 </SwiperSlide>
 
@@ -1033,7 +987,22 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                                 setLoading(false)
 
                                                 toastId.current = toast.success("Listing Created", { autoClose: true });
-
+                                                // Reset State
+                                                setId(uid())
+                                                setRent(true)
+                                                setValue(0)
+                                                setStreetName('')
+                                                setBuildingNumber('')
+                                                setArea(0)
+                                                setNumberOfBedrooms(1)
+                                                setNumberOfBathrooms(1)
+                                                setParking(false)
+                                                setFurnished(false)
+                                                setUnitDescription('')
+                                                setLongitude('')
+                                                setLatitude('')
+                                                setMediaList([])
+                                                
                                             }).catch((err) => {
                                                 setLoading(false)
 

@@ -23,6 +23,7 @@ const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) =>
     const [lng, setLng] = useState(35.90719);
     const [lat, setLat] = useState(31.97182);
     const [zoom, setZoom] = useState(11.5);
+    const [mapIsLoaded, setMapIsLoaded] = useState(false);
     // Cluster Colors
     // '#07364B', // HOVER color
     // '#0097A7' // Normal color
@@ -32,10 +33,12 @@ const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) =>
     // Divider
     // #E3EFF1 
 
-    console.log('/app server responce :', Listings[0])
-    //
+
+    console.log('appClient state responce :', Listings[0])
+    // Used for intitializing map 
     useEffect(() => {
         if (map.current) return; // initialize map only once
+
         map.current = new mapboxgl.Map({
             container: mapContainer.current,
             style: 'mapbox://styles/mapbox/streets-v11',
@@ -63,6 +66,7 @@ const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) =>
                 clusterMaxZoom: 14, // Max zoom to cluster points on
                 clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
             });
+            setMapIsLoaded(true)
             // Setting up Clusters - Color scale styling based on size of Cluseters
             map.current.addLayer({
                 id: 'clusters',
@@ -272,14 +276,14 @@ const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) =>
 
                         }} className={`w-full grid shadow-md shadow-slate-500 rounded-[10px]`}>
 
-                            <span className={`flex min-h-[150] min-w-[150]`}>
+                            <span className={`flex`}>
                                 <Image
                                     priority
                                     src={coverImage}
-                                    alt="Building"
+                                    alt={coverImage}
                                     width={150}
                                     height={150}
-                                    className={`rounded-l select-none`}
+                                    className={`rounded-l select-none max-h-[120px]`}
                                 />
 
                                 <span className={`grid ml-2 self-center flex-1`}>
@@ -403,6 +407,16 @@ const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) =>
 
     }, []);
 
+    // Used for Updating map
+    useEffect(() => {
+        if (!mapIsLoaded) {
+            console.log('NO MAP INSTINTIATED')
+            return;
+        }
+        console.log('Updating map with new data')
+        map.current.getSource("listings").setData(Listings[0]);
+
+    }, [Listings, mapIsLoaded])
 
     return (
         <div ref={mapContainer} className={`map-container row-start-2 row-end-3 col-start-1 col-end-8 min-h-[85vh]`} />

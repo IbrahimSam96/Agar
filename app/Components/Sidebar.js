@@ -141,16 +141,10 @@ const Sidebar = ({ Listings, open, setOpen }) => {
         }
     }
 
-    const listingPrice = (price, rent) => {
-
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency', currency: 'USD', minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }).format(price)
-    }
-
     const user = useAuth();
     const router = useRouter();
+
+    console.log('appClient state responce :', Listings[0])
 
     return (
         <>
@@ -384,8 +378,6 @@ const Sidebar = ({ Listings, open, setOpen }) => {
                     <span className={`grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] `}>
 
                         {Listings[0].features.map((feature) => {
-
-                            console.log(feature)
                             return (
                                 <div key={feature.id} className={`m-2 shadow-md shadow-slate-200 border-[1px] border-[#E3EFF1] w-[240px] h-[auto] rounded`}>
 
@@ -406,13 +398,14 @@ const Sidebar = ({ Listings, open, setOpen }) => {
 
                                         {feature.properties.urls.map((url) => {
                                             return (
-                                                <SwiperSlide>
+                                                <SwiperSlide key={url}>
                                                     <Image
                                                         priority
+                                                        alt={url}
                                                         src={url}
                                                         width={220}
                                                         height={160}
-                                                        className={`m-2 rounded select-none`}
+                                                        className={`m-2 rounded select-none max-h-[120px]`}
                                                     />
                                                 </SwiperSlide>
                                             )
