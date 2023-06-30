@@ -32,6 +32,8 @@ import TuneIcon from '@mui/icons-material/Tune';
 import Slider from '@mui/material/Slider';
 import FilterListIcon from '@mui/icons-material/FilterList';
 
+
+
 const Sidebar = ({ Listings, open, setOpen }) => {
 
     // category Popup 
@@ -139,9 +141,16 @@ const Sidebar = ({ Listings, open, setOpen }) => {
         }
     }
 
+    const listingPrice = (price, rent) => {
+
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency', currency: 'USD', minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+        }).format(price)
+    }
+
     const user = useAuth();
     const router = useRouter();
-
 
     return (
         <>
@@ -343,7 +352,7 @@ const Sidebar = ({ Listings, open, setOpen }) => {
 
                     </span>
 
-                    <span className={`flex self-center `}>
+                    <span className={`flex self-center mx-2`}>
 
                         <span className={`ml-2 mr-auto border-[1px] border-[grey] border-b-2 border-b-[#0097A7] p-2 w-[150px] `}>
 
@@ -376,24 +385,7 @@ const Sidebar = ({ Listings, open, setOpen }) => {
 
                         {Listings[0].features.map((feature) => {
 
-                            // const listRef = ref(storage, `${feature.id}/`);
-                            // feature.listingImages = [];
-                            // // Find all images for listing.
-                            // listAll(listRef)
-                            //     .then((res) => {
-                            //         res.items.forEach((itemRef) => {
-                            //             getDownloadURL(itemRef).then((url) => {
-                            //                 feature.listingImages.push(url)
-                            //             })
-                            //         });
-
-                            //     }).catch((error) => {
-                            //         console.log(error)
-                            //         // Uh-oh, an error occurred!
-                            //     });
-                            // console.log(feature)
-                            // console.log(feature.listingImages)
-
+                            console.log(feature)
                             return (
                                 <div key={feature.id} className={`m-2 shadow-md shadow-slate-200 border-[1px] border-[#E3EFF1] w-[240px] h-[auto] rounded`}>
 
@@ -412,12 +404,12 @@ const Sidebar = ({ Listings, open, setOpen }) => {
                                         }}
                                     >
 
-                                        {[0, 0, 0].map((url) => {
-                                            console.log('dsadsasaa')
+                                        {feature.properties.urls.map((url) => {
                                             return (
                                                 <SwiperSlide>
                                                     <Image
-                                                        src={'/Building.jpg'}
+                                                        priority
+                                                        src={url}
                                                         width={220}
                                                         height={160}
                                                         className={`m-2 rounded select-none`}
@@ -429,20 +421,22 @@ const Sidebar = ({ Listings, open, setOpen }) => {
                                     </Swiper>
 
                                     <span className={`flex m-2`}>
-                                        <p className={`text-[#263238] text-base font-[600] font-['Montserrat',sans-serif] inline mr-auto ml-1 `}> {feature.properties.price} </p>
+                                        <p className={`text-[#263238] text-base font-[600] font-['Montserrat',sans-serif] inline mr-auto ml-1 `}>
+                                            {feature.properties.price}
+                                        </p>
                                     </span>
 
                                     <span className={`flex mx-2`}>
-                                        <p className={`text-[#263238] text-xs inline mr-auto ml-1 `}> {feature.properties.description} </p>
+                                        <p className={`text-[#263238] text-xs inline mr-auto ml-1 `}> {feature.properties.streetName} - {feature.properties.buildingNumber} </p>
                                     </span>
 
                                     <span className={`flex m-2`}>
-                                        <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 `}> 1BD | 1BA | 0 Parking  </p>
-                                        <p className={`text-[#263238] font-['Montserrat',sans-serif] text-xs font-[600] inline mr-auto ml-1 `}>  276 sqft  </p>
+                                        <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 `}> {feature.properties.bedrooms} BD | {feature.properties.bathrooms} BA | {feature.properties.parking ? 1 : 0} Parking  </p>
+                                        <p className={`text-[#263238] font-['Montserrat',sans-serif] text-xs font-[600] inline mr-auto ml-1 `}>  {feature.properties.area} sqft  </p>
                                     </span>
 
                                     <span className={`flex m-2 `}>
-                                        <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1 `}>Listing ID: #4543534  </p>
+                                        <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1 `}>Listing ID: {feature.properties.id}  </p>
                                     </span>
 
                                     <span className={`flex m-2`}>
@@ -454,222 +448,6 @@ const Sidebar = ({ Listings, open, setOpen }) => {
 
 
                         })}
-                        {/* <div className={`m-2 shadow-md shadow-slate-200 border-[1px] border-[#E3EFF1] w-[240px] h-[auto] rounded`}>
-                            <Swiper modules={[Navigation, Pagination, Scrollbar, A11y]}
-                                navigation={true}
-                                pagination={{
-                                    type: "fraction",
-                                }}
-                                spaceBetween={50}
-                                slidesPerView={1}
-                                onSlideChange={() => console.log('slide change')}
-                                onSwiper={(swiper) => console.log(swiper)}
-                            >
-                                <SwiperSlide>
-                                    <Image
-                                        src="/Building.jpg"
-                                        alt="Building"
-                                        width={220}
-                                        height={160}
-                                        className={`m-2 rounded select-none`}
-                                    />
-                                </SwiperSlide>
-                                <SwiperSlide>
-                                    <Image
-                                        src="/Building.jpg"
-                                        alt="Building"
-                                        width={220}
-                                        height={160}
-                                        className={`m-2 rounded select-none`}
-                                    />
-                                </SwiperSlide>
-                                <SwiperSlide>
-                                    <Image
-                                        src="/Building.jpg"
-                                        alt="Building"
-                                        width={220}
-                                        height={160}
-                                        className={`m-2 rounded select-none`}
-                                    />
-                                </SwiperSlide>
-                                <SwiperSlide>
-                                    <Image
-                                        src="/Building.jpg"
-                                        alt="Building"
-                                        width={220}
-                                        height={160}
-                                        className={`m-2 rounded select-none`}
-                                    />
-                                </SwiperSlide>
-                            </Swiper>
-
-                            <span className={`flex m-2`}>
-                                <p className={`text-[#263238] text-base font-[600] font-['Montserrat',sans-serif] inline mr-auto ml-1 `}> $2,300 </p>
-                            </span>
-
-                            <span className={`flex mx-2`}>
-                                <p className={`text-[#263238] text-xs inline mr-auto ml-1 `}> 14B - Hekmat Daragmeh St. </p>
-                            </span>
-
-                            <span className={`flex m-2`}>
-                                <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 `}> 1BD | 1BA | 0 Parking  </p>
-                                <p className={`text-[#263238] font-['Montserrat',sans-serif] text-xs font-[600] inline mr-auto ml-1 `}>  276 sqft  </p>
-                            </span>
-
-                            <span className={`flex m-2 `}>
-                                <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1 `}>Listing ID: #4543534  </p>
-                            </span>
-
-                            <span className={`flex m-2`}>
-                                <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1 `}>Brokerage: Samara Bros </p>
-                            </span>
-
-                        </div>
-
-                        <div className={`m-2 shadow-md shadow-slate-200 border-[1px] border-[#E3EFF1] w-[240px] h-[auto] rounded`}>
-                            <Swiper modules={[Navigation, Pagination, Scrollbar, A11y]}
-                                navigation={true}
-                                pagination={{
-                                    type: "fraction",
-                                }}
-                                spaceBetween={50}
-                                slidesPerView={1}
-                                onSlideChange={() => console.log('slide change')}
-                                onSwiper={(swiper) => console.log(swiper)}
-                            >
-                                <SwiperSlide>
-                                    <Image
-                                        src="/Building.jpg"
-                                        alt="Building"
-                                        width={220}
-                                        height={160}
-                                        className={`m-2 rounded select-none`}
-                                    />
-                                </SwiperSlide>
-                                <SwiperSlide>
-                                    <Image
-                                        src="/Building.jpg"
-                                        alt="Building"
-                                        width={220}
-                                        height={160}
-                                        className={`m-2 rounded select-none`}
-                                    />
-                                </SwiperSlide>
-                                <SwiperSlide>
-                                    <Image
-                                        src="/Building.jpg"
-                                        alt="Building"
-                                        width={220}
-                                        height={160}
-                                        className={`m-2 rounded select-none`}
-                                    />
-                                </SwiperSlide>
-                                <SwiperSlide>
-                                    <Image
-                                        src="/Building.jpg"
-                                        alt="Building"
-                                        width={220}
-                                        height={160}
-                                        className={`m-2 rounded select-none`}
-                                    />
-                                </SwiperSlide>
-                            </Swiper>
-
-                            <span className={`flex m-2`}>
-                                <p className={`text-[#263238] text-base font-[600] font-['Montserrat',sans-serif] inline mr-auto ml-1 `}> $2,300 </p>
-                            </span>
-
-                            <span className={`flex mx-2`}>
-                                <p className={`text-[#263238] text-xs inline mr-auto ml-1 `}> 14B - Hekmat Daragmeh St. </p>
-                            </span>
-
-                            <span className={`flex m-2`}>
-                                <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 `}> 1BD | 1BA | 0 Parking  </p>
-                                <p className={`text-[#263238] font-['Montserrat',sans-serif] text-xs font-[600] inline mr-auto ml-1 `}>  276 sqft  </p>
-                            </span>
-
-                            <span className={`flex m-2 `}>
-                                <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1 `}>Listing ID: #4543534  </p>
-                            </span>
-
-                            <span className={`flex m-2`}>
-                                <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1 `}>Brokerage: Samara Bros </p>
-                            </span>
-
-                        </div>
-
-                        <div className={`m-2 shadow-md shadow-slate-200 border-[1px] border-[#E3EFF1] w-[240px] h-[auto] rounded`}>
-                            <Swiper modules={[Navigation, Pagination, Scrollbar, A11y]}
-                                navigation={true}
-                                pagination={{
-                                    type: "fraction",
-                                }}
-                                spaceBetween={50}
-                                slidesPerView={1}
-                                onSlideChange={() => console.log('slide change')}
-                                onSwiper={(swiper) => console.log(swiper)}
-                            >
-                                <SwiperSlide>
-                                    <Image
-                                        src="/Building.jpg"
-                                        alt="Building"
-                                        width={220}
-                                        height={160}
-                                        className={`m-2 rounded select-none`}
-                                    />
-                                </SwiperSlide>
-                                <SwiperSlide>
-                                    <Image
-                                        src="/Building.jpg"
-                                        alt="Building"
-                                        width={220}
-                                        height={160}
-                                        className={`m-2 rounded select-none`}
-                                    />
-                                </SwiperSlide>
-                                <SwiperSlide>
-                                    <Image
-                                        src="/Building.jpg"
-                                        alt="Building"
-                                        width={220}
-                                        height={160}
-                                        className={`m-2 rounded select-none`}
-                                    />
-                                </SwiperSlide>
-                                <SwiperSlide>
-                                    <Image
-                                        src="/Building.jpg"
-                                        alt="Building"
-                                        width={220}
-                                        height={160}
-                                        className={`m-2 rounded select-none`}
-                                    />
-                                </SwiperSlide>
-                            </Swiper>
-
-                            <span className={`flex m-2`}>
-                                <p className={`text-[#263238] text-base font-[600] font-['Montserrat',sans-serif] inline mr-auto ml-1 `}> $2,300 </p>
-                            </span>
-
-                            <span className={`flex mx-2`}>
-                                <p className={`text-[#263238] text-xs inline mr-auto ml-1 `}> 14B - Hekmat Daragmeh St. </p>
-                            </span>
-
-                            <span className={`flex m-2`}>
-                                <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 `}> 1BD | 1BA | 0 Parking  </p>
-                                <p className={`text-[#263238] font-['Montserrat',sans-serif] text-xs font-[600] inline mr-auto ml-1 `}>  276 sqft  </p>
-                            </span>
-
-                            <span className={`flex m-2 `}>
-                                <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1 `}>Listing ID: #4543534  </p>
-                            </span>
-
-                            <span className={`flex m-2`}>
-                                <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1 `}>Brokerage: Samara Bros </p>
-                            </span>
-
-                        </div> */}
-
                     </span >
 
                     <span className={`bg-[#E3EFF1]`} >

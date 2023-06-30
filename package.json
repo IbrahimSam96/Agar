@@ -20,6 +20,7 @@
     "firebase": "^9.22.2",
     "firebase-admin": "^11.6.0",
     "mapbox-gl": "^2.15.0",
+    "moment": "^2.29.4",
     "next": "13.4.5",
     "nookies": "^2.5.2",
     "postcss": "8.4.24",

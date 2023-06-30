@@ -11,6 +11,7 @@ import BedOutlinedIcon from '@mui/icons-material/BedOutlined';
 import ShowerOutlinedIcon from '@mui/icons-material/ShowerOutlined';
 import CropFreeOutlinedIcon from '@mui/icons-material/CropFreeOutlined';
 import ChairOutlinedIcon from '@mui/icons-material/ChairOutlined'; import LocalParkingOutlinedIcon from '@mui/icons-material/LocalParkingOutlined';
+import LoopIcon from '@mui/icons-material/Loop';
 
 // Prime React 
 import { FileUpload } from 'primereact/fileupload';
@@ -18,9 +19,9 @@ import { FileUpload } from 'primereact/fileupload';
 import { useAuth } from "../utils/Authenticator";
 import { firebasedb, storage } from "../utils/InitFirebase";
 // db
-import { doc, updateDoc, arrayUnion, arrayRemove, getDoc } from "firebase/firestore";
+import { doc, updateDoc, arrayUnion, arrayRemove, getDoc, Timestamp } from "firebase/firestore";
 // storage
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 // React Toastify
 import { ToastContainer, toast } from 'react-toastify';
@@ -160,25 +161,29 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
     }
     // Listing Id
     const [id, setId] = useState('')
+
     useEffect(() => {
         setId(uid())
     }, []);
-    const fileUploadRef = useRef(null)
+
+    const fileUploadRef = useRef(null);
     // Media Uplaod
     const [mediaList, setMediaList] = useState([]);
-
     // Preview Listing before Creating 
     const [preview, setPreview] = useState(false);
+    // loader for creating listing.
+    const [loading, setLoading] = useState(false)
 
     const toastId = useRef(null);
 
-    console.log(mediaList)
+    // console.log(mediaList)
+    // console.log(urls,'urls')
 
     useEffect(() => {
 
         if (fileUploadRef.current) {
-            console.log('MediaList:', mediaList)
-            console.log('fileUploadRef:', fileUploadRef.current)
+            // console.log('MediaList:', mediaList)
+            // console.log('fileUploadRef:', fileUploadRef.current)
             fileUploadRef.current.clear();
 
             fileUploadRef.current.setUploadedFiles(mediaList);
@@ -335,12 +340,12 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                 <TextField
                                     value={area}
-                                    // error={!area}
-                                    type='number'
+                                    inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}                                    // error={!area}
+                                    type="number"
                                     required
                                     sx={{ marginRight: "10px" }}
                                     id="outlined-basic"
-                                    helperText="Total Area (sqft)"
+                                    helperText="Total Area (m2)"
                                     variant="outlined"
                                     size="small"
                                     onChange={(e) => {
@@ -397,32 +402,33 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                             <span className={`flex self-center py-2 mx-2`} >
 
                                 <TextField
-                                    value={latitude}
-                                    error={geoLocationError && !latitude}
-                                    autoComplete='false'
-                                    required
-                                    sx={{ marginRight: "10px" }}
-                                    id="outlined-basic"
-                                    helperText="Latitude"
-                                    variant="outlined"
-                                    size="small"
-                                    onChange={(e) => {
-                                        setLatitude(e.target.value)
-                                    }}
-                                />
-
-                                <TextField
                                     value={longitude}
                                     error={geoLocationError && !longitude}
                                     autoComplete='false'
                                     required
-                                    sx={{}}
+                                    sx={{ marginRight: "10px" }}
+
                                     id="outlined-basic"
                                     helperText="Longitude"
                                     variant="outlined"
                                     size="small"
                                     onChange={(e) => {
                                         setLongitude(e.target.value)
+                                    }}
+                                />
+
+                                <TextField
+                                    value={latitude}
+                                    error={geoLocationError && !latitude}
+                                    autoComplete='false'
+                                    required
+                                    sx={{}}
+                                    id="outlined-basic"
+                                    helperText="Latitude"
+                                    variant="outlined"
+                                    size="small"
+                                    onChange={(e) => {
+                                        setLatitude(e.target.value)
                                     }}
                                 />
 
@@ -810,7 +816,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                     {preview &&
                         <span onClick={() => {
                             console.log('hey')
-                        }} className={`self-start grid shadow-md shadow-slate-500 rounded-[10px] m-2`}>
+                        }} className={`self-start grid shadow-md shadow-slate-500 rounded-[10px] m-2 max-w-[500px]`}>
 
                             <span className={`flex`}>
                                 <div className={`m-2 shadow-md shadow-slate-200 border-[1px] border-[#E3EFF1] w-[240px] h-[auto] rounded`}>
@@ -854,13 +860,13 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                         </p>
                                     </span>
 
-                                    <span className={`flex py-1 self-center `}>
-                                        <p className={`text-[#707070] text-xs font-['Montserrat',sans-serif] inline`}>
+                                    <span className={`flex py-1 self-center overflow-x-hidden whitespace-nowrap text-ellipsis mr-2`}>
+                                        <p className={`text-[#707070] text-xs font-['Montserrat',sans-serif] inline `}>
                                             {streetName} - {buildingNumber}
                                         </p>
                                     </span>
 
-                                    <span className={`flex py-1 self-center `}>
+                                    <span className={`flex py-1 self-center overflow-x-hidden whitespace-nowrap text-ellipsis `}>
                                         <p className={`text-[#707070] text-xs inline font-['Montserrat',sans-serif] mr-auto `}>
                                             {numberOfBedrooms}BD | {numberOfBathrooms}BA | {parking ? 1 : 0} Parking
                                         </p>
@@ -873,9 +879,9 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                             </span>
 
-                            <span className={`bg-[#F8F8F8] flex p-2 `}>
+                            <span className={`bg-[#F8F8F8] flex p-2 overflow-x-hidden whitespace-nowrap text-ellipsis`}>
 
-                                <span className={`flex mx-auto`}>
+                                <span className={`flex mx-auto `}>
                                     <p className={`text-[#0097A7] font-['Montserrat',sans-serif] `}>
                                         {streetName} - {buildingNumber}
                                     </p>
@@ -898,7 +904,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                 </p>
                             </span>
 
-                            <span className={`flex self-center mx-2`}>
+                            <span className={`flex self-center mx-2 `}>
                                 <span className={`grid mx-2`}>
                                     <BedOutlinedIcon className={`justify-self-center text-[#07364B] font-[600]`} />
                                     <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline  `}>
@@ -945,7 +951,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                             </span>
 
                             <span className={` ml-2 mr-auto grid overflow-y-auto max-w-[520px] max-h-[150px]`}>
-                                <pre className={` text-sm sm:text-base text-[#07364B] inline font-[600] mr-auto whitespace-pre-wrap `}>
+                                <pre className={` text-sm sm:text-base text-[#07364B] inline mr-auto whitespace-pre-wrap `}>
                                     {unitDescription}
                                 </pre>
                             </span>
@@ -959,68 +965,92 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                             <span
                                 className={`flex px-8 py-3 my-auto mr-auto border-[#102C3A] hover:bg-[#E4FABF]  border-[1px]  text-[#0097A7] text-center hover:cursor-pointer`}
                                 onClick={() => {
-                                    setPreview(false)
+                                    setPreview(false);
+                                    setLoading(false)
+
                                 }} >
                                 Edit
                             </span>
                             <span
                                 className={`flex px-8 py-3 my-auto ml-auto  bg-[#07364B] hover:bg-[#102C3A] border-[1px] border-[#102C3A] text-white text-center hover:cursor-pointer`}
                                 onClick={async (e) => {
-                                    // Every Condition satisfied
-                                    e.preventDefault();
-                                    console.log(docID);
-                                    // Upload mediaList to firebase storage 
+                                    try {
+                                        // Every Condition satisfied
+                                        e.preventDefault();
+                                        setLoading(true)
+                                        console.log(docID);
+                                        // Upload mediaList to firebase storage AND then upload data
 
-                                    mediaList.map((image) => {
-                                        const storageRef = ref(storage, `${id}/${image.name}`);
-                                        uploadBytes(storageRef, image).then((snapshot) => {
-                                            console.log('Uploaded a blob or file!');
-                                            console.log(snapshot);
-                                        }).catch((err) => {
-                                            console.log('Something happened with uploading an image', err)
+                                        let x = mediaList.map(async (image) => {
+
+                                            const storageRef = ref(storage, `${id}/${image.name}`);
+                                            const uploadTaskSnapshot = await uploadBytes(storageRef, image)
+                                            const downloadUrl = await getDownloadURL(uploadTaskSnapshot.ref)
+
+                                            return (downloadUrl)
                                         })
-                                    })
-                                    // Create Listing - Add it to features Array using arrayUnion
-                                    const docRef = doc(firebasedb, "Listings", docID);
 
-                                    await updateDoc(docRef, {
-                                        features: arrayUnion({
-                                            id: id,
-                                            type: 'Feature',
-                                            geometry: {
-                                                id: id,
-                                                type: 'Point',
-                                                coordinates: [latitude, longitude],
-                                            },
-                                            properties: {
-                                                id: id,
-                                                type: rent,
-                                                price: value,
-                                                streetName: streetName,
-                                                buildingNumber: buildingNumber,
-                                                area: area,
-                                                city: city,
-                                                bedrooms: numberOfBedrooms,
-                                                bathrooms: numberOfBathrooms,
-                                                parking: parking,
-                                                description: unitDescription,
-                                            }
+
+                                        Promise.all((x)).then(async (res) => {
+
+                                            console.log('completed:', res)
+
+                                            // Create Listing - Add it to features Array using arrayUnion
+                                            const docRef = doc(firebasedb, "Listings", docID);
+
+                                            await updateDoc(docRef, {
+                                                features: arrayUnion({
+                                                    id: id,
+                                                    type: 'Feature',
+                                                    geometry: {
+                                                        id: id,
+                                                        type: 'Point',
+                                                        coordinates: [latitude, longitude],
+                                                    },
+                                                    properties: {
+                                                        id: id,
+                                                        rent: rent,
+                                                        price: new Intl.NumberFormat('en-US', {
+                                                            style: 'currency', currency: 'USD', minimumFractionDigits: 0,
+                                                            maximumFractionDigits: 0,
+                                                        }).format(rent ? value * 50 : value * 15000),
+                                                        streetName: streetName,
+                                                        buildingNumber: buildingNumber,
+                                                        area: area,
+                                                        city: city,
+                                                        bedrooms: numberOfBedrooms,
+                                                        bathrooms: numberOfBathrooms,
+                                                        parking: parking,
+                                                        description: unitDescription,
+                                                        timeStamp: Timestamp.now(),
+                                                        urls: res
+                                                    },
+                                                })
+                                            }).then((res) => {
+                                                console.log('Listing Created');
+                                                setOpen(!open);
+                                                setPreview(!preview);
+                                                setLoading(false)
+
+                                                toastId.current = toast.success("Listing Created", { autoClose: true });
+
+                                            }).catch((err) => {
+                                                setLoading(false)
+
+                                                console.log('Something went wrong with uploading ', err)
+                                                toastId.current = toast.error("Something went wrong with creating the Listing. Please refresh page.", { autoClose: true });
+                                            });
                                         })
-                                    }).then((res) => {
-                                        console.log('Listing Created');
 
-                                        setOpen(!open);
-                                        setPreview(!preview);
-                                        toastId.current = toast.success("Listing Created", { autoClose: true });
-
-                                    }).catch((err) => {
-                                        console.log('Something went wrong with uploading ', err)
-                                        toastId.current = toast.error("Something went wrong with creating the Listing. Please refresh page.", { autoClose: true });
-                                    });
+                                    }
+                                    catch (err) {
+                                        setLoading(false)
+                                        console.log(err)
+                                    }
 
                                 }}
                             >
-                                Confirm
+                                {loading ? <LoopIcon className={`animate-spin text-[white] text-2xl inline mx-2`} /> : 'Confirm'}
                             </span>
                         </span>
                     }

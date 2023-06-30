@@ -4,7 +4,6 @@ import Image from 'next/image';
 
 // React
 import React, { useRef, useEffect, useState } from 'react';
-
 // Mapbox
 import mapboxgl from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
@@ -14,6 +13,8 @@ mapboxgl.setRTLTextPlugin('https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl
 
 // Helper Libraries 
 import ReactDOMServer from 'react-dom/server';
+import moment from 'moment/moment';
+import { Timestamp } from 'firebase/firestore';
 
 const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) => {
 
@@ -244,19 +245,37 @@ const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) =>
             // the location of the feature, with
             // description HTML from its properties.
             map.current.on('click', 'unclustered-point', (e) => {
+                console.log(e.features[0])
 
+                const rent = e.features[0].properties.rent;
                 const coordinates = e.features[0].geometry.coordinates.slice();
                 const price = e.features[0].properties.price;
+                const area = e.features[0].properties.area;
+                const numberOfBedrooms = e.features[0].properties.bedrooms;
+
+                const numberOfBathrooms = e.features[0].properties.bathrooms;
+                const parking = e.features[0].properties.parking
+
+                const address = e.features[0].properties.streetName + '-' + e.features[0].properties.buildingNumber;
+                const timeStamp = JSON.parse(e.features[0].properties.timeStamp);
+
+                const timeObj = new Timestamp(timeStamp.seconds, timeStamp.nanoseconds);
+                const when = moment(timeObj.toDate()).fromNow()
+
+                const coverImage = JSON.parse(e.features[0].properties.urls)[0]
+
 
                 const JSXTooltip = () => {
+
                     return (
                         <div onClick={() => {
-                            console.log('hey')
+
                         }} className={`w-full grid shadow-md shadow-slate-500 rounded-[10px]`}>
 
-                            <span className={`flex`}>
+                            <span className={`flex min-h-[150] min-w-[150]`}>
                                 <Image
-                                    src="/Building.jpg"
+                                    priority
+                                    src={coverImage}
                                     alt="Building"
                                     width={150}
                                     height={150}
@@ -270,22 +289,23 @@ const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) =>
                                             {price}
                                         </p>
                                         <p className={`text-[#707070] text-xs ml-auto mr-2`}>
-                                            5 days
+                                            {when}
                                         </p>
                                     </span>
 
                                     <span className={`flex py-1 self-center `}>
                                         <p className={`text-[#707070] text-xs font-['Montserrat',sans-serif] inline`}>
-                                            100 Harbour St.
+                                            {address}
                                         </p>
                                     </span>
 
                                     <span className={`flex py-1 self-center `}>
                                         <p className={`text-[#707070] text-xs inline font-['Montserrat',sans-serif] mr-auto `}>
-                                            1BD | 1BA | 0 Parking 
+                                            {numberOfBedrooms}BD | {numberOfBathrooms}BA | {parking ? 1 : 0} Parking
+
                                         </p>
                                         <p className={`text-[#707070] text-xs inline font-[600] mr-auto ml-2`}>
-                                         800 sqft
+                                            {area} sqft
                                         </p>
                                     </span>
 
@@ -297,10 +317,10 @@ const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) =>
 
                                 <span className={`flex mx-auto`}>
                                     <p className={`text-[#0097A7] font-['Montserrat',sans-serif] `}>
-                                        Building Name
+                                        {address}
                                     </p>
                                     <p className={`text-[grey] font-['Montserrat',sans-serif] ml-2`}>
-                                        1 For Rent
+                                        {`1 For ${rent ? 'Rent' : 'Sale'}`}
                                     </p>
                                 </span>
 
