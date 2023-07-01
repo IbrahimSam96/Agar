@@ -394,9 +394,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
                         </span>
 
-                        <span className={`flex self-center mx-2 `}>
 
-                        </span>
                     </span>
 
                     {!moreFilters &&
@@ -711,6 +709,29 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
                                         </p>
                                     </span>
 
+                                </span>
+
+                            </span>
+
+                            <span className={`flex self-center mx-2 my-4 sticky`}>
+
+                                <span
+                                    className={`my-auto ml-auto mr-0 text-[#0097A7] text-center text-sm font-[500] underline hover:cursor-pointer`}
+                                    onClick={() => {
+                                        setMoreFilters(false)
+                                        setNumberOfFilters(0)
+                                        // Reset Filters
+                                        setNumberOfBedrooms(0)
+                                        setNumberOfBathrooms(0)
+                                        setParking(undefined)
+                                        setFurnished(undefined)
+                                    }} >
+                                    Clear
+                                </span>
+
+                                <span
+                                    className={`flex px-10 py-3 my-auto ml-auto bg-[#0097A7] opacity-100 hover:opacity-[80] border-[1px] border-[#102C3A] text-white text-center hover:cursor-pointer`}>
+                                    View {filteredListings.length} Listings
                                 </span>
 
                             </span>
