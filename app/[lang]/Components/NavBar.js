@@ -2,22 +2,24 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useRouter, usePathname, useSearchParams, useParams } from 'next/navigation'
 
-import { useAuth } from '@/app/utils/Authenticator';
-import { firebaseauth } from '@/app/utils/InitFirebase';
+import { useAuth } from '@/app/[lang]/utils/Authenticator';
+import { firebaseauth } from '@/app/[lang]/utils/InitFirebase';
 import { signOut } from "firebase/auth";
 
 
 import LocationCityOutlinedIcon from '@mui/icons-material/LocationCityOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import LoopIcon from '@mui/icons-material/Loop';
-const NavBar = () => {
+
+const NavBar = ({ open, setOpen }) => {
 
   const [loading, setLoading] = useState(false);
 
   const user = useAuth();
   const router = useRouter();
-  const params = useParams()
-  const path = usePathname()
+  const params = useParams();
+  const path = usePathname();
+
   const SignOut = () => {
     signOut(firebaseauth).then(() => {
       // Sign-out successful.
@@ -35,8 +37,7 @@ const NavBar = () => {
 
       <span onClick={() => {
         router.push('/')
-
-      }} className={`my-auto mr-auto ml-4 flex hover:cursor-pointer`}>
+      }} className={`my-auto mr-auto ml-4 flex cursor-pointer`}>
         <LocationCityOutlinedIcon className={`mx-2 text-[#0097A7] text-[40px] my-auto`} />
         <p className={`font-mono text-white text-[30px] inline my-auto `}>
           shoqaq.jo
@@ -47,7 +48,7 @@ const NavBar = () => {
       {user.user ?
         <span className={`my-auto ml-auto flex`}>
 
-          <p className={`my-auto text-base inline text-[white] mr-2 font-['Montserrat',sans-serif]`}> Sell </p>
+          <p onClick={() => { setOpen(!open) }} className={`my-auto text-base inline text-[white] mr-2 font-['Montserrat',sans-serif] hover:cursor-pointer`}> Sell </p>
 
           <span className={`border-r-[2px] border-[#0097A7] mx-2`}>
 

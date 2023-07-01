@@ -353,7 +353,9 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                 <span
                                     id="cityPopup"
                                     ref={cityPopupRef}
-                                    onClick={() => { setCityPopup(!cityPopup) }}
+                                    onClick={() => {
+                                        // setCityPopup(!cityPopup)
+                                    }}
                                     className={`group mb-auto hover:cursor-not-allowed border-[1px] border-[grey] p-2 rounded opacity-25`}>
 
                                     <span className={`flex items-center w-[200px]`}>
@@ -363,7 +365,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                         </svg>
                                     </span>
 
-                                    <span className={` ${cityPopup ? 'grid' : 'hidden'} z-50 ml-[-10px] bg-[#FFFFFF] absolute grid-cols-[220px] max-h-[150px] overflow-y-auto shadow shadow-[#07364B] `}>
+                                    <span className={` ${cityPopup ? 'grid' : 'hidden'} z-50 ml-[-10px] bg-[#FFFFFF] sticky grid-cols-[220px] max-h-[150px] overflow-y-auto shadow shadow-[#07364B] `}>
                                         {Governorates.map((governorate) => {
                                             return (
                                                 <Fragment key={governorate}>
@@ -508,7 +510,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                 <span className={`self-center justify-self-start row-start-1 col-start-1 mx-2`}>
                                     <p className={` text-[0.5em] sm:text-[0.8em] text-[rgb(36,36,36)] inline`}>
-                                        Number of Bedrooms
+                                        Number of Bathrooms
                                     </p>
                                 </span>
 
@@ -1002,7 +1004,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                                 setLongitude('')
                                                 setLatitude('')
                                                 setMediaList([])
-                                                
+
                                             }).catch((err) => {
                                                 setLoading(false)
 

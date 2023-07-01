@@ -277,15 +277,27 @@ const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) =>
                         }} className={`w-full grid shadow-md shadow-slate-500 rounded-[10px]`}>
 
                             <span className={`flex`}>
-                                <Image
+                                {/* <Image
                                     priority
                                     src={coverImage}
                                     alt={coverImage}
                                     width={150}
                                     height={150}
                                     className={`rounded-l select-none max-h-[120px]`}
-                                />
+                                /> */}
+                                <Image
+                                    priority
+                                    alt={coverImage}
+                                    src={coverImage}
+                                    width="0"
+                                    height="0"
+                                    sizes="100vw"
+                                    className="w-full h-auto m-2 rounded select-none max-h-[120px] max-w-[150px]"
 
+                                // width={220}
+                                // height={160}
+                                // className={`m-2 rounded select-none max-h-[120px] max-w-[220px] w-auto h-auto`}
+                                />
                                 <span className={`grid ml-2 self-center flex-1`}>
 
                                     <span className={`flex self-center `}>

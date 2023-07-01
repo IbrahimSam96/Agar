@@ -19,8 +19,7 @@ import Sell from "./Sell";
 // Divider
 // #E3EFF1 
 
-const AppClientPage = ({ docID, Listings }) => {
-
+const AppClientPage = ({ docID, Listings, dictionary, lang }) => {
     // Sidebar
     const [sideBarOpen, setSideBarOpen] = useState(true);
 
@@ -55,12 +54,11 @@ const AppClientPage = ({ docID, Listings }) => {
     }, []);
 
 
-
     return (
         <>
             <NavBar open={sellOpen} setOpen={setSellOpen} />
-            <Map Listings={UpdatedListings} Governorates={Governorates} JordanCoordinates={JordanCoordinates} ammanCoordinates={ammanCoordinates} />
-            <Sidebar Listings={UpdatedListings} open={sideBarOpen} setOpen={setSideBarOpen} />
+            {/* <Map Listings={UpdatedListings} Governorates={Governorates} JordanCoordinates={JordanCoordinates} ammanCoordinates={ammanCoordinates} /> */}
+            <Sidebar Listings={UpdatedListings[0].features} open={sideBarOpen} setOpen={setSideBarOpen} dictionary={dictionary} lang={lang} />
             <Sell open={sellOpen} setOpen={setSellOpen} Governorates={Governorates} docID={docID} />
         </>
     )

@@ -1,0 +1,46 @@
+{
+  "Listings": "Listings",
+  "Sort": "Sort",
+  "Numbers": {
+    "0":"0",
+    "1":"1",
+    "2":"2",
+    "3":"3",
+    "4":"4"
+  },
+  "Properties":{
+    "Parking":"Parking",
+    "BD":"BD",
+    "BA":"BA",
+    "Listing ID":"Listing ID",
+    "Agent":"Agent"
+  },
+
+  "Sidebar": {
+    "Title": {
+      "For Rent": "Amman appartments for rent",
+      "For Sale": "Amman appartments for sale",
+      "Rented": "Amman Rented appartments",
+      "Sold": "Amman Sold appartments"
+    },
+    "Category": {
+      "For Rent": "For Rent",
+      "For Sale": "For Sale",
+      "Rented": "Rented",
+      "Sold": "Sold"
+    },
+    "Price": {
+      "Price": "Price",
+      "Under": "Under",
+      "Above": "Above",
+      "to": "to",
+      "from": "from",
+      "Unlimited": "Unlimited"
+    },
+    "Filters": {
+      "More Filters": "More Filters",
+      "Close Filters": "Close Filters"
+    }
+
+  }
+}

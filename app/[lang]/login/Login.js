@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation';
 // React
 import { useEffect, useState } from 'react';
 // Local Components
-import { useAuth } from '@/app/utils/Authenticator';
+import { useAuth } from '@/app/[lang]/utils/Authenticator';
 
 // Client Firebase SDK
-import { firebaseauth } from '@/app/utils/InitFirebase'
+import { firebaseauth } from '@/app/[lang]/utils/InitFirebase'
 import {
     createUserWithEmailAndPassword, signInWithEmailAndPassword,
     signOut, signInWithPopup, GoogleAuthProvider

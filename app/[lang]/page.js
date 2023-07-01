@@ -9,8 +9,9 @@ import { collection, getDocs } from "firebase/firestore";
 import { firebasedb } from './utils/InitFirebase';
 
 import AppClientPage from './Components/appClientPage';
+import { getDictionary } from '@/get-dictionary';
 
-export default async function Home() {
+export default async function Home({ params: { lang } }) {
 
   let docID;
 
@@ -28,6 +29,8 @@ export default async function Home() {
       let listing = {}
       listing = doc.data();
 
+
+      // console.log(JSON.parse(listing.features[0].properties.urls))
       active_Lisitings.push(listing);
     });
 
@@ -44,12 +47,14 @@ export default async function Home() {
 
   const Listings = await getlistings();
 
+  const dictionary = await getDictionary(lang)
+
 
   return (
 
     <div className={`w-full h-full min-h-full grid grid-cols-7 grid-rows-[60px,1fr,auto] `} >
 
-      <AppClientPage docID={docID} Listings={Listings} />
+      <AppClientPage docID={docID} Listings={Listings} dictionary={dictionary} lang={lang} />
 
     </div>
   )

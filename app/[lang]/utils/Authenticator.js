@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useContext, createContext, useEffect } from 'react'
-import { firebaseauth } from '@/app/utils/InitFirebase'
+import { firebaseauth } from '@/app/[lang]/utils/InitFirebase'
 import nookies from "nookies";
 
 // CTX 
