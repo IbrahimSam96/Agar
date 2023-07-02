@@ -37,6 +37,8 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
     const [filteredListings, setFilteredListings] = useState(Listings)
+    const [sortedListings, setSortedListings] = useState(filteredListings)
+
     // category Popup 
     const [categoryPopup, setCategoryPopup] = useState(false);
     const categoryPopupRef = useRef(null);
@@ -52,6 +54,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
     const [numberOfBathrooms, setNumberOfBathrooms] = useState(0);
     const [parking, setParking] = useState(undefined);
     const [furnished, setFurnished] = useState(undefined);
+
     // Keeps track of number of filters
     useEffect(() => {
         let FiltersApplied = 0;
@@ -70,7 +73,51 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
             FiltersApplied++
         }
 
-        setNumberOfFilters(FiltersApplied)
+        setNumberOfFilters(FiltersApplied);
+
+        if (FiltersApplied !== 0) {
+
+            let propertiesToFilter = {
+                bedrooms: numberOfBedrooms !== 0,
+                bathrooms: numberOfBathrooms !== 0,
+                parking: parking !== undefined,
+                furnished: furnished !== undefined
+            };
+
+            let list;
+
+            function filterBedroom(listing) {
+                if (propertiesToFilter.bedrooms) {
+                    return listing.properties.bedrooms == numberOfBedrooms;
+                }
+                return true;
+            }
+            function filterBathrooms(listing) {
+                if (propertiesToFilter.bathrooms) {
+                    return listing.properties.bathrooms == numberOfBathrooms;
+                }
+                return true;
+            }
+            function filterParking(listing) {
+                if (propertiesToFilter.parking) {
+                    return listing.properties.parking == parking;
+                }
+                return true;
+            }
+            function filterFurnished(listing) {
+                if (propertiesToFilter.furnished) {
+                    return listing.properties.furnished == furnished;
+                }
+                return true;
+            }
+
+            list = [...filteredListings].filter(listing => {
+                return filterBedroom(listing) && filterBathrooms(listing) && filterParking(listing) && filterFurnished(listing)
+            })
+
+            console.log(list)
+            setSortedListings(list)
+        }
 
     }, [numberOfBedrooms, numberOfBathrooms, parking, furnished])
 
@@ -175,17 +222,17 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
     useEffect(() => {
 
         if (sort) {
-            let list = [...filteredListings];
+            let list = [...sortedListings];
             list.sort((a, b) => Number(b.properties.price.replace(/[^0-9.-]+/g, "")) - Number(a.properties.price.replace(/[^0-9.-]+/g, "")));
             console.log("list", list)
-            setFilteredListings(list)
+            setSortedListings(list)
         } else {
-            let list = [...filteredListings];
+            let list = [...sortedListings];
 
             list.sort((a, b) => Number(a.properties.price.replace(/[^0-9.-]+/g, "")) - Number(b.properties.price.replace(/[^0-9.-]+/g, "")));
             console.log("list", list)
 
-            setFilteredListings(list)
+            setSortedListings(list)
         }
 
     }, [sort])
@@ -413,7 +460,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
                                             {dictionary['Listings']}
                                         </p>
                                         <p className={`text-sm font-bold mx-auto `}>
-                                            {filteredListings.length}
+                                            {sortedListings.length}
                                         </p>
                                     </span>
 
@@ -440,7 +487,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
                             <span className={`grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] `}>
 
-                                {filteredListings.map((feature) => {
+                                {sortedListings.map((feature) => {
                                     return (
                                         <div key={feature.id} className={`m-2 shadow-md shadow-slate-200 border-[1px] border-[#E3EFF1] w-[240px] h-[auto] rounded`}>
 
@@ -563,7 +610,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
-                                        onClick={() => { }}
+                                        onClick={() => {setNumberOfBedrooms(0) }}
                                         className={`transition-[margin] py-2 px-[25.5px] sm:px-[36px] ${numberOfBedrooms == 0 ? 'hidden' : numberOfBedrooms == 1 ? `mr-[177px] sm:mr-[240px]` : numberOfBedrooms == 2 ? `mr-[120.4px] sm:mr-[160px] ` : numberOfBedrooms == 3 ? `mr-[58.4px] sm:mr-[80px]` : `mr-0`}  border-[1px] border-[#102C3A]  bg-[#07364B] `}>
                                         <p className={`text-[white] text-[0.7em] font-bold inline`}>
                                             {numberOfBedrooms}
@@ -621,7 +668,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
-                                        onClick={() => { }}
+                                        onClick={() => { setNumberOfBathrooms(0)}}
                                         className={`transition-[margin] py-2 px-[25.5px] sm:px-[36px]  ${numberOfBathrooms == 0 ? 'hidden' : numberOfBathrooms == 1 ? `mr-[177px] sm:mr-[240px]` : numberOfBathrooms == 2 ? `mr-[120.4px] sm:mr-[160px] ` : numberOfBathrooms == 3 ? `mr-[58.4px] sm:mr-[80px] ` : `mr-0`}  border-[1px] border-[#102C3A]  bg-[#07364B] `}>
                                         <p className={`text-[white] text-[0.7em] font-bold inline`}>
                                             {numberOfBathrooms}
@@ -661,7 +708,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
-                                        onClick={() => { }}
+                                        onClick={() => { setParking(undefined)}}
                                         className={`py-2 px-10 sm:px-14 transition-[margin]  ${parking == undefined ? 'hidden' : parking == false ? `mr-[102px] sm:mr-[133px]` : `mr-0`} border-[1px] border-[#102C3A]  bg-[#07364B] `}>
                                         <p className={`text-[white] text-[0.7em] font-bold inline`}>
                                             {parking == false ? 'No' : 'Yes'}
@@ -702,7 +749,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
-                                        onClick={() => { }}
+                                        onClick={() => {setFurnished(undefined) }}
                                         className={`py-2 px-10 sm:px-14 transition-[margin] ${furnished == undefined ? 'hidden' : furnished == false ? `mr-[102px] sm:mr-[133px]` : `mr-0`} border-[1px] border-[#102C3A]  bg-[#07364B] `}>
                                         <p className={`text-[white] text-[0.7em] font-bold inline`}>
                                             {furnished == false ? 'No' : 'Yes'}
@@ -718,7 +765,9 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
                                 <span
                                     className={`my-auto ml-auto mr-0 text-[#0097A7] text-center text-sm font-[500] underline hover:cursor-pointer`}
                                     onClick={() => {
-                                        setMoreFilters(false)
+                                        // Reset Full listings 
+                                        setSortedListings([...filteredListings])
+                                        // setMoreFilters(false)
                                         setNumberOfFilters(0)
                                         // Reset Filters
                                         setNumberOfBedrooms(0)
@@ -730,8 +779,11 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
                                 </span>
 
                                 <span
+                                    onClick={() => {
+                                        setMoreFilters(false);
+                                    }}
                                     className={`flex px-10 py-3 my-auto ml-auto bg-[#0097A7] opacity-100 hover:opacity-[80] border-[1px] border-[#102C3A] text-white text-center hover:cursor-pointer`}>
-                                    View {filteredListings.length} Listings
+                                    View {sortedListings.length} Listings
                                 </span>
 
                             </span>
