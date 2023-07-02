@@ -138,8 +138,8 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
         const successCallback = (position) => {
             console.log(position);
             setGeoLocationError(false)
-            setLatitude(position.coords.latitude);
-            setLongitude(position.coords.longitude);
+            setLatitude(position.coords.longitude);
+            setLongitude(position.coords.latitude);
         };
 
         const errorCallback = (error) => {
@@ -197,6 +197,10 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                 <div className={`justify-self-start self-center row-start-2 row-end-3 col-start-1 col-end-8 grid ${preview ? 'grid-rows-[50px,30px,auto,auto,auto,auto]' : 'grid-rows-[auto]'} ${preview ? 'min-h-[85vh]' : 'min-h-max'} max-h-[85vh] min-w-[520px] overflow-y-auto bg-[#FFFFFF] z-[100] ease-in-out duration-300 `} >
 
                     <span className={`self-center flex py-2 mx-2 `}>
+
+                        <span className={` mr-auto my-auto ml-4`}>
+                            <p className={`text-[#263238] font-[600] font-['Montserrat',sans-serif] text-xl `}> {rent ? 'Rent' : 'Sell'} Your Appartment </p>
+                        </span>
 
                         <ClearOutlinedIcon onClick={() => {
                             setOpen(!open)
@@ -843,7 +847,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                         }} className={`self-start grid shadow-md shadow-slate-500 rounded-[10px] m-2 max-w-[500px]`}>
 
                             <span className={`flex`}>
-                                <div className={`m-2 shadow-md shadow-slate-200 border-[1px] border-[#E3EFF1] w-[240px] h-[auto] rounded`}>
+                                <div className={`m-2 shadow-md shadow-slate-200 border-[1px] border-[#E3EFF1] w-[150px] h-[auto] rounded`}>
 
                                     <Swiper modules={[Navigation, Pagination, Scrollbar, A11y]}
                                         navigation={true}
@@ -859,11 +863,17 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                             return (
                                                 <SwiperSlide key={feature.objectURL}>
                                                     <Image
+                                                        priority
                                                         src={feature.objectURL}
                                                         alt={feature.name}
-                                                        width={220}
-                                                        height={160}
-                                                        className={`m-2 rounded select-none `}
+                                                        width="0"
+                                                        height="0"
+                                                        sizes="100vw"
+                                                        className="w-full h-auto m-2 rounded select-none max-h-[120px] max-w-[150px]"
+
+                                                    // width={220}
+                                                    // height={160}
+                                                    // className={`m-2 rounded select-none max-h-[120px] max-w-[220px] w-auto h-auto`}
                                                     />
                                                 </SwiperSlide>
 
