@@ -121,6 +121,8 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
     const [numberOfBathrooms, setNumberOfBathrooms] = useState(1);
     const [parking, setParking] = useState(false);
     const [furnished, setFurnished] = useState(false);
+    const [agent, setAgent] = useState(false);
+    const [agentName, setAgentName] = useState('');
 
     const [unitDescription, setUnitDescription] = useState('');
 
@@ -654,6 +656,69 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                             <span className={`self-center grid grid-rows-1 py-2 mx-2`}>
 
+                                <span className={`self-center justify-self-start row-start-1 col-start-1 mx-2`}>
+                                    <p className={` text-[0.5em] sm:text-[0.8em] text-[#263238] inline `}>
+                                        Are you an Realtor ?
+                                    </p>
+                                </span>
+
+                                <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
+                                    <span
+                                        onClick={() => { setAgent(false) }}
+                                        className={`${agent == false ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
+                                            No
+                                        </p>
+                                    </span>
+
+                                    <span
+                                        onClick={() => { setAgent(true) }}
+                                        className={`${agent == true ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
+                                            Yes
+                                        </p>
+                                    </span>
+
+                                </span>
+
+                                <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
+                                    <span
+                                        onClick={() => { }}
+                                        className={`py-2 px-10 sm:px-14 transition-[margin] ${agent == false ? `mr-[102px] sm:mr-[133px]` : `mr-0`} border-[1px] border-[#102C3A]  bg-[#07364B] `}>
+                                        <p className={`text-[white] text-[0.7em] font-bold inline`}>
+                                            {agent == false ? 'No' : 'Yes'}
+
+                                        </p>
+                                    </span>
+
+                                </span>
+
+                            </span>
+
+                            {agent &&
+
+                                <span className={`flex self-center py-2 mx-2`} >
+
+                                    <TextField
+                                        value={agentName}
+                                        // error={}
+                                        autoComplete='false'
+                                        required
+                                        sx={{ marginRight: "10px" }}
+                                        autoFocus={true}
+                                        id="outlined-basic"
+                                        helperText="Realtor Name"
+                                        variant="outlined"
+                                        size="small"
+                                        onChange={(e) => {
+                                            setAgentName(e.target.value)
+                                        }}
+                                    />
+                                </span>
+                            }
+
+                            <span className={`self-center grid grid-rows-1 py-2 mx-2`}>
+
                                 <TextField
                                     value={unitDescription}
                                     // error={}
@@ -750,6 +815,9 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                     }
                                     else if (latitude === undefined || latitude == '') {
                                         toastId.current = toast.error("Latitude cannot be empty", { autoClose: true });
+                                    }
+                                    else if (agent === true && agentName == '') {
+                                        toastId.current = toast.error("Brokerage Name cannot be empty", { autoClose: true });
                                     }
                                     else if (unitDescription === '' || unitDescription.length < 10) {
                                         toastId.current = toast.error("Unit Description cannot be less than 10 characters or empty", { autoClose: true });
@@ -966,6 +1034,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                                     properties: {
                                                         id: id,
                                                         rent: rent,
+                                                        propertyStatus: `${rent ? 'For Rent' : 'For Sale'}`,
                                                         price: new Intl.NumberFormat('en-US', {
                                                             style: 'currency', currency: 'USD', minimumFractionDigits: 0,
                                                             maximumFractionDigits: 0,
@@ -977,6 +1046,9 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                                         bedrooms: numberOfBedrooms,
                                                         bathrooms: numberOfBathrooms,
                                                         parking: parking,
+                                                        furnished: furnished,
+                                                        agent: agent,
+                                                        agentName: agentName,
                                                         description: unitDescription,
                                                         timeStamp: Timestamp.now(),
                                                         urls: res

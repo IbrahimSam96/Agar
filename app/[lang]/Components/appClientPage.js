@@ -57,7 +57,7 @@ const AppClientPage = ({ docID, Listings, dictionary, lang }) => {
     return (
         <>
             <NavBar open={sellOpen} setOpen={setSellOpen} />
-            {/* <Map Listings={UpdatedListings} Governorates={Governorates} JordanCoordinates={JordanCoordinates} ammanCoordinates={ammanCoordinates} /> */}
+            <Map Listings={UpdatedListings} Governorates={Governorates} JordanCoordinates={JordanCoordinates} ammanCoordinates={ammanCoordinates} />
             <Sidebar Listings={UpdatedListings[0].features} open={sideBarOpen} setOpen={setSideBarOpen} dictionary={dictionary} lang={lang} />
             <Sell open={sellOpen} setOpen={setSellOpen} Governorates={Governorates} docID={docID} />
         </>

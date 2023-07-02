@@ -11,7 +11,7 @@ import { useAuth } from '@/app/[lang]/utils/Authenticator';
 // Firebase
 import { firebasedb, storage } from "../utils/InitFirebase";
 // db
-import { doc, updateDoc, arrayUnion, arrayRemove, getDoc } from "firebase/firestore";
+import { doc, updateDoc, arrayUnion, arrayRemove, getDoc, Timestamp } from "firebase/firestore";
 // storage
 import { getStorage, ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 
@@ -31,6 +31,7 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import TuneIcon from '@mui/icons-material/Tune';
 import Slider from '@mui/material/Slider';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import moment from 'moment';
 
 
 
@@ -102,72 +103,84 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
         }
         setNumberOfFilters(FiltersApplied);
 
-        if (FiltersApplied !== 0) {
 
-            let propertiesToFilter = {
-                bedrooms: numberOfBedrooms !== 0,
-                bathrooms: numberOfBathrooms !== 0,
-                parking: parking !== undefined,
-                furnished: furnished !== undefined,
-                price: value[0] !== 0 || value[1] !== 100
-            };
-            let list;
+        let propertiesToFilter = {
+            bedrooms: numberOfBedrooms !== 0,
+            bathrooms: numberOfBathrooms !== 0,
+            parking: parking !== undefined,
+            furnished: furnished !== undefined,
+            price: value[0] !== 0 || value[1] !== 100
+        };
+        let list;
 
-            function filterBedroom(listing) {
-                if (propertiesToFilter.bedrooms) {
-                    return listing.properties.bedrooms == numberOfBedrooms;
-                }
-                return true;
+        function filterBedroom(listing) {
+            if (propertiesToFilter.bedrooms) {
+                return listing.properties.bedrooms == numberOfBedrooms;
             }
-            function filterBathrooms(listing) {
-                if (propertiesToFilter.bathrooms) {
-                    return listing.properties.bathrooms == numberOfBathrooms;
-                }
-                return true;
+            return true;
+        }
+        function filterBathrooms(listing) {
+            if (propertiesToFilter.bathrooms) {
+                return listing.properties.bathrooms == numberOfBathrooms;
             }
-            function filterParking(listing) {
-                if (propertiesToFilter.parking) {
-                    return listing.properties.parking == parking;
-                }
-                return true;
+            return true;
+        }
+        function filterParking(listing) {
+            if (propertiesToFilter.parking) {
+                return listing.properties.parking == parking;
             }
-            function filterFurnished(listing) {
-                if (propertiesToFilter.furnished) {
-                    return listing.properties.furnished == furnished;
-                }
-                return true;
+            return true;
+        }
+        function filterFurnished(listing) {
+            if (propertiesToFilter.furnished) {
+                return listing.properties.furnished == furnished;
             }
-            function filterPrice(listing) {
+            return true;
+        }
+        function filterPrice(listing) {
 
-                if (propertiesToFilter.price) {
+            if (propertiesToFilter.price) {
 
-                    console.log("Filtering for price");
-                    let modifiyer = category == 'For Rent' || category == 'Rented'? 50 : 15000;
+                console.log("Filtering for price");
+                let modifiyer = category == 'For Rent' || category == 'Rented' ? 50 : 15000;
 
-                    if (min == 0 && max != 100) {
-                        return readCurrencyNumber(listing.properties.price) <= (max * modifiyer);
+                if (min == 0 && max != 100) {
+                    return readCurrencyNumber(listing.properties.price) <= (max * modifiyer);
 
-                    }
-                    if (min > 0 && max == 100) {
-                        return readCurrencyNumber(listing.properties.price) >= (min * modifiyer);
-                    }
-                    if (min > 0 && max < 100) {
-                        return readCurrencyNumber(listing.properties.price) >= (min * modifiyer) && readCurrencyNumber(listing.properties.price) <= max * modifiyer;
-                    }
                 }
-
-                return true;
+                if (min > 0 && max == 100) {
+                    return readCurrencyNumber(listing.properties.price) >= (min * modifiyer);
+                }
+                if (min > 0 && max < 100) {
+                    return readCurrencyNumber(listing.properties.price) >= (min * modifiyer) && readCurrencyNumber(listing.properties.price) <= max * modifiyer;
+                }
             }
 
-            list = [...filteredListings].filter(listing => {
-                return filterBedroom(listing) && filterBathrooms(listing) && filterParking(listing) && filterFurnished(listing) && filterPrice(listing)
-            })
-
-            console.log(list)
-            setSortedListings(list)
+            return true;
         }
 
-    }, [numberOfBedrooms, numberOfBathrooms, parking, furnished, max, min, value])
+        function filterCategory(listing) {
+            if (category == 'For Rent') {
+                return listing.properties.rent == true;
+            }
+            if (category == 'Rented') {
+                return listing.properties.rent == true && listing.properties.propertyStatus == 'Rented';
+            }
+            if (category == 'For Sale') {
+                return listing.properties.rent == false;
+            }
+            if (category == 'Sold') {
+                return listing.properties.rent == false;
+            }
+        }
+        list = [...filteredListings].filter(listing => {
+            return filterBedroom(listing) && filterBathrooms(listing) && filterParking(listing) && filterFurnished(listing) && filterPrice(listing) && filterCategory(listing)
+        })
+
+        console.log(list)
+        setSortedListings(list)
+
+    }, [numberOfBedrooms, numberOfBathrooms, parking, furnished, max, min, value, category, Listings])
 
     const [sort, setSort] = useState(false)
 
@@ -279,7 +292,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
     return (
         <>
             {open ?
-                <div className={`row-start-2 row-end-3 col-start-1 col-end-8 max-w-[80px] grid grid-rows-[60px,10px,50px,auto] bg-[#FFFFFF] z-[100]  ease-in-out duration-300 ${open ? "translate-x-0 " : "translate-x-[250%]"} `} >
+                <div className={`row-start-2 row-end-3 col-start-1 col-end-8 max-w-[80px] min-h-[85vh] mt-4 grid grid-rows-[60px,10px,50px,auto] bg-[#FFFFFF] z-[100]  ease-in-out duration-300  shadow-md shadow-[#707070]  ${open ? "translate-x-0 " : "translate-x-[250%]"} `} >
 
                     <span onClick={() => {
                         setOpen(!open)
@@ -305,7 +318,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
                 </div>
                 :
-                <div className={`row-start-2 row-end-3 col-start-1 col-end-8 max-w-[520px] max-h-[85vh] overflow-y-scroll grid grid-rows-[60px,120px,50px,65px,auto,50px] bg-[#FFFFFF] z-[100] ease-in-out duration-300`}>
+                <div className={`row-start-2 row-end-3 col-start-1 col-end-8 max-w-[520px] max-h-[85vh] overflow-y-scroll grid grid-rows-[60px,120px,50px,65px,auto,50px] bg-[#FFFFFF] z-[100] ease-in-out duration-300 shadow-md shadow-[#707070]`}>
 
 
                     <span className={`flex self-center mx-2 sticky top-0 bg-[#FFFFFF] z-[100]`}>
@@ -324,7 +337,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
                     </span>
 
 
-                    <span className={`border-t-[3px] border-grey grid sticky top-0 bg-[#FFFFFF] z-[100]`}>
+                    <span className={`border-t-[3px] border-grey grid sticky top-0 bg-[#FFFFFF] z-[100] shadow-md shadow-[#707070]`}>
 
                         <span className={`flex self-center mx-2`}>
 
@@ -509,8 +522,8 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
 
                                     }} className={`flex mx-auto hover:cursor-pointer`}>
-                                        <FilterListIcon sx={{ color: '#07364B' }} className={`mr-1 ease-in-out duration-300 ${sort ? 'rotate-0' : 'rotate-180'}`} />
-                                        <p className={`text-sm font-bold mx-auto text-[#0097A7] my-auto`}>
+                                        <FilterListIcon sx={{ color: '#0097A7' }} className={` ease-in-out duration-300 ${sort ? 'rotate-0' : 'rotate-180'}`} />
+                                        <p className={`text-sm font-bold mx-auto text-[#07364B] my-auto`}>
                                             {dictionary['Sort']}
                                         </p>
                                     </span>
@@ -523,6 +536,13 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
                             <span className={`grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] `}>
 
                                 {sortedListings.map((feature) => {
+
+                                    const timeStamp = feature.properties.timeStamp;
+
+                                    const timeObj = new Timestamp(timeStamp.seconds, timeStamp.nanoseconds);
+                                    const when = moment(timeObj.toDate()).fromNow()
+
+
                                     return (
                                         <div key={feature.id} className={`m-2 shadow-md shadow-slate-200 border-[1px] border-[#E3EFF1] w-[240px] h-[auto] rounded`}>
 
@@ -545,6 +565,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
                                                     return (
                                                         <SwiperSlide key={url}>
                                                             <Image
+                                                                // dangerouslyAllowSVG
                                                                 priority
                                                                 alt={url}
                                                                 src={url}
@@ -569,21 +590,47 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
                                                 </p>
                                             </span>
 
-                                            <span className={`flex mx-2`}>
+                                            <span className={`flex mx-2 overflow-hidden text-ellipsis whitespace-nowrap`}>
                                                 <p className={`text-[#263238] text-xs inline mr-auto ml-1 `}> {feature.properties.streetName} - {feature.properties.buildingNumber} </p>
                                             </span>
 
                                             <span className={`flex m-2`}>
-                                                <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 whitespace-nowrap`}>{dictionary['Numbers'][feature.properties.bedrooms]} {dictionary['Properties']['BD']}   | {dictionary['Numbers'][feature.properties.bathrooms]} {dictionary['Properties']['BA']} | {feature.properties.parking ? dictionary['Numbers']['1'] : dictionary['Numbers']['0']} {dictionary['Properties']['Parking']}  </p>
+                                                <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 whitespace-nowrap`}>
+                                                    {dictionary['Numbers'][feature.properties.bedrooms]} {dictionary['Properties']['BD']}
+                                                </p>
+                                                <span className={`text-[#707070] text-xs`}>
+                                                    |
+                                                </span>
+                                                <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 whitespace-nowrap`}>
+                                                    {dictionary['Numbers'][feature.properties.bathrooms]} {dictionary['Properties']['BA']}
+                                                </p>
+                                                <span className={`text-[#707070] text-xs`}>
+                                                    |
+                                                </span>
+                                                <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 whitespace-nowrap`}>
+                                                    {feature.properties.parking ? dictionary['Numbers']['1'] : dictionary['Numbers']['0']} {dictionary['Properties']['Parking']}
+                                                </p>
+                                                <span className={`text-[#707070] text-xs`}>
+                                                    |
+                                                </span>
                                                 <p className={`text-[#263238] font-['Montserrat',sans-serif] text-xs font-[600] inline mr-auto ml-1 `}>  {feature.properties.area} m2  </p>
                                             </span>
 
                                             <span className={`flex m-2 `}>
-                                                <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1  whitespace-nowrap`}> {dictionary['Properties']['Listing ID']} : {feature.properties.id}  </p>
+                                                <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1  whitespace-nowrap`}> {dictionary['Properties']['Listing ID']}: {feature.properties.id}  </p>
                                             </span>
 
                                             <span className={`flex m-2`}>
-                                                <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1 whitespace-nowrap`}> {dictionary['Properties']['Agent']}:  </p>
+                                                <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1 whitespace-nowrap`}> {feature.properties.agent && dictionary['Properties']['Agent'] + ':'} {feature.properties.agent && feature.properties.agentName}  </p>
+                                            </span>
+
+                                            <span className={`flex border-[#707070] border-t-[1px] m-2 `}>
+                                            </span>
+
+                                            <span className={`flex m-2 `}>
+                                                <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline ml-auto mr-2  whitespace-nowrap`}>
+                                                    {when}
+                                                </p>
                                             </span>
 
                                         </div>
