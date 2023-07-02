@@ -177,7 +177,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
             return filterBedroom(listing) && filterBathrooms(listing) && filterParking(listing) && filterFurnished(listing) && filterPrice(listing) && filterCategory(listing)
         })
 
-        console.log(list)
+        console.log('SortedList ',list)
         setSortedListings(list)
 
     }, [numberOfBedrooms, numberOfBathrooms, parking, furnished, max, min, value, category, Listings])
@@ -279,7 +279,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
         } else {
             let list = [...sortedListings];
             list.sort((a, b) => readCurrencyNumber(a.properties.price) - readCurrencyNumber(b.properties.price));
-            console.log("list", list)
+            console.log("Literally Sorted list", list)
 
             setSortedListings(list)
         }

@@ -35,6 +35,7 @@ const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) =>
 
 
     console.log('appClient state responce :', Listings[0])
+    
     // Used for intitializing map 
     useEffect(() => {
         if (map.current) return; // initialize map only once

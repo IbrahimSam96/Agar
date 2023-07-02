@@ -28,7 +28,6 @@ const AppClientPage = ({ docID, Listings, dictionary, lang }) => {
 
     const [UpdatedListings, setUpdatedListings] = useState(Listings);
 
-
     const getListings = async () => {
 
         const unsubscribe = onSnapshot(doc(firebasedb, "Listings", docID), (doc) => {
@@ -37,7 +36,6 @@ const AppClientPage = ({ docID, Listings, dictionary, lang }) => {
         });
 
     }
-
 
     useEffect(() => {
         let unsubscribe;
@@ -54,6 +52,7 @@ const AppClientPage = ({ docID, Listings, dictionary, lang }) => {
     }, []);
 
 
+    console.log('UpdatedListings[0]',UpdatedListings[0])
     return (
         <>
             <NavBar open={sellOpen} setOpen={setSellOpen} />
