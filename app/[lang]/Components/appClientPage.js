@@ -21,43 +21,46 @@ import Sell from "./Sell";
 
 const AppClientPage = ({ docID, Listings, dictionary, lang }) => {
     // Sidebar
-    const [sideBarOpen, setSideBarOpen] = useState(true);
+    const [sideBarOpen, setSideBarOpen] = useState(false);
 
     // Sell Page 
     const [sellOpen, setSellOpen] = useState(false);
 
-    const [UpdatedListings, setUpdatedListings] = useState(Listings);
+    const [UpdatedListings, setUpdatedListings] = useState(Listings[0]);
 
-    const getListings = async () => {
-
-        const unsubscribe = onSnapshot(doc(firebasedb, "Listings", docID), (doc) => {
-            console.log("Snapshot Data Fired: ", doc.data());
-            setUpdatedListings([doc.data()])
-        });
-
-    }
-
-    useEffect(() => {
-        let unsubscribe;
-
-        const getListingsAndSubscribe = async () => {
-            unsubscribe = await getListings();
-        }
-
-        getListingsAndSubscribe();
-
-        return () => {
-            unsubscribe?.();
-        };
-    }, []);
+    const [allListings, setAllListings] = useState(Listings[0]);
 
 
-    console.log('UpdatedListings[0]',UpdatedListings[0])
+    // const getListings = async () => {
+
+    //     const unsubscribe = onSnapshot(doc(firebasedb, "Listings", docID), (doc) => {
+    //         console.log("Snapshot Data Fired: ", doc.data());
+    //         setUpdatedListings([doc.data()])
+    //     });
+
+    // }
+
+    // useEffect(() => {
+    //     let unsubscribe;
+
+    //     const getListingsAndSubscribe = async () => {
+    //         unsubscribe = await getListings();
+    //     }
+
+    //     getListingsAndSubscribe();
+
+    //     return () => {
+    //         unsubscribe?.();
+    //     };
+    // }, []);
+
+
+    console.log('UpdatedListings', UpdatedListings)
     return (
         <>
             <NavBar open={sellOpen} setOpen={setSellOpen} />
             <Map Listings={UpdatedListings} Governorates={Governorates} JordanCoordinates={JordanCoordinates} ammanCoordinates={ammanCoordinates} />
-            <Sidebar Listings={UpdatedListings[0].features} open={sideBarOpen} setOpen={setSideBarOpen} dictionary={dictionary} lang={lang} />
+            <Sidebar allListings={allListings} setAllListings={setAllListings} SharedListings={UpdatedListings} setSharedListings={setUpdatedListings} open={sideBarOpen} setOpen={setSideBarOpen} dictionary={dictionary} lang={lang} />
             <Sell open={sellOpen} setOpen={setSellOpen} Governorates={Governorates} docID={docID} />
         </>
     )

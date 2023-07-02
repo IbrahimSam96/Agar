@@ -34,8 +34,8 @@ const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) =>
     // #E3EFF1 
 
 
-    console.log('appClient state responce :', Listings[0])
-    
+    console.log('appClient state responce :', Listings)
+
     // Used for intitializing map 
     useEffect(() => {
         if (map.current) return; // initialize map only once
@@ -62,7 +62,7 @@ const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) =>
             // add the point_count property to your source data.
             map.current.addSource('listings', {
                 type: 'geojson',
-                data: Listings[0],
+                data: Listings,
                 cluster: true,
                 clusterMaxZoom: 14, // Max zoom to cluster points on
                 clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
@@ -427,7 +427,7 @@ const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) =>
             return;
         }
         console.log('Updating map with new data')
-        map.current.getSource("listings").setData(Listings[0]);
+        map.current.getSource("listings").setData(Listings);
 
     }, [Listings, mapIsLoaded])
 

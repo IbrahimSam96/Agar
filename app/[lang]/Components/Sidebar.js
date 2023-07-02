@@ -35,29 +35,30 @@ import moment from 'moment';
 
 
 
-const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
+const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListings, open, setOpen, dictionary, lang }) => {
+
+    // type:'ListingsCollection',
+    // features:[{...}]
 
     // Helper Function
     const readCurrencyNumber = (number) => {
         return Number(number.replace(/[^0-9.-]+/g, ""))
     }
 
-    const [filteredListings, setFilteredListings] = useState(Listings)
-    const [sortedListings, setSortedListings] = useState(filteredListings)
+    const [sortedListings, setSortedListings] = useState(allListings);
+
 
     // category Popup 
     const [categoryPopup, setCategoryPopup] = useState(false);
     const categoryPopupRef = useRef(null);
     // Category State
     const [category, setCategory] = useState('For Rent')
-
     // Price Popup 
     const [pricePopup, setPricePopup] = useState(false);
     const pricePopupRef = useRef(null);
     // More Filters 
     const [moreFilters, setMoreFilters] = useState(false);
     const [numberOfFilters, setNumberOfFilters] = useState(0);
-
     // Filters
     const [numberOfBedrooms, setNumberOfBedrooms] = useState(0);
     const [numberOfBathrooms, setNumberOfBathrooms] = useState(0);
@@ -79,6 +80,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
         setMin(min)
         setMax(max)
     };
+    const [sort, setSort] = useState(false)
 
     // Filtering Functionality 
     useEffect(() => {
@@ -158,7 +160,6 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
             return true;
         }
-
         function filterCategory(listing) {
             if (category == 'For Rent') {
                 return listing.properties.rent == true;
@@ -172,18 +173,30 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
             if (category == 'Sold') {
                 return listing.properties.rent == false;
             }
+            return false;
         }
-        list = [...filteredListings].filter(listing => {
+
+        list = [...allListings.features].filter(listing => {
             return filterBedroom(listing) && filterBathrooms(listing) && filterParking(listing) && filterFurnished(listing) && filterPrice(listing) && filterCategory(listing)
-        })
+        });
 
-        console.log('SortedList ',list)
-        setSortedListings(list)
+        if (sort) {
+            list.sort((a, b) => readCurrencyNumber(b.properties.price) - readCurrencyNumber(a.properties.price));
+        } else {
+            list.sort((a, b) => readCurrencyNumber(a.properties.price) - readCurrencyNumber(b.properties.price));
+        }
 
-    }, [numberOfBedrooms, numberOfBathrooms, parking, furnished, max, min, value, category, Listings])
 
-    const [sort, setSort] = useState(false)
+        console.log('SortedList ', { type: "ListingsCollection", features: list });
+        setSortedListings({ type: "ListingsCollection", features: list });
 
+
+        setSharedListings({ type: "ListingsCollection", features: list });
+
+    }, [numberOfBedrooms, numberOfBathrooms, parking, furnished, max, min, value, category, sort]);
+
+
+    // Closes Price Modal if clicked outside. 
     useEffect(() => {
         // Pricepopup and categoryPopup closer 
         const handleClickOutside = (event) => {
@@ -269,22 +282,23 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
     }
 
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        if (sort) {
-            let list = [...sortedListings];
-            list.sort((a, b) => readCurrencyNumber(b.properties.price) - readCurrencyNumber(a.properties.price));
-            console.log("list", list)
-            setSortedListings(list)
-        } else {
-            let list = [...sortedListings];
-            list.sort((a, b) => readCurrencyNumber(a.properties.price) - readCurrencyNumber(b.properties.price));
-            console.log("Literally Sorted list", list)
+    // if (sort) {
+    //     let list = [...sortedListings.features];
+    //     list.sort((a, b) => readCurrencyNumber(b.properties.price) - readCurrencyNumber(a.properties.price));
+    //     console.log("Literally Sorted list", { type: "ListingsCollection", features: list })
 
-            setSortedListings(list)
-        }
+    //     setSortedListings({ type: "ListingsCollection", features: list })
+    // } else {
+    //     let list = [...sortedListings.features];
+    //     list.sort((a, b) => readCurrencyNumber(a.properties.price) - readCurrencyNumber(b.properties.price));
+    //     console.log("Literally Sorted list", { type: "ListingsCollection", features: list })
 
-    }, [sort])
+    //     setSortedListings({ type: "ListingsCollection", features: list })
+    // }
+
+    // }, [sort])
 
     const user = useAuth();
     const router = useRouter();
@@ -423,7 +437,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
                                     <span className={`p-4 flex self-center`}>
 
-                                        <span className={`flex p-4 border-[1px] border-[#07364B] ml-2 mr-auto w-[150px]`}>
+                                        <span className={`flex py-4 px-6 border-[1px] border-[#07364B] ml-2 mr-auto w-[175px]`}>
                                             <p className={`m-auto inline text-base text-[#263238]`}>{handleMinMaxformat('min')}  </p>
                                         </span>
 
@@ -432,7 +446,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
                                         </span>
 
 
-                                        <span className={`flex p-4 border-[1px] border-[#07364B] ml-auto mr-2 w-[150px]`}>
+                                        <span className={`flex py-4 px-6 border-[1px] border-[#07364B] ml-auto mr-2 w-[175px]`}>
                                             <p className={`m-auto text-base text-[#263238]`}> {handleMinMaxformat('max')}  </p>
                                         </span>
                                     </span>
@@ -508,7 +522,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
                                             {dictionary['Listings']}
                                         </p>
                                         <p className={`text-sm font-bold mx-auto `}>
-                                            {sortedListings.length}
+                                            {sortedListings.features.length}
                                         </p>
                                     </span>
 
@@ -535,7 +549,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
                             <span className={`grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] `}>
 
-                                {sortedListings.map((feature) => {
+                                {sortedListings.features.length > 0 ? sortedListings.features.map((feature) => {
 
                                     const timeStamp = feature.properties.timeStamp;
 
@@ -636,7 +650,13 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
                                         </div>
                                     )
 
-                                })}
+                                }) :
+                                    <span className={`flex self-center justify-self-center col-start-1 col-end-3 p-2`}>
+                                        <span className={` mx-auto my-auto`}>
+                                            <p className={`text-[#263238] font-['Montserrat',sans-serif] text-base overflow-hidden text-ellipsis whitespace-nowrap `}> Sorry We don't have any listings </p>
+                                        </span>
+                                    </span>
+                                }
                             </span >
 
                         </Fragment>
@@ -848,7 +868,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
                                     className={`my-auto ml-auto mr-0 text-[#0097A7] text-center text-sm font-[500] underline hover:cursor-pointer`}
                                     onClick={() => {
                                         // Reset Full listings 
-                                        setSortedListings([...filteredListings])
+                                        setSortedListings(allListings)
                                         // setMoreFilters(false)
                                         setNumberOfFilters(0)
                                         // Reset Filters
@@ -868,7 +888,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
                                         setMoreFilters(false);
                                     }}
                                     className={`flex px-10 py-3 my-auto ml-auto bg-[#0097A7] opacity-100 hover:opacity-[80] border-[1px] border-[#102C3A] text-white text-center hover:cursor-pointer`}>
-                                    View {sortedListings.length} Listings
+                                    View {sortedListings.features.length} Listings
                                 </span>
 
                             </span>
