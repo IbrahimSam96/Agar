@@ -36,12 +36,20 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 
 const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
+    // Helper Function
+    const readCurrencyNumber = (number) => {
+        return Number(number.replace(/[^0-9.-]+/g, ""))
+    }
+
     const [filteredListings, setFilteredListings] = useState(Listings)
     const [sortedListings, setSortedListings] = useState(filteredListings)
 
     // category Popup 
     const [categoryPopup, setCategoryPopup] = useState(false);
     const categoryPopupRef = useRef(null);
+    // Category State
+    const [category, setCategory] = useState('For Rent')
+
     // Price Popup 
     const [pricePopup, setPricePopup] = useState(false);
     const pricePopupRef = useRef(null);
@@ -55,14 +63,30 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
     const [parking, setParking] = useState(undefined);
     const [furnished, setFurnished] = useState(undefined);
 
-    // Keeps track of number of filters
+    // Price
+    const [value, setValue] = React.useState([0, 100]);
+    const [min, setMin] = React.useState(0);
+    const [max, setMax] = React.useState(100);
+
+    const handleChange = (event, newValue) => {
+        console.log(newValue)
+        setValue(newValue);
+
+        let min = newValue[0];
+        let max = newValue[1];
+
+        setMin(min)
+        setMax(max)
+    };
+
+    // Filtering Functionality 
     useEffect(() => {
+
         let FiltersApplied = 0;
 
         if (numberOfBedrooms !== 0) {
             FiltersApplied++
         }
-
         if (numberOfBathrooms !== 0) {
             FiltersApplied++
         }
@@ -72,7 +96,10 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
         if (furnished !== undefined) {
             FiltersApplied++
         }
-
+        if (value[0] !== 0 || value[1] !== 100) {
+            console.log("pRICE fILTER DETECTED")
+            FiltersApplied++
+        }
         setNumberOfFilters(FiltersApplied);
 
         if (FiltersApplied !== 0) {
@@ -81,9 +108,9 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
                 bedrooms: numberOfBedrooms !== 0,
                 bathrooms: numberOfBathrooms !== 0,
                 parking: parking !== undefined,
-                furnished: furnished !== undefined
+                furnished: furnished !== undefined,
+                price: value[0] !== 0 || value[1] !== 100
             };
-
             let list;
 
             function filterBedroom(listing) {
@@ -110,16 +137,38 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
                 }
                 return true;
             }
+            function filterPrice(listing) {
+
+                if (propertiesToFilter.price) {
+
+                    console.log("Filtering for price");
+
+                    let modifiyer = listing.properties.rent ? 50 : 15000
+
+                    if (min == 0 && max != 100) {
+                        return readCurrencyNumber(listing.properties.price) <= (max * modifiyer);
+
+                    }
+                    if (min > 0 && max == 100) {
+                        return readCurrencyNumber(listing.properties.price) >= (min * modifiyer);
+                    }
+                    if (min > 0 && max < 100) {
+                        return readCurrencyNumber(listing.properties.price) >= (min * modifiyer) && readCurrencyNumber(listing.properties.price) <= max * modifiyer;
+                    }
+                }
+
+                return true;
+            }
 
             list = [...filteredListings].filter(listing => {
-                return filterBedroom(listing) && filterBathrooms(listing) && filterParking(listing) && filterFurnished(listing)
+                return filterBedroom(listing) && filterBathrooms(listing) && filterParking(listing) && filterFurnished(listing) && filterPrice(listing)
             })
 
             console.log(list)
             setSortedListings(list)
         }
 
-    }, [numberOfBedrooms, numberOfBathrooms, parking, furnished])
+    }, [numberOfBedrooms, numberOfBathrooms, parking, furnished, max, min, value])
 
     const [sort, setSort] = useState(false)
 
@@ -148,28 +197,16 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
             document.removeEventListener('click', handleClickOutside);
         };
     }, [pricePopup, categoryPopup]);
-    // Category
-    const [category, setCategory] = useState('For Rent')
 
-    // Price
-    const [value, setValue] = React.useState([0, 100]);
-    const [min, setMin] = React.useState(0);
-    const [max, setMax] = React.useState(100);
 
-    const handleChange = (event, newValue) => {
-        console.log(newValue)
-        setValue(newValue);
-        let min = newValue[0];
-        let max = newValue[1];
-
-        setMin(min)
-        setMax(max)
-    };
     function valuetext(value) {
         return `$ ${value} /Month `;
     }
 
     const handlePriceformat = () => {
+
+        let multiplier = category == 'For Rent' || category == 'Rented'? 50 : 15000;
+
         if (min == 0 && max == 100) {
             return `${dictionary['Sidebar'].Price['Price']}`
         }
@@ -177,14 +214,14 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
             let value = new Intl.NumberFormat('en-US', {
                 style: 'currency', currency: 'USD', minimumFractionDigits: 0,
                 maximumFractionDigits: 0,
-            }).format(max * 50)
+            }).format(max * multiplier)
             return `${dictionary['Sidebar'].Price['Under']} ${value}`
         }
         if (value[0] > 0 && value[1] == 100) {
             let value = new Intl.NumberFormat('en-US', {
                 style: 'currency', currency: 'USD', minimumFractionDigits: 0,
                 maximumFractionDigits: 0,
-            }).format(min * 50)
+            }).format(min * multiplier)
             return `${dictionary['Sidebar'].Price['Above']} ${value}`
         }
         if (value[0] > 0 && value[1] < 100) {
@@ -192,28 +229,29 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
                 style: 'currency', currency: 'USD', minimumFractionDigits: 0,
                 maximumFractionDigits: 0,
                 // notation: 'compact',
-            }).format(min * 50)
+            }).format(min * multiplier)
             let valueMax = new Intl.NumberFormat('en-US', {
                 style: 'currency', currency: 'USD', minimumFractionDigits: 0,
                 maximumFractionDigits: 0,
                 // notation: 'compact',
-            }).format(max * 50)
+            }).format(max * multiplier)
 
             return `${dictionary['Sidebar'].Price['from']} ${valueMin} ${dictionary['Sidebar'].Price['to']} ${valueMax}`
         }
     }
 
     const handleMinMaxformat = (type) => {
-        if (type == 'max') {
+        let multiplier = category == 'For Rent' || category == 'Rented'? 50 : 15000;
 
-            let value = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'JOD' }).format(max * 50)
+        if (type == 'max') {
+            let value = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'JOD' }).format(max * multiplier)
             if (max == 100) {
                 value = `${dictionary['Sidebar'].Price['Unlimited']}`
             }
             return value
         }
         if (type == 'min') {
-            let value = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'JOD', }).format(min * 50)
+            let value = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'JOD', }).format(min * multiplier)
             return value
         }
     }
@@ -223,13 +261,12 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
         if (sort) {
             let list = [...sortedListings];
-            list.sort((a, b) => Number(b.properties.price.replace(/[^0-9.-]+/g, "")) - Number(a.properties.price.replace(/[^0-9.-]+/g, "")));
+            list.sort((a, b) => readCurrencyNumber(b.properties.price) - readCurrencyNumber(a.properties.price));
             console.log("list", list)
             setSortedListings(list)
         } else {
             let list = [...sortedListings];
-
-            list.sort((a, b) => Number(a.properties.price.replace(/[^0-9.-]+/g, "")) - Number(b.properties.price.replace(/[^0-9.-]+/g, "")));
+            list.sort((a, b) => readCurrencyNumber(a.properties.price) - readCurrencyNumber(b.properties.price));
             console.log("list", list)
 
             setSortedListings(list)
@@ -239,7 +276,6 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
     const user = useAuth();
     const router = useRouter();
-
 
     return (
         <>
@@ -474,8 +510,8 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
 
                                     }} className={`flex mx-auto hover:cursor-pointer`}>
-                                        <FilterListIcon sx={{ color: '#0097A7' }} className={`mr-2`} />
-                                        <p className={`text-sm font-bold mx-auto text-[#0097A7] `}>
+                                        <FilterListIcon sx={{ color: '#07364B' }} className={`mr-1 ease-in-out duration-300 ${sort ? 'rotate-0' : 'rotate-180'}`} />
+                                        <p className={`text-sm font-bold mx-auto text-[#0097A7] my-auto`}>
                                             {dictionary['Sort']}
                                         </p>
                                     </span>
@@ -610,7 +646,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
-                                        onClick={() => {setNumberOfBedrooms(0) }}
+                                        onClick={() => { setNumberOfBedrooms(0) }}
                                         className={`transition-[margin] py-2 px-[25.5px] sm:px-[36px] ${numberOfBedrooms == 0 ? 'hidden' : numberOfBedrooms == 1 ? `mr-[177px] sm:mr-[240px]` : numberOfBedrooms == 2 ? `mr-[120.4px] sm:mr-[160px] ` : numberOfBedrooms == 3 ? `mr-[58.4px] sm:mr-[80px]` : `mr-0`}  border-[1px] border-[#102C3A]  bg-[#07364B] `}>
                                         <p className={`text-[white] text-[0.7em] font-bold inline`}>
                                             {numberOfBedrooms}
@@ -668,7 +704,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
-                                        onClick={() => { setNumberOfBathrooms(0)}}
+                                        onClick={() => { setNumberOfBathrooms(0) }}
                                         className={`transition-[margin] py-2 px-[25.5px] sm:px-[36px]  ${numberOfBathrooms == 0 ? 'hidden' : numberOfBathrooms == 1 ? `mr-[177px] sm:mr-[240px]` : numberOfBathrooms == 2 ? `mr-[120.4px] sm:mr-[160px] ` : numberOfBathrooms == 3 ? `mr-[58.4px] sm:mr-[80px] ` : `mr-0`}  border-[1px] border-[#102C3A]  bg-[#07364B] `}>
                                         <p className={`text-[white] text-[0.7em] font-bold inline`}>
                                             {numberOfBathrooms}
@@ -708,7 +744,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
-                                        onClick={() => { setParking(undefined)}}
+                                        onClick={() => { setParking(undefined) }}
                                         className={`py-2 px-10 sm:px-14 transition-[margin]  ${parking == undefined ? 'hidden' : parking == false ? `mr-[102px] sm:mr-[133px]` : `mr-0`} border-[1px] border-[#102C3A]  bg-[#07364B] `}>
                                         <p className={`text-[white] text-[0.7em] font-bold inline`}>
                                             {parking == false ? 'No' : 'Yes'}
@@ -749,7 +785,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
-                                        onClick={() => {setFurnished(undefined) }}
+                                        onClick={() => { setFurnished(undefined) }}
                                         className={`py-2 px-10 sm:px-14 transition-[margin] ${furnished == undefined ? 'hidden' : furnished == false ? `mr-[102px] sm:mr-[133px]` : `mr-0`} border-[1px] border-[#102C3A]  bg-[#07364B] `}>
                                         <p className={`text-[white] text-[0.7em] font-bold inline`}>
                                             {furnished == false ? 'No' : 'Yes'}
@@ -774,6 +810,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
                                         setNumberOfBathrooms(0)
                                         setParking(undefined)
                                         setFurnished(undefined)
+                                        setValue([0, 100])
                                     }} >
                                     Clear
                                 </span>

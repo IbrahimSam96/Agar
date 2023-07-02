@@ -827,7 +827,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                             {numberOfBedrooms}BD | {numberOfBathrooms}BA | {parking ? 1 : 0} Parking
                                         </p>
                                         <p className={`text-[#707070] text-xs inline font-[600] mr-auto ml-2`}>
-                                            {area} sqft
+                                            {area} m2
                                         </p>
                                     </span>
 
