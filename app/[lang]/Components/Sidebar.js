@@ -810,6 +810,8 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
                                         setParking(undefined)
                                         setFurnished(undefined)
                                         setValue([0, 100])
+                                        setMin(0)
+                                        setMax(100)
                                     }} >
                                     Clear
                                 </span>
