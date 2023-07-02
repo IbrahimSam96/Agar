@@ -142,8 +142,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
                 if (propertiesToFilter.price) {
 
                     console.log("Filtering for price");
-
-                    let modifiyer = listing.properties.rent ? 50 : 15000
+                    let modifiyer = category == 'For Rent' || category == 'Rented'? 50 : 15000;
 
                     if (min == 0 && max != 100) {
                         return readCurrencyNumber(listing.properties.price) <= (max * modifiyer);
@@ -205,7 +204,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
 
     const handlePriceformat = () => {
 
-        let multiplier = category == 'For Rent' || category == 'Rented'? 50 : 15000;
+        let multiplier = category == 'For Rent' || category == 'Rented' ? 50 : 15000;
 
         if (min == 0 && max == 100) {
             return `${dictionary['Sidebar'].Price['Price']}`
@@ -241,7 +240,7 @@ const Sidebar = ({ Listings, open, setOpen, dictionary, lang }) => {
     }
 
     const handleMinMaxformat = (type) => {
-        let multiplier = category == 'For Rent' || category == 'Rented'? 50 : 15000;
+        let multiplier = category == 'For Rent' || category == 'Rented' ? 50 : 15000;
 
         if (type == 'max') {
             let value = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'JOD' }).format(max * multiplier)
