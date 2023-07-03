@@ -10,6 +10,7 @@ import { signOut } from "firebase/auth";
 import LocationCityOutlinedIcon from '@mui/icons-material/LocationCityOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import LoopIcon from '@mui/icons-material/Loop';
+import Image from 'next/image';
 
 const NavBar = ({ open, setOpen }) => {
 
@@ -38,6 +39,13 @@ const NavBar = ({ open, setOpen }) => {
       <span onClick={() => {
         router.push('/')
       }} className={`my-auto mr-auto ml-4 flex cursor-pointer`}>
+        <Image
+          src={'/jordan.png'}
+          alt={'/jordan.png'}
+          width={30}
+          height={30}
+          className={`rounded-l select-none flex mb-auto`}
+        />
         <LocationCityOutlinedIcon className={`mx-2 text-[#0097A7] text-[40px] my-auto`} />
         <p className={`font-mono text-white text-[30px] inline my-auto `}>
           shoqaq.jo

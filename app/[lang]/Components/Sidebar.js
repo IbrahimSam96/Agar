@@ -35,7 +35,7 @@ import moment from 'moment';
 
 
 
-const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListings, open, setOpen, dictionary, lang }) => {
+const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListings, open, setOpen, dictionary, Governorates, lang }) => {
 
     // type:'ListingsCollection',
     // features:[{...}]
@@ -46,7 +46,6 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
     }
 
     const [sortedListings, setSortedListings] = useState(allListings);
-
 
     // category Popup 
     const [categoryPopup, setCategoryPopup] = useState(false);
@@ -64,6 +63,8 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
     const [numberOfBathrooms, setNumberOfBathrooms] = useState(0);
     const [parking, setParking] = useState(undefined);
     const [furnished, setFurnished] = useState(undefined);
+    const [agent, setAgent] = useState(undefined);
+
 
     // Price
     const [value, setValue] = React.useState([0, 100]);
@@ -99,6 +100,9 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
         if (furnished !== undefined) {
             FiltersApplied++
         }
+        if (agent !== undefined) {
+            FiltersApplied++
+        }
         if (value[0] !== 0 || value[1] !== 100) {
             console.log("pRICE fILTER DETECTED")
             FiltersApplied++
@@ -111,6 +115,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
             bathrooms: numberOfBathrooms !== 0,
             parking: parking !== undefined,
             furnished: furnished !== undefined,
+            agent: agent !== undefined,
             price: value[0] !== 0 || value[1] !== 100
         };
         let list;
@@ -136,6 +141,12 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
         function filterFurnished(listing) {
             if (propertiesToFilter.furnished) {
                 return listing.properties.furnished == furnished;
+            }
+            return true;
+        }
+        function filterAgent(listing) {
+            if (propertiesToFilter.agent) {
+                return listing.properties.agent == agent;
             }
             return true;
         }
@@ -177,7 +188,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
         }
 
         list = [...allListings.features].filter(listing => {
-            return filterBedroom(listing) && filterBathrooms(listing) && filterParking(listing) && filterFurnished(listing) && filterPrice(listing) && filterCategory(listing)
+            return filterBedroom(listing) && filterBathrooms(listing) && filterParking(listing) && filterFurnished(listing) && filterAgent(listing) && filterPrice(listing) && filterCategory(listing)
         });
 
         if (sort) {
@@ -306,33 +317,39 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
     return (
         <>
             {open ?
-                <div className={`row-start-2 row-end-3 col-start-1 col-end-8 max-w-[80px] min-h-[85vh] mt-4 grid grid-rows-[60px,10px,50px,auto] bg-[#FFFFFF] z-[100]  ease-in-out duration-300  shadow-md shadow-[#707070]  ${open ? "translate-x-0 " : "translate-x-[250%]"} `} >
+                <div className={`row-start-2 row-end-3 col-start-1 col-end-8 max-w-[80px] min-h-[85vh] mt-4 grid grid-rows-[50px,10px,70px,auto] bg-[#FFFFFF] z-[100]  ease-in-out duration-300  shadow-md shadow-[#707070]  ${open ? "translate-x-0 " : "translate-x-[250%]"} `} >
 
                     <span onClick={() => {
                         setOpen(!open)
+                        if (moreFilters) {
+                            setMoreFilters(false)
+                        }
                     }} className={`self-center justify-self-center hover:cursor-pointer `}>
                         <ArrowForwardIosIcon sx={{ color: '#0097A7', fontSize: '35px' }}
 
-                            className={`rounded-[50%] p-2 hover:bg-[lightgrey] `} />
+                            className={`rounded-[50%] p-2 bg-[#F8F8F8] `} />
                     </span>
 
                     <span className={`border-b-[1px] border-[grey]`}>
 
                     </span>
 
-                    <span className={`self-center justify-self-center `}>
-                        <span className={`grid hover:cursor-pointer`}>
-                            <TuneIcon
-                                sx={{ color: 'rgb(38, 50, 56)', fontSize: '35px' }}
-                                className={`rounded-[50%] p-2`}
-                            />
-                            <p className={`text-sm text-[grey] font-['Montserrat',sans-serif]  `}>Filter</p>
-                        </span>
+                    <span onClick={() => {
+                        setOpen(!open)
+                        setMoreFilters(!moreFilters)
+                    }} className={`grid group hover:cursor-pointer hover:bg-[#07364B] `}>
+                        <svg className={`select-none w-[25px] h-[25px] self-end justify-self-center fill-[#07364B] group-hover:fill-[white] text-base`}
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" id="filter">
+                            <path d="M4 10h7.09a6 6 0 0 0 11.82 0H44a1 1 0 0 0 0-2H22.91A6 6 0 0 0 11.09 8H4a1 1 0 0 0 0 2zM17 5a4 4 0 1 1-4 4A4 4 0 0 1 17 5zM44 23H36.91a6 6 0 0 0-11.82 0H4a1 1 0 0 0 0 2H25.09a6 6 0 0 0 11.82 0H44a1 1 0 0 0 0-2zM31 28a4 4 0 1 1 4-4A4 4 0 0 1 31 28zM44 38H22.91a6 6 0 0 0-11.82 0H4a1 1 0 0 0 0 2h7.09a6 6 0 0 0 11.82 0H44a1 1 0 0 0 0-2zM17 43a4 4 0 1 1 4-4A4 4 0 0 1 17 43z" data-name="Layer 15">
+                            </path></svg>
+                        {/* <TuneIcon
+                            className={`text-[#07364B] group-hover:text-[white] text-base rounded-[50%] self-center justify-self-center `}
+                        /> */}
+                        <p className={`text-sm text-[#263238] font-['Montserrat',sans-serif] self-center justify-self-center group-hover:text-[white]`}>Filter</p>
                     </span>
-
                 </div>
                 :
-                <div className={`row-start-2 row-end-3 col-start-1 col-end-8 max-w-[520px] max-h-[85vh] overflow-y-scroll grid grid-rows-[60px,120px,50px,65px,auto,50px] bg-[#FFFFFF] z-[100] ease-in-out duration-300 shadow-md shadow-[#707070]`}>
+                <div className={`row-start-2 row-end-3 col-start-1 col-end-8 max-w-[520px] max-h-[85vh] overflow-y-scroll grid ${!moreFilters ? `grid-rows-[60px,120px,80px,65px,auto,50px]` : `grid-rows-[60px,120px,auto,auto,auto,auto,auto,auto,120px]`}  bg-[#FFFFFF] z-[100] ease-in-out duration-300 shadow-md shadow-[#707070]`}>
 
 
                     <span className={`flex self-center mx-2 sticky top-0 bg-[#FFFFFF] z-[100]`}>
@@ -500,7 +517,6 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
 
                             </span>
 
-
                         </span>
 
 
@@ -509,9 +525,11 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                     {!moreFilters &&
                         <Fragment>
 
-                            <span className={`bg-[#E3EFF1]`} >
+                            <span className={`bg-[#E3EFF1] mt-2`} >
+
 
                             </span>
+
 
                             <span className={`flex self-center mx-2`}>
 
@@ -579,7 +597,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                                                     return (
                                                         <SwiperSlide key={url}>
                                                             <Image
-                                                                // dangerouslyAllowSVG
+                                                                // placeholder="blur"	
                                                                 priority
                                                                 alt={url}
                                                                 src={url}
@@ -665,7 +683,38 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                     {moreFilters &&
                         <Fragment >
 
+                            <span className={`self-center grid mx-2`}>
 
+                                <span className={`flex p-3 border-b-[1px] border-slate-300`}>
+                                    <p className={`text-sm mr-auto ml-2 my-auto text-[rgb(36,36,36)] inline`}>
+                                        Price
+                                    </p>
+
+                                    <Slider
+                                        getAriaLabel={() => 'Price range'}
+                                        disableSwap
+                                        size='small'
+                                        value={value}
+                                        onChange={handleChange}
+                                        valueLabelDisplay="off"
+                                        getAriaValueText={valuetext}
+                                        sx={{ color: '#07364B' }}
+                                        className={`ml-8 mr-8 my-auto`}
+                                    />
+                                </span>
+
+                                <span className={`flex self-center`}>
+
+                                    <p className={`m-auto inline text-base text-[#263238]`}>{handleMinMaxformat('min')}  </p>
+
+                                    <span className={`flex p-2 mx-auto`}>
+                                        <p className={`m-auto inline text-xl text-[#0A2532]`}> -  </p>
+                                    </span>
+
+                                    <p className={`m-auto text-base text-[#263238]`}> {handleMinMaxformat('max')}  </p>
+                                </span>
+
+                            </span>
                             <span className={`self-center grid grid-rows-1 py-2 mx-2`}>
 
                                 <span className={`self-center justify-self-start row-start-1 col-start-1 mx-2`}>
@@ -862,6 +911,47 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
 
                             </span>
 
+                            <span className={`self-center grid grid-rows-1 py-2 mx-2`}>
+
+                                <span className={`self-center justify-self-start row-start-1 col-start-1 mx-2`}>
+                                    <p className={` text-[0.5em] sm:text-[0.8em] text-[#263238] inline `}>
+                                        Agent
+                                    </p>
+                                </span>
+
+                                <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
+                                    <span
+                                        onClick={() => { setAgent(false) }}
+                                        className={`${agent == false ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
+                                            No
+                                        </p>
+                                    </span>
+
+                                    <span
+                                        onClick={() => { setAgent(true) }}
+                                        className={`${agent == true ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
+                                            Yes
+                                        </p>
+                                    </span>
+
+                                </span>
+
+                                <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
+                                    <span
+                                        onClick={() => { setAgent(undefined) }}
+                                        className={`py-2 px-10 sm:px-14 transition-[margin] ${agent == undefined ? 'hidden' : agent == false ? `mr-[102px] sm:mr-[133px]` : `mr-0`} border-[1px] border-[#102C3A]  bg-[#07364B] `}>
+                                        <p className={`text-[white] text-[0.7em] font-bold inline`}>
+                                            {agent == false ? 'No' : 'Yes'}
+                                        </p>
+                                    </span>
+
+                                </span>
+
+                            </span>
+
+
                             <span className={`flex self-center mx-2 my-4 sticky`}>
 
                                 <span
@@ -876,6 +966,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                                         setNumberOfBathrooms(0)
                                         setParking(undefined)
                                         setFurnished(undefined)
+                                        setAgent(undefined)
                                         setValue([0, 100])
                                         setMin(0)
                                         setMax(100)

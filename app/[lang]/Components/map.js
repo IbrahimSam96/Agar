@@ -322,7 +322,7 @@ const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) =>
 
                                         </p>
                                         <p className={`text-[#707070] text-xs inline font-[600] mr-auto ml-2`}>
-                                            {area} sqft
+                                            {area} m2
                                         </p>
                                     </span>
 

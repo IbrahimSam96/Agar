@@ -21,7 +21,7 @@ import Sell from "./Sell";
 
 const AppClientPage = ({ docID, Listings, dictionary, lang }) => {
     // Sidebar
-    const [sideBarOpen, setSideBarOpen] = useState(false);
+    const [sideBarOpen, setSideBarOpen] = useState(true);
 
     // Sell Page 
     const [sellOpen, setSellOpen] = useState(false);
@@ -60,7 +60,7 @@ const AppClientPage = ({ docID, Listings, dictionary, lang }) => {
         <>
             <NavBar open={sellOpen} setOpen={setSellOpen} />
             <Map Listings={UpdatedListings} Governorates={Governorates} JordanCoordinates={JordanCoordinates} ammanCoordinates={ammanCoordinates} />
-            <Sidebar allListings={allListings} setAllListings={setAllListings} SharedListings={UpdatedListings} setSharedListings={setUpdatedListings} open={sideBarOpen} setOpen={setSideBarOpen} dictionary={dictionary} lang={lang} />
+            <Sidebar allListings={allListings} setAllListings={setAllListings} SharedListings={UpdatedListings} setSharedListings={setUpdatedListings} open={sideBarOpen} setOpen={setSideBarOpen} dictionary={dictionary} Governorates={Governorates} lang={lang} />
             <Sell open={sellOpen} setOpen={setSellOpen} Governorates={Governorates} docID={docID} />
         </>
     )
