@@ -10,7 +10,8 @@ import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 import BedOutlinedIcon from '@mui/icons-material/BedOutlined';
 import ShowerOutlinedIcon from '@mui/icons-material/ShowerOutlined';
 import CropFreeOutlinedIcon from '@mui/icons-material/CropFreeOutlined';
-import ChairOutlinedIcon from '@mui/icons-material/ChairOutlined'; import LocalParkingOutlinedIcon from '@mui/icons-material/LocalParkingOutlined';
+import ChairOutlinedIcon from '@mui/icons-material/ChairOutlined';
+ import LocalParkingOutlinedIcon from '@mui/icons-material/LocalParkingOutlined';
 import LoopIcon from '@mui/icons-material/Loop';
 
 // Prime React 
@@ -960,7 +961,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                 <span className={`grid mx-2`}>
                                     <CropFreeOutlinedIcon className={`justify-self-center text-[#07364B] font-[600]`} />
                                     <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline `}>
-                                        {area} sqft
+                                        {area} m2
                                     </p>
                                 </span>
 

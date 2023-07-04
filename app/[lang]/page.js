@@ -1,13 +1,8 @@
 
-// local Components
-import Sidebar from './Components/Sidebar';
-import Map from './Components/map';
-import NavBar from './Components/NavBar';
-import Sell from './Components/Sell';
 // Firebase
 import { collection, getDocs } from "firebase/firestore";
 import { firebasedb } from './utils/InitFirebase';
-
+// local
 import AppClientPage from './Components/appClientPage';
 import { getDictionary } from '@/get-dictionary';
 

@@ -32,7 +32,11 @@ export function middleware(request) {
     if (
         [
             '/filter.svg',
-            '/jordan.png'            // Your other files in `public`
+            '/jordan.png',
+            '/sofa.svg',
+            '/bed.svg',
+            '/bathtub.svg'
+            // Your other files in `public`
         ].includes(pathname)
     )
         return

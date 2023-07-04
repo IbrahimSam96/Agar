@@ -27,7 +27,14 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'shoqaq',
-  description: 'Appartment Rentals in Amman ',
+  description: 'Appartment Rentals in Amman',
+  openGraph: {
+    images: ['/jordan.jpg'],
+    title: 'Verified Appartments in Amman',
+    description: 'Appartment Rentals in Amman',
+
+  },
+
 }
 
 export default function RootLayout({ children, params }) {
