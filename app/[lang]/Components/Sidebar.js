@@ -11,7 +11,7 @@ import { useAuth } from '@/app/[lang]/utils/Authenticator';
 // Firebase
 import { firebasedb, storage } from "../utils/InitFirebase";
 // db
-import { doc, updateDoc, arrayUnion, arrayRemove, getDoc, Timestamp } from "firebase/firestore";
+import { doc, updateDoc, arrayUnion, arrayRemove, getDoc, Timestamp, getDocs, collection } from "firebase/firestore";
 // storage
 import { getStorage, ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 
@@ -32,6 +32,8 @@ import TuneIcon from '@mui/icons-material/Tune';
 import Slider from '@mui/material/Slider';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import moment from 'moment';
+import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 
 
 
@@ -292,27 +294,90 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
         }
     }
 
-
-    // useEffect(() => {
-
-    // if (sort) {
-    //     let list = [...sortedListings.features];
-    //     list.sort((a, b) => readCurrencyNumber(b.properties.price) - readCurrencyNumber(a.properties.price));
-    //     console.log("Literally Sorted list", { type: "ListingsCollection", features: list })
-
-    //     setSortedListings({ type: "ListingsCollection", features: list })
-    // } else {
-    //     let list = [...sortedListings.features];
-    //     list.sort((a, b) => readCurrencyNumber(a.properties.price) - readCurrencyNumber(b.properties.price));
-    //     console.log("Literally Sorted list", { type: "ListingsCollection", features: list })
-
-    //     setSortedListings({ type: "ListingsCollection", features: list })
-    // }
-
-    // }, [sort])
-
     const user = useAuth();
     const router = useRouter();
+
+    const [favourited, setFavourited] = useState([]);
+
+    useEffect(() => {
+
+        const retreiveUserProfile = async () => {
+
+            const getUserProfile = async () => {
+                // setLoading(true)
+                const colRef = collection(firebasedb, "Customers");
+                const querySnapshot = await getDocs(colRef);
+
+                let userProfile;
+
+                querySnapshot.forEach((doc) => {
+                    // doc.data() is never undefined for query doc snapshots
+                    // console.log(doc.id, " => ", doc.data());
+                    let listing = {}
+                    listing = doc.data();
+
+                    if (doc.id == user.user.uid) {
+                        userProfile = listing;
+                    }
+                });
+
+                return userProfile
+            }
+
+            const UserProfile = await getUserProfile();
+            console.log(UserProfile);
+
+            setFavourited(UserProfile['Favourites']);
+        }
+
+        // if user is authed then fetch favourited listings
+        if (user.user && favourited.length == 0) {
+            retreiveUserProfile();
+        }
+
+    }, [user.user]);
+
+
+    const addListing = async (ID) => {
+
+        const docRef = doc(firebasedb, "Customers", user.user.uid);
+
+        setFavourited((prev) => [...prev, ID]);
+
+        console.log("New List :", favourited);
+
+        // console.log("New List :", newlist);
+
+        await updateDoc(docRef, {
+            Favourites: favourited
+        }).then((res2) => {
+            console.log('Done')
+        }).catch((err) => {
+            console.log(err)
+        })
+
+    }
+
+    const removeListing = async (ID) => {
+
+        const docRef = doc(firebasedb, "Customers", user.user.uid);
+
+        let list = favourited;
+
+        var newList = list.filter((value) => value !== ID).map((id) => id);
+
+
+        setFavourited(newList);
+
+        await updateDoc(docRef, {
+            Favourites: newList
+        }).then((res2) => {
+            console.log('Done')
+        }).catch((err) => {
+            console.log(err)
+        })
+
+    }
 
     return (
         <>
@@ -362,11 +427,10 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                             setOpen(!open)
                         }} className={`hover:cursor-pointer ml-auto my-auto `}>
                             <ArrowBackIosIcon sx={{ color: '#0097A7', fontSize: '35px', }}
-                                className={`rounded-[50%] p-2 hover:bg-[lightgrey] border-[grey] border-[1px]`} />
+                                className={`rounded-[50%] p-2 hover:bg-[#F8F8F8] border-[#263238] border-[1px]`} />
                         </span>
 
                     </span>
-
 
                     <span className={`border-t-[3px] border-grey grid sticky top-0 bg-[#FFFFFF] z-[100] shadow-md shadow-[#707070]`}>
 
@@ -527,13 +591,11 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
 
                             <span className={`bg-[#E3EFF1] mt-2`} >
 
-
                             </span>
-
 
                             <span className={`flex self-center mx-2`}>
 
-                                <span className={`ml-2 mr-auto border-[1px] border-[grey] border-b-2 border-b-[#0097A7] p-2 w-[150px] `}>
+                                <span className={`ml-2 mr-auto border-[1px] border-[#F8F8F8] border-b-2 border-b-[#0097A7] p-2 w-[150px] `}>
 
                                     <span className={`flex mx-auto`}>
                                         <p className={`text-sm mx-auto `}>
@@ -562,7 +624,6 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
 
                                 </span>
 
-
                             </span>
 
                             <span className={`grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] `}>
@@ -572,10 +633,12 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                                     const timeStamp = feature.properties.timeStamp;
 
                                     const timeObj = new Timestamp(timeStamp.seconds, timeStamp.nanoseconds);
-                                    const when = moment(timeObj.toDate()).fromNow()
+                                    const when = moment(timeObj.toDate()).fromNow();
 
+                                    const favouritedListing = favourited.includes(feature.id);
 
                                     return (
+
                                         <div key={feature.id} className={`m-2 shadow-md shadow-slate-200 border-[1px] border-[#E3EFF1] w-[240px] h-[auto] rounded`}>
 
                                             <Swiper modules={[Navigation, Pagination, Scrollbar, A11y]}
@@ -596,20 +659,39 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                                                 {feature.properties.urls.map((url) => {
                                                     return (
                                                         <SwiperSlide key={url}>
-                                                            <Image
-                                                                // placeholder="blur"	
-                                                                priority
-                                                                alt={url}
-                                                                src={url}
-                                                                width="0"
-                                                                height="0"
-                                                                sizes="100vw"
-                                                                className="w-full h-auto m-2 rounded select-none max-h-[120px] max-w-[220px]"
 
-                                                            // width={220}
-                                                            // height={160}
-                                                            // className={`m-2 rounded select-none max-h-[120px] max-w-[220px] w-auto h-auto`}
-                                                            />
+                                                            <span className={`grid grid-rows-1 grid-cols-1`}>
+                                                                {favouritedListing ?
+                                                                    <FavoriteOutlinedIcon onClick={() => {
+                                                                        removeListing(feature.id);
+
+                                                                    }} className={`row-start-1 col-start-1 justify-self-end self-start m-2 text-[#EA0670] z-10 hover:cursor-pointer `} />
+                                                                    :
+                                                                    <svg onClick={() => {
+                                                                        // AddOrRemoveFavouritedListings(feature.id, 'Add');
+                                                                        addListing(feature.id)
+                                                                    }} className={`row-start-1 col-start-1 justify-self-end self-start m-2 z-10 rounded-[50%] hover:cursor-pointer`}
+                                                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" data-name="Favourite Outline" id="favourite">
+                                                                        <path fill="#ADB0B5" d="M0 0h24v24H0Z" opacity=".24">
+                                                                        </path>
+                                                                        <path fill="white" d="M11.994 20.696a1.407 1.407 0 0 1-.986-.41L4.08 13.359a5.712 5.712 0 0 1 7.926-8.226 5.715 5.715 0 0 1 7.918 8.241l-6.944 6.922a1.4 1.4 0 0 1-.986.4Zm-.284-1.68Zm-3.6-13.62a3.913 3.913 0 0 0-2.757 6.69L12 18.73l6.652-6.634a3.915 3.915 0 1 0-5.534-5.539l-1.112 1.116-1.12-1.12A3.9 3.9 0 0 0 8.11 5.396Z" data-name="Path 2729">
+                                                                        </path>
+                                                                    </svg>
+                                                                }
+
+
+                                                                {/* <FavoriteBorderOutlinedIcon className={`row-start-1 col-start-1 justify-self-end self-start m-2 text-[#EA0670] z-10 `} /> */}
+                                                                <Image
+                                                                    // placeholder="blur"	
+                                                                    priority
+                                                                    alt={url}
+                                                                    src={url}
+                                                                    width="0"
+                                                                    height="0"
+                                                                    sizes="100vw"
+                                                                    className="row-start-1 col-start-1 w-full h-auto rounded select-none max-h-[160px] max-w-[240px]"
+                                                                />
+                                                            </span>
                                                         </SwiperSlide>
                                                     )
                                                 }
@@ -726,7 +808,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
                                         onClick={() => { setNumberOfBedrooms(1) }}
-                                        className={`${numberOfBedrooms == 1 ? `z-[-2]` : `z-10`} py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBedrooms == 1 ? `z-[-2]` : `z-10`} py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             1
                                         </p>
@@ -734,7 +816,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
 
                                     <span
                                         onClick={() => { setNumberOfBedrooms(2) }}
-                                        className={`${numberOfBedrooms == 2 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBedrooms == 2 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             2
                                         </p>
@@ -742,7 +824,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
 
                                     <span
                                         onClick={() => { setNumberOfBedrooms(3) }}
-                                        className={`${numberOfBedrooms == 3 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBedrooms == 3 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             3
                                         </p>
@@ -750,7 +832,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
 
                                     <span
                                         onClick={() => { setNumberOfBedrooms(4) }}
-                                        className={`${numberOfBedrooms == 4 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBedrooms == 4 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             4
                                         </p>
@@ -784,7 +866,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
                                         onClick={() => { setNumberOfBathrooms(1) }}
-                                        className={`${numberOfBathrooms == 1 ? `z-[-2]` : `z-10`} py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBathrooms == 1 ? `z-[-2]` : `z-10`} py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             1
                                         </p>
@@ -792,7 +874,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
 
                                     <span
                                         onClick={() => { setNumberOfBathrooms(2) }}
-                                        className={`${numberOfBathrooms == 2 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBathrooms == 2 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             2
                                         </p>
@@ -800,7 +882,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
 
                                     <span
                                         onClick={() => { setNumberOfBathrooms(3) }}
-                                        className={`${numberOfBathrooms == 3 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBathrooms == 3 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             3
                                         </p>
@@ -808,7 +890,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
 
                                     <span
                                         onClick={() => { setNumberOfBathrooms(4) }}
-                                        className={`${numberOfBathrooms == 4 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBathrooms == 4 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             4
                                         </p>
@@ -841,7 +923,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
                                         onClick={() => { setParking(false) }}
-                                        className={`${parking == false ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${parking == false ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             No
                                         </p>
@@ -849,7 +931,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
 
                                     <span
                                         onClick={() => { setParking(true) }}
-                                        className={`${parking == true ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${parking == true ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             Yes
                                         </p>
@@ -882,7 +964,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
                                         onClick={() => { setFurnished(false) }}
-                                        className={`${furnished == false ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${furnished == false ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             No
                                         </p>
@@ -890,7 +972,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
 
                                     <span
                                         onClick={() => { setFurnished(true) }}
-                                        className={`${furnished == true ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${furnished == true ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             Yes
                                         </p>
@@ -922,7 +1004,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
                                         onClick={() => { setAgent(false) }}
-                                        className={`${agent == false ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${agent == false ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             No
                                         </p>
@@ -930,7 +1012,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
 
                                     <span
                                         onClick={() => { setAgent(true) }}
-                                        className={`${agent == true ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${agent == true ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             Yes
                                         </p>
@@ -950,7 +1032,6 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                                 </span>
 
                             </span>
-
 
                             <span className={`flex self-center mx-2 my-4 sticky`}>
 
@@ -986,6 +1067,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
 
                         </Fragment>
                     }
+
                     <span className={`bg-[#E3EFF1]`} >
 
                     </span>

@@ -61,7 +61,6 @@ export async function generateStaticParams() {
   }))
 }
 
-
 export default async function Page({ params, searchParams }) {
 
   let docID;

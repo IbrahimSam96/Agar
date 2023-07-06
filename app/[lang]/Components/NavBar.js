@@ -52,7 +52,6 @@ const NavBar = ({ open, setOpen }) => {
         </p>
       </span>
 
-
       {user.user ?
         <span className={`my-auto ml-auto flex`}>
 
@@ -72,9 +71,15 @@ const NavBar = ({ open, setOpen }) => {
             <span className={`hidden ml-[-10px] z-50 group-hover:grid bg-[#07364B] absolute grid-cols-[150px] border-t-[2px] border-[#0097A7] ease-in-out	duration-300`}>
 
               <span onClick={() => {
-                router.push('/my-account')
+                // router.push('/my-account')
               }} className={`hover:bg-[#102C3A] p-4 `}>
-                <p className={` whitespace-nowrap text-sm	text-white font-['Montserrat',sans-serif] `}>  My Profile </p>
+                <p className={` whitespace-nowrap text-sm	text-white font-['Montserrat',sans-serif] `}>  Settings </p>
+              </span>
+
+              <span onClick={() => {
+                // router.push('/my-favourites')
+              }} className={`hover:bg-[#102C3A] p-4 `}>
+                <p className={` whitespace-nowrap text-sm	text-white font-['Montserrat',sans-serif] `}>  My Favorites </p>
               </span>
 
               <span onClick={() => {

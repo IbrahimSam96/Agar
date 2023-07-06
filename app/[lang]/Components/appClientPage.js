@@ -54,8 +54,6 @@ const AppClientPage = ({ docID, Listings, dictionary, lang }) => {
     //     };
     // }, []);
 
-
-    console.log('UpdatedListings', UpdatedListings)
     return (
         <>
             <NavBar open={sellOpen} setOpen={setSellOpen} />

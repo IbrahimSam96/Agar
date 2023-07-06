@@ -1,7 +1,7 @@
 'use client'
 // Nextjs React
 import Image from "next/image";
-import { Fragment, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 // Local
 import NavBar from "./NavBar";
 
@@ -20,11 +20,17 @@ import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 
 import { Timestamp } from "firebase/firestore";
 import moment from "moment";
+// React Toastify
+import { ToastContainer, toast } from 'react-toastify';
 
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
+import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined';
 
 import { useAuth } from "../../utils/Authenticator";
 
 const ListingClientPage = ({ Listings, params, feature }) => {
+    const toastId = useRef(null);
 
     const user = useAuth();
 
@@ -37,28 +43,53 @@ const ListingClientPage = ({ Listings, params, feature }) => {
     // #263238 Header
     // Divider
     // #E3EFF1 
+    // grey Background
+    // #F8F8F8
+    // DARK GREY
+    // #ADB0B5
+    // Red
+    // #EA0670
+
+
     console.log(feature)
     const timeStamp = feature.properties.timeStamp;
-
     const timeObj = new Timestamp(timeStamp.seconds, timeStamp.nanoseconds);
     const when = moment(timeObj.toDate()).fromNow();
 
-    const [show, setShow] = useState(true);
+    const [show, setShow] = useState(false);
 
 
     return (
         <>
             <NavBar />
+            <div className={`grid grid-rows-[auto,auto,100px] row-start-2 row-end-3 col-start-1 col-end-8 mx-12 my-4 min-h-[85vh]`}>
 
-            <div className={`grid grid-rows-[100px,auto,100px] row-start-2 row-end-3 col-start-1 col-end-8 mx-12  min-h-[85vh]`}>
+                <span className={`self-center grid py-2`}>
 
-                <span className={`self-center grid`}>
+                    <span className={`flex self-center `}>
+                        <p className={`text-base text-[#263238] my-auto mr-auto `}>{feature.properties.streetName} - {feature.properties.buildingNumber} </p>
 
-                    <p className={`text-base text-[#263238] font-['Montserrat',sans-serif] self-center justify-self-start `}>{feature.properties.streetName} - {feature.properties.buildingNumber} </p>
-                    <p className={`text-sm text-[#0097A7] underline font-['Montserrat',sans-serif] self-center justify-self-start `}> {feature.properties.city} </p>
 
-                    {show && <p onClick={() => { setShow(!show) }} className={`text-base text-[white] self-center justify-self-end hover:cursor-pointer p-3 px-4 bg-[#102C3A] hover:bg-[#102C3A] rounded`}> Close </p>
-                    }
+                        <span className={`flex ml ml-auto mr-2`}>
+
+                            <span className={`my-auto mr-2 p-3 flex border-[#E3EFF1] hover:bg-[#F8F8F8] border-[1px] rounded`}>
+                                <FavoriteBorderOutlinedIcon className={`fill-[#EA0670]`} />
+                                <p className={`text-base text-[#EA0670] my-auto ml-2 rounded`}>Favourite </p>
+                            </span>
+
+                            <span className={`my-auto mr-2 p-3 flex border-[#E3EFF1] hover:bg-[#F8F8F8] border-[1px] rounded`}>
+                                <IosShareOutlinedIcon className={`fill-[#07364B]`} />
+                                <p className={`text-base text-[#07364B] my-auto ml-2 rounded`}>Share </p>
+                            </span>
+
+                            {show && <p onClick={() => { setShow(!show) }} className={`my-auto ml-auto mr-2 p-3 text-base text-[white] hover:cursor-pointer bg-[#07364B] hover:bg-[#0097A7] rounded active:bg-[transparent] active:text-[#07364B]`}> Close </p>}
+
+                        </span>
+
+                    </span>
+
+                    <p className={`text-sm text-[#0097A7] underline font-['Montserrat',sans-serif] my-auto  `}> {feature.properties.city} </p>
+
                 </span>
 
                 {show ?
@@ -108,6 +139,7 @@ const ListingClientPage = ({ Listings, params, feature }) => {
                                                     setShow(!show)
                                                 }
                                                 else {
+                                                    toastId.current = toast.error("Create an account or sign-in to view more pictures", { autoClose: true });
 
                                                 }
                                             }}
@@ -190,6 +222,7 @@ const ListingClientPage = ({ Listings, params, feature }) => {
                                                     setShow(!show)
                                                 }
                                                 else {
+                                                    toastId.current = toast.error("Create an account or sign-in to view more pictures", { autoClose: true });
 
                                                 }
                                             }}
@@ -212,6 +245,7 @@ const ListingClientPage = ({ Listings, params, feature }) => {
                                                             setShow(!show)
                                                         }
                                                         else {
+                                                            toastId.current = toast.error("Create an account or sign-in to view more pictures", { autoClose: true });
 
                                                         }
                                                     }}
@@ -224,7 +258,7 @@ const ListingClientPage = ({ Listings, params, feature }) => {
                                                     sizes="100vw"
                                                     className={`max-h-[165px] row-start-1 col-start-1 w-full h-auto m-2 rounded select-none max-w-[420px] rounded-r`}
                                                 />
-                                                <p className={`row-start-1 col-start-1 justify-self-end self-end text-sm text-[#F8F8F8] bg-[#000] p-2 inline rounded `}>
+                                                <p className={`mx-2 row-start-1 col-start-1 justify-self-end self-end text-sm text-[#F8F8F8] bg-[#000] p-2 inline rounded `}>
                                                     {feature.properties.urls.length} +
                                                 </p>
                                             </span>
@@ -233,7 +267,7 @@ const ListingClientPage = ({ Listings, params, feature }) => {
                                 )
                             })}
 
-                            <span className={`flex self-center justify-self-end`}>
+                            <span className={`flex self-center justify-self-end mx-2`}>
                                 <p className={` text-2xl text-[#07364B] bg-[#F8F8F8] p-2 inline rounded my-auto`}>
                                     {feature.properties.price}
                                 </p>
@@ -242,7 +276,10 @@ const ListingClientPage = ({ Listings, params, feature }) => {
 
                     </span>
                 }
+
             </div>
+            <ToastContainer />
+
         </>
 
     )
