@@ -1,7 +1,7 @@
 'use client'
 // Nextjs React
 import Image from "next/image";
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 // Local
 import NavBar from "./NavBar";
 
@@ -18,7 +18,7 @@ import LocalParkingOutlinedIcon from '@mui/icons-material/LocalParkingOutlined';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 
-import { Timestamp } from "firebase/firestore";
+import { Timestamp, collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import moment from "moment";
 // React Toastify
 import { ToastContainer, toast } from 'react-toastify';
@@ -28,12 +28,10 @@ import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined';
 
 import { useAuth } from "../../utils/Authenticator";
+import { firebasedb } from "../../utils/InitFirebase";
+import { useRouter } from "next/navigation";
 
 const ListingClientPage = ({ Listings, params, feature }) => {
-    const toastId = useRef(null);
-
-    const user = useAuth();
-
     // Cluster Colors
     // '#07364B', // HOVER color
     // '#0097A7' // Normal color
@@ -50,13 +48,101 @@ const ListingClientPage = ({ Listings, params, feature }) => {
     // Red
     // #EA0670
 
+    const toastId = useRef(null);
+
+    const user = useAuth();
+    const [favourited, setFavourited] = useState([]);
+
+    const router = useRouter();
+
+    useEffect(() => {
+
+        const retreiveUserProfile = async () => {
+
+            const getUserProfile = async () => {
+                // setLoading(true)
+                const colRef = collection(firebasedb, "Customers");
+                const querySnapshot = await getDocs(colRef);
+
+                let userProfile;
+
+                querySnapshot.forEach((doc) => {
+                    // doc.data() is never undefined for query doc snapshots
+                    // console.log(doc.id, " => ", doc.data());
+                    let listing = {}
+                    listing = doc.data();
+
+                    if (doc.id == user.user.uid) {
+                        userProfile = listing;
+                    }
+                });
+
+                return userProfile
+            }
+
+            const UserProfile = await getUserProfile();
+            console.log(UserProfile);
+
+            setFavourited(UserProfile['Favourites']);
+        }
+
+        // if user is authed then fetch favourited listings
+        if (user.user && favourited.length == 0) {
+            retreiveUserProfile();
+        }
+
+    }, [user.user]);
+
 
     console.log(feature)
     const timeStamp = feature.properties.timeStamp;
     const timeObj = new Timestamp(timeStamp.seconds, timeStamp.nanoseconds);
     const when = moment(timeObj.toDate()).fromNow();
+    const isFavourited = favourited.includes(feature.id)
 
+    // const favourited = 
     const [show, setShow] = useState(false);
+
+    const addListing = async (ID) => {
+
+        const docRef = doc(firebasedb, "Customers", user.user.uid);
+
+        setFavourited((prev) => [...prev, ID]);
+
+        console.log("New List :", favourited);
+
+        // console.log("New List :", newlist);
+
+        await updateDoc(docRef, {
+            Favourites: favourited
+        }).then((res2) => {
+            console.log('Done')
+        }).catch((err) => {
+            console.log(err)
+        })
+
+    }
+
+    const removeListing = async (ID) => {
+
+        const docRef = doc(firebasedb, "Customers", user.user.uid);
+
+        let list = favourited;
+
+        var newList = list.filter((value) => value !== ID).map((id) => id);
+
+
+        setFavourited(newList);
+
+        await updateDoc(docRef, {
+            Favourites: newList
+        }).then((res2) => {
+            console.log('Done')
+        }).catch((err) => {
+            console.log(err)
+        })
+
+    }
 
 
     return (
@@ -72,14 +158,34 @@ const ListingClientPage = ({ Listings, params, feature }) => {
 
                         <span className={`flex ml ml-auto mr-2`}>
 
-                            <span className={`my-auto mr-2 p-3 flex border-[#E3EFF1] hover:bg-[#F8F8F8] border-[1px] rounded`}>
-                                <FavoriteBorderOutlinedIcon className={`fill-[#EA0670]`} />
-                                <p className={`text-base text-[#EA0670] my-auto ml-2 rounded`}>Favourite </p>
-                            </span>
+                            {isFavourited ?
+                                <span onClick={() => {
+                                    removeListing(feature.id);
+                                }} className={`my-auto mr-2 p-3 flex border-[#E3EFF1] hover:bg-[#F8F8F8] hover:cursor-pointer border-[1px] rounded`}>
+                                    <FavoriteOutlinedIcon className={`text-[#EA0670] z-10`} />
+                                    <p className={`text-base text-[#EA0670] my-auto ml-2 rounded`}>Favourite </p>
+                                </span>
+                                :
+                                <span onClick={() => {
+                                    addListing(feature.id)
+                                }} className={`my-auto mr-2 p-3 flex border-[#E3EFF1] hover:bg-[#F8F8F8] hover:cursor-pointer border-[1px] rounded`}>
+                                    <svg className={`z-10 rounded-[50%]`}
+                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" data-name="Favourite Outline" id="favourite">
+                                        <path fill="#F8F8F8" d="M0 0h24v24H0Z" opacity=".24">
+                                        </path>
+                                        <path fill="#EA0670" d="M11.994 20.696a1.407 1.407 0 0 1-.986-.41L4.08 13.359a5.712 5.712 0 0 1 7.926-8.226 5.715 5.715 0 0 1 7.918 8.241l-6.944 6.922a1.4 1.4 0 0 1-.986.4Zm-.284-1.68Zm-3.6-13.62a3.913 3.913 0 0 0-2.757 6.69L12 18.73l6.652-6.634a3.915 3.915 0 1 0-5.534-5.539l-1.112 1.116-1.12-1.12A3.9 3.9 0 0 0 8.11 5.396Z" data-name="Path 2729">
+                                        </path>
+                                    </svg>
+                                    <p className={`text-base text-[#EA0670] my-auto ml-2 rounded`}>Favourite </p>
+                                </span>
+                            }
 
-                            <span className={`my-auto mr-2 p-3 flex border-[#E3EFF1] hover:bg-[#F8F8F8] border-[1px] rounded`}>
-                                <IosShareOutlinedIcon className={`fill-[#07364B]`} />
-                                <p className={`text-base text-[#07364B] my-auto ml-2 rounded`}>Share </p>
+
+                            <span onClick={() => {
+                                navigator.clipboard.writeText(`https://shoqaq.jo.vercel.app/listing/${feature.id}`)
+                            }} className={`my-auto mr-2 p-3 flex border-[#E3EFF1] hover:bg-[#F8F8F8] hover:cursor-pointer border-[1px] rounded group active:bg-[#07364B] active:text-white`}>
+                                <IosShareOutlinedIcon className={`fill-[#07364B] group-active:fill-white`} />
+                                <p className={`text-base text-[#07364B] group-active:text-white my-auto ml-2 rounded`}>Share </p>
                             </span>
 
                             {show && <p onClick={() => { setShow(!show) }} className={`my-auto ml-auto mr-2 p-3 text-base text-[white] hover:cursor-pointer bg-[#07364B] hover:bg-[#0097A7] rounded active:bg-[transparent] active:text-[#07364B]`}> Close </p>}

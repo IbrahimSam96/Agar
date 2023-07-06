@@ -238,7 +238,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
                                         onClick={() => { setRent(true) }}
-                                        className={`${rent ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${rent ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             Rent
                                         </p>
@@ -246,7 +246,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     <span
                                         onClick={() => { setRent(false) }}
-                                        className={`${!rent ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${!rent ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             Sale
                                         </p>
@@ -464,7 +464,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
                                         onClick={() => { setNumberOfBathrooms(1) }}
-                                        className={`${numberOfBathrooms == 1 ? `z-[-2]` : `z-10`} py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBathrooms == 1 ? `z-[-2]` : `z-10`} py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             1
                                         </p>
@@ -472,7 +472,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     <span
                                         onClick={() => { setNumberOfBathrooms(2) }}
-                                        className={`${numberOfBathrooms == 2 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBathrooms == 2 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             2
                                         </p>
@@ -480,7 +480,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     <span
                                         onClick={() => { setNumberOfBathrooms(3) }}
-                                        className={`${numberOfBathrooms == 3 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBathrooms == 3 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             3
                                         </p>
@@ -488,7 +488,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     <span
                                         onClick={() => { setNumberOfBathrooms(4) }}
-                                        className={`${numberOfBathrooms == 4 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBathrooms == 4 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             4
                                         </p>
@@ -524,7 +524,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
                                         onClick={() => { setNumberOfBedrooms(1) }}
-                                        className={`${numberOfBedrooms == 1 ? `z-[-2]` : `z-10`} py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBedrooms == 1 ? `z-[-2]` : `z-10`} py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             1
                                         </p>
@@ -532,7 +532,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     <span
                                         onClick={() => { setNumberOfBedrooms(2) }}
-                                        className={`${numberOfBedrooms == 2 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBedrooms == 2 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             2
                                         </p>
@@ -540,7 +540,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     <span
                                         onClick={() => { setNumberOfBedrooms(3) }}
-                                        className={`${numberOfBedrooms == 3 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBedrooms == 3 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             3
                                         </p>
@@ -548,7 +548,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     <span
                                         onClick={() => { setNumberOfBedrooms(4) }}
-                                        className={`${numberOfBedrooms == 4 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBedrooms == 4 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             4
                                         </p>
@@ -584,7 +584,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
                                         onClick={() => { setParking(false) }}
-                                        className={`${parking == false ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${parking == false ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             No
                                         </p>
@@ -592,7 +592,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     <span
                                         onClick={() => { setParking(true) }}
-                                        className={`${parking == true ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${parking == true ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             Yes
                                         </p>
@@ -627,7 +627,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
                                         onClick={() => { setFurnished(false) }}
-                                        className={`${furnished == false ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${furnished == false ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             No
                                         </p>
@@ -635,7 +635,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     <span
                                         onClick={() => { setFurnished(true) }}
-                                        className={`${furnished == true ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${furnished == true ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             Yes
                                         </p>
@@ -670,7 +670,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
                                         onClick={() => { setAgent(false) }}
-                                        className={`${agent == false ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${agent == false ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             No
                                         </p>
@@ -678,7 +678,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     <span
                                         onClick={() => { setAgent(true) }}
-                                        className={`${agent == true ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${agent == true ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             Yes
                                         </p>
@@ -998,7 +998,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                         <span className={` self-center flex py-2 mx-2`}>
 
                             <span
-                                className={`flex px-8 py-3 my-auto mr-auto border-[#102C3A] hover:bg-[#E4FABF]  border-[1px]  text-[#0097A7] text-center hover:cursor-pointer`}
+                                className={`flex px-8 py-3 my-auto mr-auto border-[#102C3A] hover:bg-[#F8F8F8]  border-[1px]  text-[#0097A7] text-center hover:cursor-pointer`}
                                 onClick={() => {
                                     setPreview(false);
                                     setLoading(false)

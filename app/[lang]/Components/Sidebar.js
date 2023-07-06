@@ -28,12 +28,11 @@ import 'swiper/css/scrollbar';
 // MUI Components
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import TuneIcon from '@mui/icons-material/Tune';
 import Slider from '@mui/material/Slider';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import moment from 'moment';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
-import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import { ToastContainer, toast } from 'react-toastify';
 
 
 
@@ -298,6 +297,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
     const router = useRouter();
 
     const [favourited, setFavourited] = useState([]);
+    const toastId = useRef(null);
 
     useEffect(() => {
 
@@ -340,49 +340,63 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
 
     const addListing = async (ID) => {
 
-        const docRef = doc(firebasedb, "Customers", user.user.uid);
+        if (user.user) {
+            const docRef = doc(firebasedb, "Customers", user.user.uid);
 
-        setFavourited((prev) => [...prev, ID]);
+            setFavourited((prev) => [...prev, ID]);
 
-        console.log("New List :", favourited);
+            console.log("New List :", favourited);
 
-        // console.log("New List :", newlist);
+            // console.log("New List :", newlist);
 
-        await updateDoc(docRef, {
-            Favourites: favourited
-        }).then((res2) => {
-            console.log('Done')
-        }).catch((err) => {
-            console.log(err)
-        })
+            await updateDoc(docRef, {
+                Favourites: favourited
+            }).then((res) => {
+                console.log('Done')
+            }).catch((err) => {
+                console.log(err)
+            })
+        }
+        else {
+            toastId.current = toast.error("Sign-in or create a new account to add this listing to your favourites", { autoClose: true });
+
+        }
+
 
     }
 
     const removeListing = async (ID) => {
 
-        const docRef = doc(firebasedb, "Customers", user.user.uid);
+        if (user.user) {
+            const docRef = doc(firebasedb, "Customers", user.user.uid);
 
-        let list = favourited;
+            let list = favourited;
 
-        var newList = list.filter((value) => value !== ID).map((id) => id);
+            var newList = list.filter((value) => value !== ID).map((id) => id);
 
 
-        setFavourited(newList);
+            setFavourited(newList);
 
-        await updateDoc(docRef, {
-            Favourites: newList
-        }).then((res2) => {
-            console.log('Done')
-        }).catch((err) => {
-            console.log(err)
-        })
+            await updateDoc(docRef, {
+                Favourites: newList
+            }).then((res) => {
+                console.log('Done')
+            }).catch((err) => {
+                console.log(err)
+            })
+        } else {
+
+        }
 
     }
 
+
     return (
         <>
+            <ToastContainer />
+
             {open ?
-                <div className={`row-start-2 row-end-3 col-start-1 col-end-8 max-w-[80px] min-h-[85vh] mt-4 grid grid-rows-[50px,10px,70px,auto] bg-[#FFFFFF] z-[100]  ease-in-out duration-300  shadow-md shadow-[#707070]  ${open ? "translate-x-0 " : "translate-x-[250%]"} `} >
+                <div className={`row-start-2 row-end-3 col-start-1 col-end-8 max-w-[80px] min-h-[85vh] mt-4 grid grid-rows-[50px,10px,70px,70px,auto] bg-[#FFFFFF] z-[100]  ease-in-out duration-300  shadow-md shadow-[#707070]  ${open ? "translate-x-0 " : "translate-x-[250%]"} `} >
 
                     <span onClick={() => {
                         setOpen(!open)
@@ -411,6 +425,18 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                             className={`text-[#07364B] group-hover:text-[white] text-base rounded-[50%] self-center justify-self-center `}
                         /> */}
                         <p className={`text-sm text-[#263238] font-['Montserrat',sans-serif] self-center justify-self-center group-hover:text-[white]`}>Filter</p>
+                    </span>
+
+                    <span onClick={() => {
+                        setOpen(!open)
+                        setMoreFilters(!moreFilters)
+                    }} className={`grid group hover:cursor-pointer hover:bg-[#07364B] `}>
+                        <svg className={`select-none w-[25px] h-[25px] self-end justify-self-center fill-[#07364B] group-hover:fill-[white] text-base`}
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" id="filter">
+                            <path d="M4 10h7.09a6 6 0 0 0 11.82 0H44a1 1 0 0 0 0-2H22.91A6 6 0 0 0 11.09 8H4a1 1 0 0 0 0 2zM17 5a4 4 0 1 1-4 4A4 4 0 0 1 17 5zM44 23H36.91a6 6 0 0 0-11.82 0H4a1 1 0 0 0 0 2H25.09a6 6 0 0 0 11.82 0H44a1 1 0 0 0 0-2zM31 28a4 4 0 1 1 4-4A4 4 0 0 1 31 28zM44 38H22.91a6 6 0 0 0-11.82 0H4a1 1 0 0 0 0 2h7.09a6 6 0 0 0 11.82 0H44a1 1 0 0 0 0-2zM17 43a4 4 0 1 1 4-4A4 4 0 0 1 17 43z" data-name="Layer 15">
+                            </path></svg>
+
+                        <p className={`text-sm text-[#263238] font-['Montserrat',sans-serif] self-center justify-self-center group-hover:text-[white]`}>Rent / Sell </p>
                     </span>
                 </div>
                 :
@@ -595,7 +621,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
 
                             <span className={`flex self-center mx-2`}>
 
-                                <span className={`ml-2 mr-auto border-[1px] border-[#F8F8F8] border-b-2 border-b-[#0097A7] p-2 w-[150px] `}>
+                                <span className={`ml-2 mr-auto border-[1px] border-[#F8F8F8] border-b-2 border-b-[#0097A7] shadow-md shadow-[#F8F8F8] p-2 w-[150px] `}>
 
                                     <span className={`flex mx-auto`}>
                                         <p className={`text-sm mx-auto `}>
@@ -656,7 +682,8 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                                                 }}
                                             >
 
-                                                {feature.properties.urls.map((url) => {
+                                                {feature.properties.urls.map((url, index) => {
+
                                                     return (
                                                         <SwiperSlide key={url}>
 
@@ -668,29 +695,41 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                                                                     }} className={`row-start-1 col-start-1 justify-self-end self-start m-2 text-[#EA0670] z-10 hover:cursor-pointer `} />
                                                                     :
                                                                     <svg onClick={() => {
-                                                                        // AddOrRemoveFavouritedListings(feature.id, 'Add');
                                                                         addListing(feature.id)
                                                                     }} className={`row-start-1 col-start-1 justify-self-end self-start m-2 z-10 rounded-[50%] hover:cursor-pointer`}
                                                                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" data-name="Favourite Outline" id="favourite">
-                                                                        <path fill="#ADB0B5" d="M0 0h24v24H0Z" opacity=".24">
+                                                                        <path fill="none" d="M0 0h24v24H0Z" opacity=".24">
                                                                         </path>
-                                                                        <path fill="white" d="M11.994 20.696a1.407 1.407 0 0 1-.986-.41L4.08 13.359a5.712 5.712 0 0 1 7.926-8.226 5.715 5.715 0 0 1 7.918 8.241l-6.944 6.922a1.4 1.4 0 0 1-.986.4Zm-.284-1.68Zm-3.6-13.62a3.913 3.913 0 0 0-2.757 6.69L12 18.73l6.652-6.634a3.915 3.915 0 1 0-5.534-5.539l-1.112 1.116-1.12-1.12A3.9 3.9 0 0 0 8.11 5.396Z" data-name="Path 2729">
+                                                                        <path fill="#EA0670" d="M11.994 20.696a1.407 1.407 0 0 1-.986-.41L4.08 13.359a5.712 5.712 0 0 1 7.926-8.226 5.715 5.715 0 0 1 7.918 8.241l-6.944 6.922a1.4 1.4 0 0 1-.986.4Zm-.284-1.68Zm-3.6-13.62a3.913 3.913 0 0 0-2.757 6.69L12 18.73l6.652-6.634a3.915 3.915 0 1 0-5.534-5.539l-1.112 1.116-1.12-1.12A3.9 3.9 0 0 0 8.11 5.396Z" data-name="Path 2729">
                                                                         </path>
                                                                     </svg>
                                                                 }
+                                                                {user.user &&
+                                                                    <Image
+                                                                        // placeholder="blur"	
+                                                                        priority
+                                                                        alt={url}
+                                                                        src={url}
+                                                                        width="0"
+                                                                        height="0"
+                                                                        sizes="100vw"
+                                                                        className="row-start-1 col-start-1 w-full h-auto rounded select-none max-h-[160px] max-w-[240px]"
+                                                                    />
+                                                                }
+                                                                {!user.user && index < 2 &&
+                                                                    <Image
+                                                                        // placeholder="blur"	
+                                                                        priority
+                                                                        alt={url}
+                                                                        src={url}
+                                                                        width="0"
+                                                                        height="0"
+                                                                        sizes="100vw"
+                                                                        className="row-start-1 col-start-1 w-full h-auto rounded select-none max-h-[160px] max-w-[240px]"
+                                                                    />
+                                                                }
 
-
-                                                                {/* <FavoriteBorderOutlinedIcon className={`row-start-1 col-start-1 justify-self-end self-start m-2 text-[#EA0670] z-10 `} /> */}
-                                                                <Image
-                                                                    // placeholder="blur"	
-                                                                    priority
-                                                                    alt={url}
-                                                                    src={url}
-                                                                    width="0"
-                                                                    height="0"
-                                                                    sizes="100vw"
-                                                                    className="row-start-1 col-start-1 w-full h-auto rounded select-none max-h-[160px] max-w-[240px]"
-                                                                />
+                                                                {!user.user && index >= 2 && <p className="justify-self-center self-center rounded select-none text-xs text-[#263238] bg-[#F8F8F8] p-4 ">Sign-in to view more!</p>}
                                                             </span>
                                                         </SwiperSlide>
                                                     )
@@ -738,11 +777,11 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                                                 <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1 whitespace-nowrap`}> {feature.properties.agent && dictionary['Properties']['Agent'] + ':'} {feature.properties.agent && feature.properties.agentName}  </p>
                                             </span>
 
-                                            <span className={`flex border-[#707070] border-t-[1px] m-2 `}>
+                                            <span className={`flex border-[#f8f8f8] border-t-[1px] m-2 `}>
                                             </span>
 
                                             <span className={`flex m-2 `}>
-                                                <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline ml-auto mr-2  whitespace-nowrap`}>
+                                                <p className={`text-[#ADB0B5] font-[500] font-['Montserrat',sans-serif] text-xs inline ml-auto mr-2  whitespace-nowrap`}>
                                                     {when}
                                                 </p>
                                             </span>

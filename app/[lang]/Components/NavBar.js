@@ -55,7 +55,6 @@ const NavBar = ({ open, setOpen }) => {
       {user.user ?
         <span className={`my-auto ml-auto flex`}>
 
-          <p onClick={() => { setOpen(!open) }} className={`my-auto text-base inline text-[white] mr-2 font-['Montserrat',sans-serif] hover:cursor-pointer`}> Sell </p>
 
           <span className={`border-r-[2px] border-[#0097A7] mx-2`}>
 
@@ -69,6 +68,13 @@ const NavBar = ({ open, setOpen }) => {
             </svg>
 
             <span className={`hidden ml-[-10px] z-50 group-hover:grid bg-[#07364B] absolute grid-cols-[150px] border-t-[2px] border-[#0097A7] ease-in-out	duration-300`}>
+
+
+              <span onClick={() => {
+                setOpen(!open)
+              }} className={`hover:bg-[#102C3A] ${open && `bg-[#102C3A]`} p-4`}>
+                <p className={` whitespace-nowrap text-sm	text-white font-['Montserrat',sans-serif] `}> Rent / Sell </p>
+              </span>
 
               <span onClick={() => {
                 // router.push('/my-account')

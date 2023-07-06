@@ -97,7 +97,9 @@ export default async function Page({ params, searchParams }) {
 
   const Listings = await getlistings();
 
-  const pageListing = await Listings[0].features.filter((feature) => feature.id == params.id)
+  const pageListing = await Listings[0].features.filter((feature) => feature.id == params.id);
+
+  
 
   return (
 
