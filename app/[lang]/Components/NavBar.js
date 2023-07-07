@@ -83,12 +83,6 @@ const NavBar = ({ open, setOpen }) => {
               </span>
 
               <span onClick={() => {
-                // router.push('/my-favourites')
-              }} className={`hover:bg-[#102C3A] p-4 `}>
-                <p className={` whitespace-nowrap text-sm	text-white font-['Montserrat',sans-serif] `}>  My Favorites </p>
-              </span>
-
-              <span onClick={() => {
                 SignOut()
               }} className={`hover:bg-[#102C3A] p-4 flex`}>
                 <p className={` whitespace-nowrap text-sm	text-white font-['Montserrat',sans-serif]`}>  Logout </p>

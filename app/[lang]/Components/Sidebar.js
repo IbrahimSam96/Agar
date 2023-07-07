@@ -33,10 +33,10 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import moment from 'moment';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 import { ToastContainer, toast } from 'react-toastify';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
 
-
-const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListings, open, setOpen, dictionary, Governorates, lang }) => {
+const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListings, open, setOpen, dictionary, Governorates, setSellOpen, sellOpen, setFavouritesSideBar, favouritesSideBar, lang }) => {
 
     // type:'ListingsCollection',
     // features:[{...}]
@@ -65,7 +65,6 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
     const [parking, setParking] = useState(undefined);
     const [furnished, setFurnished] = useState(undefined);
     const [agent, setAgent] = useState(undefined);
-
 
     // Price
     const [value, setValue] = React.useState([0, 100]);
@@ -297,6 +296,8 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
     const router = useRouter();
 
     const [favourited, setFavourited] = useState([]);
+    const [runagain, setRunAgain] = useState(false);
+
     const toastId = useRef(null);
 
     useEffect(() => {
@@ -325,41 +326,44 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
             }
 
             const UserProfile = await getUserProfile();
-            console.log(UserProfile);
 
             setFavourited(UserProfile['Favourites']);
         }
 
         // if user is authed then fetch favourited listings
-        if (user.user && favourited.length == 0) {
+        if (user.user) {
             retreiveUserProfile();
         }
 
-    }, [user.user]);
+    }, [user.user, runagain]);
 
 
     const addListing = async (ID) => {
 
         if (user.user) {
+            console.log("favourited before:", favourited);
+
             const docRef = doc(firebasedb, "Customers", user.user.uid);
 
-            setFavourited((prev) => [...prev, ID]);
+            let newList = favourited;
 
-            console.log("New List :", favourited);
+            newList.push(ID)
+
+            setFavourited(newList);
 
             // console.log("New List :", newlist);
 
             await updateDoc(docRef, {
-                Favourites: favourited
+                Favourites: newList
             }).then((res) => {
                 console.log('Done')
+                setRunAgain(!runagain)
             }).catch((err) => {
-                console.log(err)
+                console.log('Couldnt upload favourited listing', err)
             })
         }
         else {
             toastId.current = toast.error("Sign-in or create a new account to add this listing to your favourites", { autoClose: true });
-
         }
 
 
@@ -396,7 +400,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
             <ToastContainer />
 
             {open ?
-                <div className={`row-start-2 row-end-3 col-start-1 col-end-8 max-w-[80px] min-h-[85vh] mt-4 grid grid-rows-[50px,10px,70px,70px,auto] bg-[#FFFFFF] z-[100]  ease-in-out duration-300  shadow-md shadow-[#707070]  ${open ? "translate-x-0 " : "translate-x-[250%]"} `} >
+                <div className={`row-start-2 row-end-3 col-start-1 col-end-8 max-w-[80px] min-h-[85vh] mt-4 grid grid-rows-[50px,10px,70px,70px,70px,auto] bg-[#FFFFFF] z-[100]  ease-in-out duration-300  shadow-md shadow-[#707070]  ${open ? "translate-x-0 " : "translate-x-[250%]"} `} >
 
                     <span onClick={() => {
                         setOpen(!open)
@@ -421,22 +425,36 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" id="filter">
                             <path d="M4 10h7.09a6 6 0 0 0 11.82 0H44a1 1 0 0 0 0-2H22.91A6 6 0 0 0 11.09 8H4a1 1 0 0 0 0 2zM17 5a4 4 0 1 1-4 4A4 4 0 0 1 17 5zM44 23H36.91a6 6 0 0 0-11.82 0H4a1 1 0 0 0 0 2H25.09a6 6 0 0 0 11.82 0H44a1 1 0 0 0 0-2zM31 28a4 4 0 1 1 4-4A4 4 0 0 1 31 28zM44 38H22.91a6 6 0 0 0-11.82 0H4a1 1 0 0 0 0 2h7.09a6 6 0 0 0 11.82 0H44a1 1 0 0 0 0-2zM17 43a4 4 0 1 1 4-4A4 4 0 0 1 17 43z" data-name="Layer 15">
                             </path></svg>
-                        {/* <TuneIcon
-                            className={`text-[#07364B] group-hover:text-[white] text-base rounded-[50%] self-center justify-self-center `}
-                        /> */}
                         <p className={`text-sm text-[#263238] font-['Montserrat',sans-serif] self-center justify-self-center group-hover:text-[white]`}>Filter</p>
                     </span>
 
                     <span onClick={() => {
-                        setOpen(!open)
-                        setMoreFilters(!moreFilters)
+                        setFavouritesSideBar(!favouritesSideBar)
                     }} className={`grid group hover:cursor-pointer hover:bg-[#07364B] `}>
-                        <svg className={`select-none w-[25px] h-[25px] self-end justify-self-center fill-[#07364B] group-hover:fill-[white] text-base`}
-                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" id="filter">
-                            <path d="M4 10h7.09a6 6 0 0 0 11.82 0H44a1 1 0 0 0 0-2H22.91A6 6 0 0 0 11.09 8H4a1 1 0 0 0 0 2zM17 5a4 4 0 1 1-4 4A4 4 0 0 1 17 5zM44 23H36.91a6 6 0 0 0-11.82 0H4a1 1 0 0 0 0 2H25.09a6 6 0 0 0 11.82 0H44a1 1 0 0 0 0-2zM31 28a4 4 0 1 1 4-4A4 4 0 0 1 31 28zM44 38H22.91a6 6 0 0 0-11.82 0H4a1 1 0 0 0 0 2h7.09a6 6 0 0 0 11.82 0H44a1 1 0 0 0 0-2zM17 43a4 4 0 1 1 4-4A4 4 0 0 1 17 43z" data-name="Layer 15">
-                            </path></svg>
 
-                        <p className={`text-sm text-[#263238] font-['Montserrat',sans-serif] self-center justify-self-center group-hover:text-[white]`}>Rent / Sell </p>
+                        <svg className={`select-none w-[25px] h-[25px] self-end justify-self-center text-base`}
+                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" data-name="Favourite Outline" id="favourite">
+                            <path fill="none" d="M0 0h24v24H0Z" opacity=".24">
+                            </path>
+                            <path className={`group-hover:fill-[white]`} fill="#EA0670" d="M11.994 20.696a1.407 1.407 0 0 1-.986-.41L4.08 13.359a5.712 5.712 0 0 1 7.926-8.226 5.715 5.715 0 0 1 7.918 8.241l-6.944 6.922a1.4 1.4 0 0 1-.986.4Zm-.284-1.68Zm-3.6-13.62a3.913 3.913 0 0 0-2.757 6.69L12 18.73l6.652-6.634a3.915 3.915 0 1 0-5.534-5.539l-1.112 1.116-1.12-1.12A3.9 3.9 0 0 0 8.11 5.396Z" data-name="Path 2729">
+                            </path>
+                        </svg>
+                        <p className={`text-sm text-[#EA0670] font-['Montserrat',sans-serif] self-center justify-self-center group-hover:text-[white]`}>Favourites</p>
+                    </span>
+
+                    <span onClick={() => {
+                        if (user.user) {
+                            setSellOpen(!sellOpen)
+                        }
+                        else {
+                            toastId.current = toast.error("Sign-in or create a new account to create new listings ", { autoClose: true });
+
+                        }
+                    }} className={`grid group hover:cursor-pointer hover:bg-[#07364B] `}>
+
+                        <AddOutlinedIcon className={`select-none w-[25px] h-[25px] self-end justify-self-center text-[#0097A7] group-hover:text-[white] text-base`} />
+
+                        <p className={`text-sm text-[#263238] font-['Montserrat',sans-serif] self-center justify-self-center group-hover:text-[white]`}> Create </p>
                     </span>
                 </div>
                 :
@@ -652,7 +670,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
 
                             </span>
 
-                            <span className={`grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] `}>
+                            <span className={`grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))]`}>
 
                                 {sortedListings.features.length > 0 ? sortedListings.features.map((feature) => {
 
@@ -691,7 +709,6 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                                                                 {favouritedListing ?
                                                                     <FavoriteOutlinedIcon onClick={() => {
                                                                         removeListing(feature.id);
-
                                                                     }} className={`row-start-1 col-start-1 justify-self-end self-start m-2 text-[#EA0670] z-10 hover:cursor-pointer `} />
                                                                     :
                                                                     <svg onClick={() => {
