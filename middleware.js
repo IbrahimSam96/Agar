@@ -1,35 +1,68 @@
 import { NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
 
-//   Admin Firebase SDK
-// import { AdminAuth } from './app/utils/AdminFirebase';
+import { i18n } from './i18n-config'
 
-// This function can be marked `async` if using `await` inside
-export async function middleware(request) {
+import { match as matchLocale } from '@formatjs/intl-localematcher'
+import Negotiator from 'negotiator'
 
-    // const readAuthStatus = async () => {
-    //     try {
-    //         const Cookie = cookies().get('token');
-    //         // console.log(JSON.stringify(Cookies, null, 2));
+function getLocale(request) {
+    // Negotiator expects plain object so we need to transform headers
+    const negotiatorHeaders = {}
+    request.headers.forEach((value, key) => (negotiatorHeaders[key] = value))
 
-    //         const token = await AdminAuth.verifyIdToken(Cookie.value);
-    //         const { uid, email } = token;
+    // @ts-ignore locales are readonly
+    const locales = i18n.locales
 
-    //         console.log(uid, email);
+    // Use negotiator and intl-localematcher to get best locale
+    let languages = new Negotiator({ headers: negotiatorHeaders }).languages(
+        locales
+    )
 
-    //         if (token) {
-    //             return NextResponse.redirect(new URL('/', request.url))
-    //         }
-    //     } catch (error) {
+    const locale = matchLocale(languages, locales, i18n.defaultLocale)
 
-    //     }
-    // }
-
-    // await readAuthStatus();
-
+    return locale
 }
 
-// See "Matching Paths" below to learn more
+export function middleware(request) {
+
+    const pathname = request.nextUrl.pathname
+
+    // // `/_next/` and `/api/` are ignored by the watcher, but we need to ignore files in `public` manually.
+    // If you have one
+    if (
+        [
+            '/filter.svg',
+            '/jordan.png',
+            '/sofa.svg',
+            '/bed.svg',
+            '/bathtub.svg',
+            '/favourite.svg'
+            // Your other files in `public`
+        ].includes(pathname)
+    )
+        return
+
+    // Check if there is any supported locale in the pathname
+    const pathnameIsMissingLocale = i18n.locales.every(
+        (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
+    )
+
+    // Redirect if there is no locale
+    if (pathnameIsMissingLocale) {
+        const locale = getLocale(request)
+
+        // e.g. incoming request is /products
+        // The new URL is now /en-US/products
+        return NextResponse.redirect(
+            new URL(
+                `/${locale}${pathname.startsWith('/') ? '' : '/'}${pathname}`,
+                request.url
+            )
+        )
+    }
+}
+
 export const config = {
-    matcher: '/login/',
+    // Matcher ignoring `/_next/` and `/api/`
+    matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 }

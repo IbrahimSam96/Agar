@@ -10,7 +10,8 @@ import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 import BedOutlinedIcon from '@mui/icons-material/BedOutlined';
 import ShowerOutlinedIcon from '@mui/icons-material/ShowerOutlined';
 import CropFreeOutlinedIcon from '@mui/icons-material/CropFreeOutlined';
-import ChairOutlinedIcon from '@mui/icons-material/ChairOutlined'; import LocalParkingOutlinedIcon from '@mui/icons-material/LocalParkingOutlined';
+import ChairOutlinedIcon from '@mui/icons-material/ChairOutlined';
+ import LocalParkingOutlinedIcon from '@mui/icons-material/LocalParkingOutlined';
 import LoopIcon from '@mui/icons-material/Loop';
 
 // Prime React 
@@ -121,6 +122,8 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
     const [numberOfBathrooms, setNumberOfBathrooms] = useState(1);
     const [parking, setParking] = useState(false);
     const [furnished, setFurnished] = useState(false);
+    const [agent, setAgent] = useState(false);
+    const [agentName, setAgentName] = useState('');
 
     const [unitDescription, setUnitDescription] = useState('');
 
@@ -136,8 +139,8 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
         const successCallback = (position) => {
             console.log(position);
             setGeoLocationError(false)
-            setLatitude(position.coords.latitude);
-            setLongitude(position.coords.longitude);
+            setLatitude(position.coords.longitude);
+            setLongitude(position.coords.latitude);
         };
 
         const errorCallback = (error) => {
@@ -196,6 +199,10 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                     <span className={`self-center flex py-2 mx-2 `}>
 
+                        <span className={` mr-auto my-auto ml-4`}>
+                            <p className={`text-[#263238] font-[600] font-['Montserrat',sans-serif] text-xl `}> {rent ? 'Rent' : 'Sell'} Your Appartment </p>
+                        </span>
+
                         <ClearOutlinedIcon onClick={() => {
                             setOpen(!open)
                             if (preview) {
@@ -231,7 +238,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
                                         onClick={() => { setRent(true) }}
-                                        className={`${rent ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${rent ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             Rent
                                         </p>
@@ -239,7 +246,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     <span
                                         onClick={() => { setRent(false) }}
-                                        className={`${!rent ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${!rent ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             Sale
                                         </p>
@@ -353,7 +360,9 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                 <span
                                     id="cityPopup"
                                     ref={cityPopupRef}
-                                    onClick={() => { setCityPopup(!cityPopup) }}
+                                    onClick={() => {
+                                        // setCityPopup(!cityPopup)
+                                    }}
                                     className={`group mb-auto hover:cursor-not-allowed border-[1px] border-[grey] p-2 rounded opacity-25`}>
 
                                     <span className={`flex items-center w-[200px]`}>
@@ -363,7 +372,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                         </svg>
                                     </span>
 
-                                    <span className={` ${cityPopup ? 'grid' : 'hidden'} z-50 ml-[-10px] bg-[#FFFFFF] absolute grid-cols-[220px] max-h-[150px] overflow-y-auto shadow shadow-[#07364B] `}>
+                                    <span className={` ${cityPopup ? 'grid' : 'hidden'} z-50 ml-[-10px] bg-[#FFFFFF] sticky grid-cols-[220px] max-h-[150px] overflow-y-auto shadow shadow-[#07364B] `}>
                                         {Governorates.map((governorate) => {
                                             return (
                                                 <Fragment key={governorate}>
@@ -455,7 +464,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
                                         onClick={() => { setNumberOfBathrooms(1) }}
-                                        className={`${numberOfBathrooms == 1 ? `z-[-2]` : `z-10`} py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBathrooms == 1 ? `z-[-2]` : `z-10`} py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             1
                                         </p>
@@ -463,7 +472,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     <span
                                         onClick={() => { setNumberOfBathrooms(2) }}
-                                        className={`${numberOfBathrooms == 2 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBathrooms == 2 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             2
                                         </p>
@@ -471,7 +480,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     <span
                                         onClick={() => { setNumberOfBathrooms(3) }}
-                                        className={`${numberOfBathrooms == 3 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBathrooms == 3 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             3
                                         </p>
@@ -479,7 +488,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     <span
                                         onClick={() => { setNumberOfBathrooms(4) }}
-                                        className={`${numberOfBathrooms == 4 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBathrooms == 4 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             4
                                         </p>
@@ -508,14 +517,14 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                 <span className={`self-center justify-self-start row-start-1 col-start-1 mx-2`}>
                                     <p className={` text-[0.5em] sm:text-[0.8em] text-[rgb(36,36,36)] inline`}>
-                                        Number of Bedrooms
+                                        Number of Bathrooms
                                     </p>
                                 </span>
 
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
                                         onClick={() => { setNumberOfBedrooms(1) }}
-                                        className={`${numberOfBedrooms == 1 ? `z-[-2]` : `z-10`} py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBedrooms == 1 ? `z-[-2]` : `z-10`} py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             1
                                         </p>
@@ -523,7 +532,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     <span
                                         onClick={() => { setNumberOfBedrooms(2) }}
-                                        className={`${numberOfBedrooms == 2 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBedrooms == 2 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             2
                                         </p>
@@ -531,7 +540,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     <span
                                         onClick={() => { setNumberOfBedrooms(3) }}
-                                        className={`${numberOfBedrooms == 3 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBedrooms == 3 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             3
                                         </p>
@@ -539,7 +548,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     <span
                                         onClick={() => { setNumberOfBedrooms(4) }}
-                                        className={`${numberOfBedrooms == 4 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${numberOfBedrooms == 4 ? `z-[-2]` : `z-10`}  py-2 px-[25px] sm:px-[35.8px] border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             4
                                         </p>
@@ -575,7 +584,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
                                         onClick={() => { setParking(false) }}
-                                        className={`${parking == false ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${parking == false ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             No
                                         </p>
@@ -583,7 +592,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     <span
                                         onClick={() => { setParking(true) }}
-                                        className={`${parking == true ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${parking == true ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             Yes
                                         </p>
@@ -618,7 +627,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                 <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
                                     <span
                                         onClick={() => { setFurnished(false) }}
-                                        className={`${furnished == false ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${furnished == false ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             No
                                         </p>
@@ -626,7 +635,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     <span
                                         onClick={() => { setFurnished(true) }}
-                                        className={`${furnished == true ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#E4FABF] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        className={`${furnished == true ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                                         <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
                                             Yes
                                         </p>
@@ -649,6 +658,69 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                 </span>
 
                             </span>
+
+                            <span className={`self-center grid grid-rows-1 py-2 mx-2`}>
+
+                                <span className={`self-center justify-self-start row-start-1 col-start-1 mx-2`}>
+                                    <p className={` text-[0.5em] sm:text-[0.8em] text-[#263238] inline `}>
+                                        Are you an Realtor ?
+                                    </p>
+                                </span>
+
+                                <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
+                                    <span
+                                        onClick={() => { setAgent(false) }}
+                                        className={`${agent == false ? `z-[-2]` : `z-10`} py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
+                                            No
+                                        </p>
+                                    </span>
+
+                                    <span
+                                        onClick={() => { setAgent(true) }}
+                                        className={`${agent == true ? `z-[-2]` : `z-10`}  py-2 px-10 sm:px-14 border-[1px] border-[#102C3A] hover:bg-[#F8F8F8] hover:cursor-pointer hover:opacity-100 opacity-80`}>
+                                        <p className={`text-[#0097A7] text-[0.7em] font-bold inline`}>
+                                            Yes
+                                        </p>
+                                    </span>
+
+                                </span>
+
+                                <span className={`flex self-center justify-self-end row-start-1 col-start-2 `}>
+                                    <span
+                                        onClick={() => { }}
+                                        className={`py-2 px-10 sm:px-14 transition-[margin] ${agent == false ? `mr-[102px] sm:mr-[133px]` : `mr-0`} border-[1px] border-[#102C3A]  bg-[#07364B] `}>
+                                        <p className={`text-[white] text-[0.7em] font-bold inline`}>
+                                            {agent == false ? 'No' : 'Yes'}
+
+                                        </p>
+                                    </span>
+
+                                </span>
+
+                            </span>
+
+                            {agent &&
+
+                                <span className={`flex self-center py-2 mx-2`} >
+
+                                    <TextField
+                                        value={agentName}
+                                        // error={}
+                                        autoComplete='false'
+                                        required
+                                        sx={{ marginRight: "10px" }}
+                                        autoFocus={true}
+                                        id="outlined-basic"
+                                        helperText="Realtor Name"
+                                        variant="outlined"
+                                        size="small"
+                                        onChange={(e) => {
+                                            setAgentName(e.target.value)
+                                        }}
+                                    />
+                                </span>
+                            }
 
                             <span className={`self-center grid grid-rows-1 py-2 mx-2`}>
 
@@ -749,6 +821,9 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                     else if (latitude === undefined || latitude == '') {
                                         toastId.current = toast.error("Latitude cannot be empty", { autoClose: true });
                                     }
+                                    else if (agent === true && agentName == '') {
+                                        toastId.current = toast.error("Brokerage Name cannot be empty", { autoClose: true });
+                                    }
                                     else if (unitDescription === '' || unitDescription.length < 10) {
                                         toastId.current = toast.error("Unit Description cannot be less than 10 characters or empty", { autoClose: true });
                                     }
@@ -773,7 +848,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                         }} className={`self-start grid shadow-md shadow-slate-500 rounded-[10px] m-2 max-w-[500px]`}>
 
                             <span className={`flex`}>
-                                <div className={`m-2 shadow-md shadow-slate-200 border-[1px] border-[#E3EFF1] w-[240px] h-[auto] rounded`}>
+                                <div className={`m-2 shadow-md shadow-slate-200 border-[1px] border-[#E3EFF1] w-[150px] h-[auto] rounded`}>
 
                                     <Swiper modules={[Navigation, Pagination, Scrollbar, A11y]}
                                         navigation={true}
@@ -789,11 +864,17 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                             return (
                                                 <SwiperSlide key={feature.objectURL}>
                                                     <Image
+                                                        priority
                                                         src={feature.objectURL}
                                                         alt={feature.name}
-                                                        width={220}
-                                                        height={160}
-                                                        className={`m-2 rounded select-none `}
+                                                        width="0"
+                                                        height="0"
+                                                        sizes="100vw"
+                                                        className="w-full h-auto m-2 rounded select-none max-h-[120px] max-w-[150px]"
+
+                                                    // width={220}
+                                                    // height={160}
+                                                    // className={`m-2 rounded select-none max-h-[120px] max-w-[220px] w-auto h-auto`}
                                                     />
                                                 </SwiperSlide>
 
@@ -825,7 +906,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                             {numberOfBedrooms}BD | {numberOfBathrooms}BA | {parking ? 1 : 0} Parking
                                         </p>
                                         <p className={`text-[#707070] text-xs inline font-[600] mr-auto ml-2`}>
-                                            {area} sqft
+                                            {area} m2
                                         </p>
                                     </span>
 
@@ -880,7 +961,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                 <span className={`grid mx-2`}>
                                     <CropFreeOutlinedIcon className={`justify-self-center text-[#07364B] font-[600]`} />
                                     <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline `}>
-                                        {area} sqft
+                                        {area} m2
                                     </p>
                                 </span>
 
@@ -917,7 +998,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                         <span className={` self-center flex py-2 mx-2`}>
 
                             <span
-                                className={`flex px-8 py-3 my-auto mr-auto border-[#102C3A] hover:bg-[#E4FABF]  border-[1px]  text-[#0097A7] text-center hover:cursor-pointer`}
+                                className={`flex px-8 py-3 my-auto mr-auto border-[#102C3A] hover:bg-[#F8F8F8]  border-[1px]  text-[#0097A7] text-center hover:cursor-pointer`}
                                 onClick={() => {
                                     setPreview(false);
                                     setLoading(false)
@@ -964,6 +1045,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                                     properties: {
                                                         id: id,
                                                         rent: rent,
+                                                        propertyStatus: `${rent ? 'For Rent' : 'For Sale'}`,
                                                         price: new Intl.NumberFormat('en-US', {
                                                             style: 'currency', currency: 'USD', minimumFractionDigits: 0,
                                                             maximumFractionDigits: 0,
@@ -975,6 +1057,9 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                                         bedrooms: numberOfBedrooms,
                                                         bathrooms: numberOfBathrooms,
                                                         parking: parking,
+                                                        furnished: furnished,
+                                                        agent: agent,
+                                                        agentName: agentName,
                                                         description: unitDescription,
                                                         timeStamp: Timestamp.now(),
                                                         urls: res
@@ -1002,7 +1087,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                                 setLongitude('')
                                                 setLatitude('')
                                                 setMediaList([])
-                                                
+
                                             }).catch((err) => {
                                                 setLoading(false)
 

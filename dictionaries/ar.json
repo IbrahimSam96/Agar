@@ -1,0 +1,44 @@
+{
+  "Listings": "شقة",
+  "Sort": "رتب",
+  "Numbers": {
+    "0": "٠",
+    "1": "١",
+    "2": "٢",
+    "3": "٣",
+    "4": "٤"
+  },
+  "Properties": {
+    "Parking": "مصفت سيارات",
+    "BD": "غرف",
+    "BA": "حمام",
+    "Listing ID": "رقم الإعلان",
+    "Agent":"مكتب"
+  },
+  "Sidebar": {
+    "Title": {
+      "For Rent": "شقق للايجار في عمان",
+      "For Sale": "شقق للبيع في عمان",
+      "Rented": "شقق مستأجرة في عمان",
+      "Sold": "شقق مباعة في عمان"
+    },
+    "Category": {
+      "For Rent": "للايجار",
+      "For Sale": "للبيع",
+      "Rented": "مستأجرة",
+      "Sold": "مُباع"
+    },
+    "Price": {
+      "Price": "السعر",
+      "Under": "تحت",
+      "Above": "فوق",
+      "to": "إلى",
+      "from": "من",
+      "Unlimited": "السماء"
+    },
+    "Filters": {
+      "More Filters": "المزيد",
+      "Close Filters": "أغلق"
+    }
+  }
+}

@@ -9,6 +9,7 @@ import Map from "./map";
 import NavBar from "./NavBar";
 import Sidebar from "./Sidebar";
 import Sell from "./Sell";
+import Favourites from "./Favourites";
 
 // Cluster Colors
 // '#07364B', // HOVER color
@@ -19,49 +20,36 @@ import Sell from "./Sell";
 // Divider
 // #E3EFF1 
 
-const AppClientPage = ({ docID, Listings }) => {
-
+const AppClientPage = ({ docID, Listings, dictionary, lang }) => {
     // Sidebar
     const [sideBarOpen, setSideBarOpen] = useState(true);
 
-    // Sell Page 
+    // Sell  sidebar
     const [sellOpen, setSellOpen] = useState(false);
 
-    const [UpdatedListings, setUpdatedListings] = useState(Listings);
+    // Favourites sidebar
+    const [favouritesSideBar, setFavouritesSideBar] = useState(false);
 
+    // Data
+    const [allListings, setAllListings] = useState(Listings[0]);
 
-    const getListings = async () => {
-
-        const unsubscribe = onSnapshot(doc(firebasedb, "Listings", docID), (doc) => {
-            console.log("Snapshot Data Fired: ", doc.data());
-            setUpdatedListings([doc.data()])
-        });
-
-    }
-
-
-    useEffect(() => {
-        let unsubscribe;
-
-        const getListingsAndSubscribe = async () => {
-            unsubscribe = await getListings();
-        }
-
-        getListingsAndSubscribe();
-
-        return () => {
-            unsubscribe?.();
-        };
-    }, []);
-
+    const [UpdatedListings, setUpdatedListings] = useState(Listings[0]);
 
 
     return (
         <>
             <NavBar open={sellOpen} setOpen={setSellOpen} />
-            <Map Listings={UpdatedListings} Governorates={Governorates} JordanCoordinates={JordanCoordinates} ammanCoordinates={ammanCoordinates} />
-            <Sidebar Listings={UpdatedListings} open={sideBarOpen} setOpen={setSideBarOpen} />
+            <Map Listings={UpdatedListings} />
+            <Sidebar
+                allListings={allListings} 
+                setSharedListings={setUpdatedListings}
+                open={sideBarOpen} setOpen={setSideBarOpen}
+                dictionary={dictionary} Governorates={Governorates}
+                lang={lang} sellOpen={sellOpen} setSellOpen={setSellOpen}
+                setFavouritesSideBar={setFavouritesSideBar} favouritesSideBar={favouritesSideBar}
+            />
             <Sell open={sellOpen} setOpen={setSellOpen} Governorates={Governorates} docID={docID} />
+            <Favourites open={favouritesSideBar} setOpen={setFavouritesSideBar} dictionary={dictionary} allListings={allListings} />
         </>
     )
 }
@@ -359,3 +347,27 @@ const ListingsDemo = {
     ],
     "type": "ListingsCollection"
 };
+
+// Set up a onSnapshot Listener
+    // const getListings = async () => {
+
+    //     const unsubscribe = onSnapshot(doc(firebasedb, "Listings", docID), (doc) => {
+    //         console.log("Snapshot Data Fired: ", doc.data());
+    //         setUpdatedListings([doc.data()])
+    //     });
+
+    // }
+
+    // useEffect(() => {
+    //     let unsubscribe;
+
+    //     const getListingsAndSubscribe = async () => {
+    //         unsubscribe = await getListings();
+    //     }
+
+    //     getListingsAndSubscribe();
+
+    //     return () => {
+    //         unsubscribe?.();
+    //     };
+    // }, []);

@@ -2,14 +2,15 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useRouter, usePathname, useSearchParams, useParams } from 'next/navigation'
 
-import { useAuth } from '@/app/utils/Authenticator';
-import { firebaseauth } from '@/app/utils/InitFirebase';
+import { useAuth } from '@/app/[lang]/utils/Authenticator';
+import { firebaseauth } from '@/app/[lang]/utils/InitFirebase';
 import { signOut } from "firebase/auth";
 
 
 import LocationCityOutlinedIcon from '@mui/icons-material/LocationCityOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import LoopIcon from '@mui/icons-material/Loop';
+import Image from 'next/image';
 
 const NavBar = ({ open, setOpen }) => {
 
@@ -38,17 +39,22 @@ const NavBar = ({ open, setOpen }) => {
       <span onClick={() => {
         router.push('/')
       }} className={`my-auto mr-auto ml-4 flex cursor-pointer`}>
+        <Image
+          src={'/jordan.png'}
+          alt={'/jordan.png'}
+          width={30}
+          height={30}
+          className={`rounded-l select-none flex mb-auto`}
+        />
         <LocationCityOutlinedIcon className={`mx-2 text-[#0097A7] text-[40px] my-auto`} />
         <p className={`font-mono text-white text-[30px] inline my-auto `}>
           shoqaq.jo
         </p>
       </span>
 
-
       {user.user ?
         <span className={`my-auto ml-auto flex`}>
 
-          <p onClick={() => { setOpen(!open) }} className={`my-auto text-base inline text-[white] mr-2 font-['Montserrat',sans-serif] hover:cursor-pointer`}> Sell </p>
 
           <span className={`border-r-[2px] border-[#0097A7] mx-2`}>
 
@@ -63,10 +69,17 @@ const NavBar = ({ open, setOpen }) => {
 
             <span className={`hidden ml-[-10px] z-50 group-hover:grid bg-[#07364B] absolute grid-cols-[150px] border-t-[2px] border-[#0097A7] ease-in-out	duration-300`}>
 
+
               <span onClick={() => {
-                router.push('/my-account')
+                setOpen(!open)
+              }} className={`hover:bg-[#102C3A] ${open && `bg-[#102C3A]`} p-4`}>
+                <p className={` whitespace-nowrap text-sm	text-white font-['Montserrat',sans-serif] `}> Rent / Sell </p>
+              </span>
+
+              <span onClick={() => {
+                // router.push('/my-account')
               }} className={`hover:bg-[#102C3A] p-4 `}>
-                <p className={` whitespace-nowrap text-sm	text-white font-['Montserrat',sans-serif] `}>  My Profile </p>
+                <p className={` whitespace-nowrap text-sm	text-white font-['Montserrat',sans-serif] `}>  Settings </p>
               </span>
 
               <span onClick={() => {

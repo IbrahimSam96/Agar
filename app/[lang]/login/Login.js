@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation';
 // React
 import { useEffect, useState } from 'react';
 // Local Components
-import { useAuth } from '@/app/utils/Authenticator';
+import { useAuth } from '@/app/[lang]/utils/Authenticator';
 
 // Client Firebase SDK
-import { firebaseauth } from '@/app/utils/InitFirebase'
+import { firebaseauth, firebasedb } from '@/app/[lang]/utils/InitFirebase'
 import {
     createUserWithEmailAndPassword, signInWithEmailAndPassword,
     signOut, signInWithPopup, GoogleAuthProvider
@@ -25,8 +25,9 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 
 import GoogleButton from 'react-google-button'
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 
-const Login = ( ) => {
+const Login = () => {
 
     const user = useAuth();
     const router = useRouter();
@@ -48,16 +49,25 @@ const Login = ( ) => {
 
     const SignUp = (e) => {
         e.preventDefault();
-
         createUserWithEmailAndPassword(firebaseauth, email, password)
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
-                console.log("Success")
-                // ...
-                window.location = '/';
-            })
-            .catch((error) => {
+
+                const docRef = doc(firebasedb, "Customers", user.uid);
+
+                setDoc(docRef, {
+                    uid: user.uid,
+                    Favourites: []
+                }, { merge: true }).then((res) => {
+                    console.log(res)
+                    console.log("Success")
+                    // ...
+                    window.location = '/';
+                }).catch((err) => {
+                    console.log(err)
+                })
+            }).catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 // ..
@@ -73,9 +83,20 @@ const Login = ( ) => {
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
-                console.log("Success")
-                window.location = '/';
                 // ...
+                const docRef = doc(firebasedb, "Customers", user.uid);
+
+                setDoc(docRef, {
+                    uid: user.uid,
+                    Favourites: []
+                }, { merge: true }).then((res) => {
+                    console.log(res)
+                    console.log("Success")
+                    // ...
+                    window.location = '/';
+                }).catch((err) => {
+                    console.log(err)
+                })
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -96,11 +117,22 @@ const Login = ( ) => {
                 const token = credential.accessToken;
                 // The signed-in user info.
                 const user = result.user;
+                const docRef = doc(firebasedb, "Customers", user.uid);
+
+                setDoc(docRef, {
+                    uid: user.uid,
+                }, { merge: true }).then((res) => {
+                    console.log(res)
+                    console.log("Success")
+                    // ...
+                    window.location = '/';
+                }).catch((err) => {
+                    console.log(err)
+                })
+
                 // IdP data available using getAdditionalUserInfo(result)
                 // ...
-                window.location = '/';
 
-                console.log(result)
             }).catch((error) => {
                 // Handle Errors here.
                 const errorCode = error.code;
