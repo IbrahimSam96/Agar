@@ -36,7 +36,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
 
-const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListings, open, setOpen, dictionary, Governorates, setSellOpen, sellOpen, setFavouritesSideBar, favouritesSideBar, lang }) => {
+const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Governorates, setSellOpen, sellOpen, setFavouritesSideBar, favouritesSideBar, lang }) => {
 
     // type:'ListingsCollection',
     // features:[{...}]
@@ -204,7 +204,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
 
         setSharedListings({ type: "ListingsCollection", features: list });
 
-    }, [numberOfBedrooms, numberOfBathrooms, parking, furnished, max, min, value, category, sort]);
+    }, [numberOfBedrooms, numberOfBathrooms, parking, furnished, agent, max, min, value, category, sort]);
 
 
     // Closes Price Modal if clicked outside. 
@@ -809,7 +809,7 @@ const Sidebar = ({ allListings, setAllListings, SharedListings, setSharedListing
                                 }) :
                                     <span className={`flex self-center justify-self-center col-start-1 col-end-3 p-2`}>
                                         <span className={` mx-auto my-auto`}>
-                                            <p className={`text-[#263238] font-['Montserrat',sans-serif] text-base overflow-hidden text-ellipsis whitespace-nowrap `}> Sorry We don't have any listings </p>
+                                            <p className={`text-[#263238] font-['Montserrat',sans-serif] text-base overflow-hidden text-ellipsis whitespace-nowrap `}> `Sorry, there are no more listings` </p>
                                         </span>
                                     </span>
                                 }

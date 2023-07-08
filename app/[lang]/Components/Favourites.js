@@ -58,7 +58,7 @@ const Favourites = ({ open, setOpen, allListings, dictionary }) => {
         }
 
         // if user is authed then fetch favourited listings
-        if (user.user && favourited.length == 0) {
+        if (user.user) {
             retreiveUserProfile();
         }
 
@@ -269,7 +269,7 @@ const Favourites = ({ open, setOpen, allListings, dictionary }) => {
                         }) :
                             <span className={`flex self-center justify-self-center col-start-1 col-end-3 p-2`}>
                                 <span className={` mx-auto my-auto`}>
-                                    <p className={`text-[#263238] font-['Montserrat',sans-serif] text-base overflow-hidden text-ellipsis whitespace-nowrap `}> You don't have any favourites </p>
+                                    <p className={`text-[#263238] font-['Montserrat',sans-serif] text-base overflow-hidden text-ellipsis whitespace-nowrap`}> `You dont have any favourites` </p>
                                 </span>
                             </span>
                         }

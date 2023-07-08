@@ -1,7 +1,6 @@
 'use client'
 // Nextjs
 import Image from 'next/image';
-
 // React
 import React, { useRef, useEffect, useState } from 'react';
 // Mapbox
@@ -9,14 +8,13 @@ import mapboxgl from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loade
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZGV2amRlZWQiLCJhIjoiY2xpczBneWh6MTIydDNlazlmNmJ3M2twMiJ9.JXeq6EXsQdcleRgNzB76Lw';
-mapboxgl.setRTLTextPlugin('https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js');
 
 // Helper Libraries 
 import ReactDOMServer from 'react-dom/server';
 import moment from 'moment/moment';
 import { Timestamp } from 'firebase/firestore';
 
-const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) => {
+const Map = ({ Listings }) => {
 
     const mapContainer = useRef(null);
     const map = useRef(null);
@@ -52,6 +50,8 @@ const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) =>
         const language = new MapboxLanguage({
             defaultLanguage: 'en'
         });
+        mapboxgl.setRTLTextPlugin('https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js');
+
         map.current.addControl(language);
         // Zoom Button
         map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
@@ -190,42 +190,43 @@ const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) =>
 
             // Highlights Area
             // Adds Area Coordinates to Outline Data 
-            map.current.addSource('Amman', {
-                'type': 'geojson',
-                'data': {
-                    'type': 'Feature',
-                    'geometry': {
-                        'type': 'Polygon',
-                        // These coordinates outline Amman. 31.856/36.13
-                        'coordinates': [
-                            ammanCoordinates
-                        ]
-                    }
-                }
-            })
-            // Add a new layer to visualize the polygon.
-            map.current.addLayer({
-                'id': 'Amman',
-                'type': 'fill',
-                'source': 'Amman', // reference the data source
-                'layout': {},
-                'paint': {
-                    'fill-color': '#A9D7DC', // #0080ff blue color fill OPTION 2 #A9D7DC Light Blue 
-                    'fill-opacity': 0.5
-                }
-            });
-            // Add a black outline around the polygon.
-            map.current.addLayer({
-                'id': 'outline',
-                'type': 'line',
-                'source': 'Amman',
-                'layout': {},
-                'paint': {
-                    'line-color': '#000',
-                    'line-width': 3
-                }
-            });
+            // map.current.addSource('Amman', {
+            //     'type': 'geojson',
+            //     'data': {
+            //         'type': 'Feature',
+            //         'geometry': {
+            //             'type': 'Polygon',
+            //             // These coordinates outline Amman. 31.856/36.13
+            //             'coordinates': [
+            //                 ammanCoordinates
+            //             ]
+            //         }
+            //     }
+            // })
+            // // Add a new layer to visualize the polygon.
+            // map.current.addLayer({
+            //     'id': 'Amman',
+            //     'type': 'fill',
+            //     'source': 'Amman', // reference the data source
+            //     'layout': {},
+            //     'paint': {
+            //         'fill-color': '#A9D7DC', // #0080ff blue color fill OPTION 2 #A9D7DC Light Blue 
+            //         'fill-opacity': 0.5
+            //     }
+            // });
+            // // Add a black outline around the polygon.
+            // map.current.addLayer({
+            //     'id': 'outline',
+            //     'type': 'line',
+            //     'source': 'Amman',
+            //     'layout': {},
+            //     'paint': {
+            //         'line-color': '#000',
+            //         'line-width': 3
+            //     }
+            // });
 
+            // /////////////////////////////////
             // inspect a cluster on click
             map.current.on('click', 'clusters', (e) => {
                 const features = map.current.queryRenderedFeatures(e.point, {
@@ -278,14 +279,6 @@ const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) =>
                         }} className={`w-full grid shadow-md shadow-slate-500 rounded-[10px]`}>
 
                             <span className={`flex`}>
-                                {/* <Image
-                                    priority
-                                    src={coverImage}
-                                    alt={coverImage}
-                                    width={150}
-                                    height={150}
-                                    className={`rounded-l select-none max-h-[120px]`}
-                                /> */}
                                 <Image
                                     priority
                                     alt={coverImage}
@@ -418,7 +411,7 @@ const Map = ({ Listings, Governorates, JordanCoordinates, ammanCoordinates }) =>
         // Clean up on unmount
         return () => map.current.remove();
 
-    }, []);
+    },[]);
 
     // Used for Updating map
     useEffect(() => {

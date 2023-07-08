@@ -91,7 +91,7 @@ const ListingClientPage = ({ Listings, params, feature }) => {
             retreiveUserProfile();
         }
 
-    }, [user.user]);
+    }, [user.user, favourited.length]);
 
 
     console.log(feature)
@@ -236,7 +236,7 @@ const ListingClientPage = ({ Listings, params, feature }) => {
 
                             {feature.properties.urls.map((url, index) => {
                                 return (
-                                    <Fragment>
+                                    <Fragment key={url}>
                                         {index == 0 && <Image
                                             // placeholder="blur"
                                             onClick={() => {
@@ -319,7 +319,7 @@ const ListingClientPage = ({ Listings, params, feature }) => {
 
                             {feature.properties.urls.map((url, index) => {
                                 return (
-                                    <Fragment>
+                                    <Fragment key={url}>
                                         {index == 1 && <Image
                                             // placeholder="blur"	
                                             onClick={() => {

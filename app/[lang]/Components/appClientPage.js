@@ -30,19 +30,18 @@ const AppClientPage = ({ docID, Listings, dictionary, lang }) => {
     // Favourites sidebar
     const [favouritesSideBar, setFavouritesSideBar] = useState(false);
 
-    const [UpdatedListings, setUpdatedListings] = useState(Listings[0]);
-
+    // Data
     const [allListings, setAllListings] = useState(Listings[0]);
 
+    const [UpdatedListings, setUpdatedListings] = useState(Listings[0]);
 
 
     return (
         <>
             <NavBar open={sellOpen} setOpen={setSellOpen} />
-            <Map Listings={UpdatedListings} Governorates={Governorates} JordanCoordinates={JordanCoordinates} ammanCoordinates={ammanCoordinates} />
+            <Map Listings={UpdatedListings} />
             <Sidebar
-                allListings={allListings} setAllListings={setAllListings}
-                SharedListings={UpdatedListings}
+                allListings={allListings} 
                 setSharedListings={setUpdatedListings}
                 open={sideBarOpen} setOpen={setSideBarOpen}
                 dictionary={dictionary} Governorates={Governorates}
