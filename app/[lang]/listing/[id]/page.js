@@ -27,7 +27,7 @@ import { firebasedb } from "../../utils/InitFirebase";
 
 export const dynamicParams = false // true | false,
 
-export async function generateStaticParams() {
+export async function generateStaticParams({ params: { lang } }) {
   let docID;
 
   const getlistings = async () => {
@@ -56,7 +56,8 @@ export async function generateStaticParams() {
   const Listings = await getlistings();
   // return Listings
 
-   return await Listings[0].features.map((feature) => ({
+  return await Listings[0].features.map((feature) => ({
+    locale: lang,
     id: feature.id,
   }))
 }
@@ -99,7 +100,7 @@ export default async function Page({ params, searchParams }) {
 
   const pageListing = await Listings[0].features.filter((feature) => feature.id == params.id);
 
-  
+
 
   return (
 
