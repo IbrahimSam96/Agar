@@ -27,40 +27,39 @@ import { firebasedb } from "../../utils/InitFirebase";
 
 export const dynamicParams = false // true | false,
 
-// export async function generateStaticParams({ params: { lang } }) {
-//   let docID;
+export async function generateStaticParams({ params: { lang } }) {
+  let docID;
 
-//   const getlistings = async () => {
-//     // setLoading(true)
-//     const colRef = collection(firebasedb, "Listings");
-//     const querySnapshot = await getDocs(colRef);
-//     let active_Lisitings = [];
+  const getlistings = async () => {
+    // setLoading(true)
+    const colRef = collection(firebasedb, "Listings");
+    const querySnapshot = await getDocs(colRef);
+    let active_Lisitings = [];
 
-//     querySnapshot.forEach((doc) => {
-//       // doc.data() is never undefined for query doc snapshots
-//       // console.log(doc.id, " => ", doc.data());
-//       docID = doc.id;
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      // console.log(doc.id, " => ", doc.data());
+      docID = doc.id;
 
-//       let listing = {}
-//       listing = doc.data();
+      let listing = {}
+      listing = doc.data();
 
 
-//       // console.log(JSON.parse(listing.features[0].properties.urls))
-//       active_Lisitings.push(listing);
-//     });
-//     // setLoading(false)
+      // console.log(JSON.parse(listing.features[0].properties.urls))
+      active_Lisitings.push(listing);
+    });
+    // setLoading(false)
 
-//     return active_Lisitings
-//   }
+    return active_Lisitings
+  }
 
-//   const Listings = await getlistings();
-//   // return Listings
+  const Listings = await getlistings();
+  // return Listings
 
-//   return await Listings[0].features.map((feature) => ({
-//     id: feature.id,
-//     // lang:lang
-//   }))
-// }
+  return await Listings[0].features.map((feature) => ({
+    id: feature.id,
+  }))
+}
 
 export default async function Page({ params, searchParams }) {
 
