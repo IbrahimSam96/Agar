@@ -58,6 +58,7 @@ export async function generateStaticParams({ params: { lang } }) {
 
   return await Listings[0].features.map((feature) => ({
     id: feature.id,
+    lang:lang
   }))
 }
 
