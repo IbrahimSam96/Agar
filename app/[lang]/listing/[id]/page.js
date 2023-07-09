@@ -57,7 +57,6 @@ export async function generateStaticParams({ params: { lang } }) {
   // return Listings
 
   return await Listings[0].features.map((feature) => ({
-    locale: lang,
     id: feature.id,
   }))
 }
