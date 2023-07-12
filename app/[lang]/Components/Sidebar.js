@@ -342,7 +342,7 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
         const unsubscribe = onSnapshot(doc(firebasedb, "Customers", user.user.uid), (doc) => {
             console.log("Snapshot Data Fired: ", doc.data());
             const data = doc.data();
-            
+
             setFavourited(data.Favourites)
         });
 
@@ -748,28 +748,37 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
                                                                     </svg>
                                                                 }
                                                                 {user.user &&
-                                                                    <Image
-                                                                        // placeholder="blur"	
-                                                                        priority
-                                                                        alt={url}
-                                                                        src={url}
-                                                                        width="0"
-                                                                        height="0"
-                                                                        sizes="100vw"
-                                                                        className="row-start-1 col-start-1 w-full h-auto rounded select-none max-h-[160px] max-w-[240px]"
-                                                                    />
+                                                                    <>
+                                                                        <a className={`outline-none`} target="_blank" href={`/listing/${feature.properties.id}`} rel="noopener noreferrer">
+
+                                                                            <Image
+                                                                                // placeholder="blur"	
+                                                                                priority
+                                                                                alt={url}
+                                                                                src={url}
+                                                                                width="0"
+                                                                                height="0"
+                                                                                sizes="100vw"
+                                                                                className="row-start-1 col-start-1 w-full h-auto rounded select-none max-h-[160px] max-w-[240px]"
+                                                                            />
+                                                                        </a>
+                                                                    </>
                                                                 }
                                                                 {!user.user && index < 2 &&
-                                                                    <Image
-                                                                        // placeholder="blur"	
-                                                                        priority
-                                                                        alt={url}
-                                                                        src={url}
-                                                                        width="0"
-                                                                        height="0"
-                                                                        sizes="100vw"
-                                                                        className="row-start-1 col-start-1 w-full h-auto rounded select-none max-h-[160px] max-w-[240px]"
-                                                                    />
+                                                                    <>
+                                                                        <a className={`outline-none`} target="_blank" href={`/listing/${feature.properties.id}`} rel="noopener noreferrer">
+                                                                            <Image
+                                                                                // placeholder="blur"	
+                                                                                priority
+                                                                                alt={url}
+                                                                                src={url}
+                                                                                width="0"
+                                                                                height="0"
+                                                                                sizes="100vw"
+                                                                                className="row-start-1 col-start-1 w-full h-auto rounded select-none max-h-[160px] max-w-[240px]"
+                                                                            />
+                                                                        </a>
+                                                                    </>
                                                                 }
 
                                                                 {!user.user && index >= 2 && <p className="justify-self-center self-center rounded select-none text-xs text-[#263238] bg-[#F8F8F8] p-4 ">Sign-in to view more!</p>}
