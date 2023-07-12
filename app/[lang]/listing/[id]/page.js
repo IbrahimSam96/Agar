@@ -103,7 +103,7 @@ export default async function Page({ params, searchParams }) {
 
   return (
 
-    <div className={`w-full h-full min-h-screen grid grid-cols-7 grid-rows-[60px,1fr,auto]`} >
+    <div className={`w-full h-full min-h-screen grid grid-cols-7 grid-rows-[60px,auto,auto,auto]`} >
 
       <ListingClientPage Listings={Listings} feature={pageListing[0]} params={params} />
 

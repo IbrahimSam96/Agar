@@ -87,11 +87,11 @@ const ListingClientPage = ({ Listings, params, feature }) => {
         }
 
         // if user is authed then fetch favourited listings
-        if (user.user && favourited.length == 0) {
+        if (user.user) {
             retreiveUserProfile();
         }
 
-    }, [user.user, favourited.length]);
+    }, [user.user]);
 
 
     console.log(feature)
@@ -107,16 +107,41 @@ const ListingClientPage = ({ Listings, params, feature }) => {
 
         const docRef = doc(firebasedb, "Customers", user.user.uid);
 
-        setFavourited((prev) => [...prev, ID]);
+        const getUserProfile = async () => {
+            // setLoading(true)
+            const colRef = collection(firebasedb, "Customers");
+            const querySnapshot = await getDocs(colRef);
 
-        console.log("New List :", favourited);
+            let userProfile;
 
-        // console.log("New List :", newlist);
+            querySnapshot.forEach((doc) => {
+                // doc.data() is never undefined for query doc snapshots
+                // console.log(doc.id, " => ", doc.data());
+                let listing = {}
+                listing = doc.data();
+
+                if (doc.id == user.user.uid) {
+                    userProfile = listing;
+                }
+            });
+
+            return userProfile
+        }
+
+        const UserProfile = await getUserProfile();
+        const favs = UserProfile['Favourites']
+
+
+        let list = [...favs]
+        list.push(ID)
 
         await updateDoc(docRef, {
-            Favourites: favourited
+            Favourites: list
+
         }).then((res2) => {
-            console.log('Done')
+            console.log(res2)
+            setFavourited(list);
+            console.log("New List :", list);
         }).catch((err) => {
             console.log(err)
         })
@@ -132,12 +157,12 @@ const ListingClientPage = ({ Listings, params, feature }) => {
         var newList = list.filter((value) => value !== ID).map((id) => id);
 
 
-        setFavourited(newList);
 
         await updateDoc(docRef, {
             Favourites: newList
-        }).then((res2) => {
-            console.log('Done')
+        }).then((res) => {
+            console.log(res);
+            setFavourited(newList);
         }).catch((err) => {
             console.log(err)
         })
@@ -148,12 +173,14 @@ const ListingClientPage = ({ Listings, params, feature }) => {
     return (
         <>
             <NavBar />
+            <ToastContainer />
+
             <div className={`grid grid-rows-[auto,auto,100px] row-start-2 row-end-3 col-start-1 col-end-8 mx-12 my-4 min-h-[85vh]`}>
 
-                <span className={`self-center grid py-2`}>
+                <span className={`self-center grid p-2 mx-2  shadow-md shadow-[#E3EFF1]`}>
 
                     <span className={`flex self-center `}>
-                        <p className={`text-base text-[#263238] my-auto mr-auto `}>{feature.properties.streetName} - {feature.properties.buildingNumber} </p>
+                        <p className={`text-base text-[#263238] font-[500] my-auto mr-auto `}>{feature.properties.streetName} - {feature.properties.buildingNumber} </p>
 
 
                         <span className={`flex ml ml-auto mr-2`}>
@@ -167,7 +194,13 @@ const ListingClientPage = ({ Listings, params, feature }) => {
                                 </span>
                                 :
                                 <span onClick={() => {
-                                    addListing(feature.id)
+                                    if (user.user) {
+                                        addListing(feature.id)
+                                    }
+                                    else {
+                                        toastId.current = toast.error("Create an account or sign-in to add to favourites", { autoClose: true });
+
+                                    }
                                 }} className={`my-auto mr-2 p-3 flex border-[#E3EFF1] hover:bg-[#F8F8F8] hover:cursor-pointer border-[1px] rounded`}>
                                     <svg className={`z-10 rounded-[50%]`}
                                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" data-name="Favourite Outline" id="favourite">
@@ -194,12 +227,12 @@ const ListingClientPage = ({ Listings, params, feature }) => {
 
                     </span>
 
-                    <p className={`text-sm text-[#0097A7] underline font-['Montserrat',sans-serif] my-auto  `}> {feature.properties.city} </p>
+                    <p className={`text-sm text-[#0097A7] underline font-['Montserrat',sans-serif] self-center  `}> {feature.properties.city} </p>
 
                 </span>
 
                 {show ?
-                    <div className={`m-2 shadow-md shadow-slate-200 border-[1px] border-[#E3EFF1] w-[85vw] h-[auto] rounded ease-in-out duration-300`}>
+                    <div className={`m-2 rounded border-[1px] border-[#E3EFF1] w-[85vw] h-[auto] max-h-[85vh] justify-self-center `}>
 
                         <Swiper modules={[Navigation, Pagination, Scrollbar, A11y]}
                             navigation={true}
@@ -232,7 +265,7 @@ const ListingClientPage = ({ Listings, params, feature }) => {
                     :
                     <span className={`flex `}>
 
-                        <span className={`grid shadow-md shadow-[#E3EFF1]`}>
+                        <span className={`grow grid grid-rows-[auto,150px]`}>
 
                             {feature.properties.urls.map((url, index) => {
                                 return (
@@ -255,7 +288,7 @@ const ListingClientPage = ({ Listings, params, feature }) => {
                                             width="0"
                                             height="0"
                                             sizes="100vw"
-                                            className={`w-full h-auto m-2 select-none max-w-[650px] rounded-l`}
+                                            className={`w-full h-auto m-2 select-none max-w-[650px] rounded-l self-center justify-self-start`}
 
                                         // width={220}
                                         // height={160}
@@ -265,7 +298,7 @@ const ListingClientPage = ({ Listings, params, feature }) => {
                                 )
                             })}
 
-                            <span className={`grid grid-rows-[auto,50px] self-center mx-2`}>
+                            <span className={`grid grid-rows-[auto,50px] self-center mx-2 shadow-md shadow-[#E3EFF1]`}>
 
                                 <span className={`flex self-center`}>
                                     <span className={`grid mx-2 my-auto`}>
@@ -315,7 +348,7 @@ const ListingClientPage = ({ Listings, params, feature }) => {
                             </span>
                         </span>
 
-                        <span className={`grid gap-[5px] shadow-md shadow-[#E3EFF1]`}>
+                        <span className={`grow justify-end grid gap-[10px]`}>
 
                             {feature.properties.urls.map((url, index) => {
                                 return (
@@ -339,10 +372,10 @@ const ListingClientPage = ({ Listings, params, feature }) => {
                                             width="0"
                                             height="0"
                                             sizes="100vw"
-                                            className={`w-full h-auto m-2 rounded select-none max-w-[420px] max-h-[165px] rounded-r `}
+                                            className={`w-full h-auto m-2 rounded select-none max-w-[420px] max-h-[165px] rounded-r self-center`}
                                         />}
                                         {index == 2 &&
-                                            <span className={`grid grid-rows-1`}>
+                                            <span className={`grid grid-rows-1 self-center`}>
                                                 <Image
                                                     // placeholder="blur"
                                                     onClick={() => {
@@ -384,7 +417,7 @@ const ListingClientPage = ({ Listings, params, feature }) => {
                 }
 
             </div>
-            <ToastContainer />
+
 
         </>
 

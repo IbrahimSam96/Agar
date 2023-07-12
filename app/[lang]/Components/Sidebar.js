@@ -11,7 +11,7 @@ import { useAuth } from '@/app/[lang]/utils/Authenticator';
 // Firebase
 import { firebasedb, storage } from "../utils/InitFirebase";
 // db
-import { doc, updateDoc, arrayUnion, arrayRemove, getDoc, Timestamp, getDocs, collection } from "firebase/firestore";
+import { doc, updateDoc, arrayUnion, arrayRemove, getDoc, Timestamp, getDocs, collection, onSnapshot } from "firebase/firestore";
 // storage
 import { getStorage, ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 
@@ -296,7 +296,6 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
     const router = useRouter();
 
     const [favourited, setFavourited] = useState([]);
-    const [runagain, setRunAgain] = useState(false);
 
     const toastId = useRef(null);
 
@@ -335,8 +334,36 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
             retreiveUserProfile();
         }
 
-    }, [user.user, runagain]);
+    }, [user.user]);
 
+    // Sets up a onSnapshot Listener
+    const getListings = async () => {
+
+        const unsubscribe = onSnapshot(doc(firebasedb, "Customers", user.user.uid), (doc) => {
+            console.log("Snapshot Data Fired: ", doc.data());
+            const data = doc.data();
+            
+            setFavourited(data.Favourites)
+        });
+
+    }
+
+    useEffect(() => {
+        let unsubscribe;
+
+
+        const getListingsAndSubscribe = async () => {
+            unsubscribe = await getListings();
+        }
+        if (user.user) {
+            getListingsAndSubscribe();
+        }
+
+        return () => {
+            unsubscribe?.();
+        };
+    }, [user.user]);
+    // //
 
     const addListing = async (ID) => {
 
@@ -357,7 +384,6 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
                 Favourites: newList
             }).then((res) => {
                 console.log('Done')
-                setRunAgain(!runagain)
             }).catch((err) => {
                 console.log('Couldnt upload favourited listing', err)
             })

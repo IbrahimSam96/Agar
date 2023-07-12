@@ -6,7 +6,7 @@ import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../utils/Authenticator";
-import { doc, updateDoc, Timestamp, collection, getDocs } from "firebase/firestore";
+import { doc, updateDoc, Timestamp, collection, getDocs, onSnapshot } from "firebase/firestore";
 import { firebasedb } from "../utils/InitFirebase";
 // React Toastify
 import { ToastContainer, toast } from 'react-toastify';
@@ -51,6 +51,7 @@ const Favourites = ({ open, setOpen, allListings, dictionary }) => {
                 return userProfile
             }
 
+            // Sets user profile favourites section 
             const UserProfile = await getUserProfile();
             console.log(UserProfile);
 
@@ -116,6 +117,33 @@ const Favourites = ({ open, setOpen, allListings, dictionary }) => {
         }
 
     }
+
+    // Set up a onSnapshot Listener
+    const getListings = async () => {
+
+        const unsubscribe = onSnapshot(doc(firebasedb, "Customers", user.user.uid), (doc) => {
+            console.log("Snapshot Data Fired: ", doc.data());
+            const data = doc.data()
+            setFavourited(data.Favourites)
+        });
+
+    }
+
+    useEffect(() => {
+        let unsubscribe;
+
+
+        const getListingsAndSubscribe = async () => {
+            unsubscribe = await getListings();
+        }
+        if (user.user) {
+            getListingsAndSubscribe();
+        }
+
+        return () => {
+            unsubscribe?.();
+        };
+    }, [user.user]);
 
 
     return (
