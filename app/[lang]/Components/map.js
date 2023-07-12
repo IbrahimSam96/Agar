@@ -13,6 +13,8 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiZGV2amRlZWQiLCJhIjoiY2xpczBneWh6MTIydDNlazlmN
 import ReactDOMServer from 'react-dom/server';
 import moment from 'moment/moment';
 import { Timestamp } from 'firebase/firestore';
+import { createRoot } from 'react-dom/client';
+
 
 const Map = ({ Listings }) => {
 
@@ -22,6 +24,7 @@ const Map = ({ Listings }) => {
     const [lat, setLat] = useState(31.97182);
     const [zoom, setZoom] = useState(11.5);
     const [mapIsLoaded, setMapIsLoaded] = useState(false);
+
     // Cluster Colors
     // '#07364B', // HOVER color
     // '#0097A7' // Normal color
@@ -31,8 +34,128 @@ const Map = ({ Listings }) => {
     // Divider
     // #E3EFF1 
 
-
     console.log('appClient state responce :', Listings)
+
+
+    // const Marker = ({ children, e }) => {
+
+    //     console.log(e)
+    //     const rent = e.properties.rent;
+    //     const coordinates = e.geometry.coordinates.slice();
+    //     const price = e.properties.price;
+    //     const area = e.properties.area;
+    //     const numberOfBedrooms = e.properties.bedrooms;
+
+    //     const numberOfBathrooms = e.properties.bathrooms;
+    //     const parking = e.properties.parking
+
+    //     const address = e.properties.streetName + '-' + e.properties.buildingNumber;
+    //     const timeStamp = e.properties.timeStamp;
+
+    //     const timeObj = new Timestamp(timeStamp.seconds, timeStamp.nanoseconds);
+    //     const when = moment(timeObj.toDate()).fromNow()
+
+    //     const coverImage = e.properties.urls[0]
+
+
+    //     const _onClick = () => {
+
+    // const JSXTooltip = () => {
+
+    //     return (
+    //         <div onClick={() => {
+
+    //         }} className={`w-full grid shadow-md shadow-slate-500 rounded-[10px]`}>
+
+    //             <span className={`flex`}>
+    //                 <Image
+    //                     priority
+    //                     alt={coverImage}
+    //                     src={coverImage}
+    //                     width="0"
+    //                     height="0"
+    //                     sizes="100vw"
+    //                     className="w-full h-auto m-2 rounded select-none max-h-[120px] max-w-[150px]"
+
+    //                 // width={220}
+    //                 // height={160}
+    //                 // className={`m-2 rounded select-none max-h-[120px] max-w-[220px] w-auto h-auto`}
+    //                 />
+    //                 <span className={`grid ml-2 self-center flex-1`}>
+
+    //                     <span className={`flex self-center `}>
+    //                         <p className={`text-[#263238] text-base font-[600] font-['Montserrat',sans-serif] mr-auto`}>
+    //                             {price}
+    //                         </p>
+    //                         <p className={`text-[#707070] text-xs ml-auto mr-2`}>
+    //                             {when}
+    //                         </p>
+    //                     </span>
+
+    //                     <span className={`flex py-1 self-center `}>
+    //                         <p className={`text-[#707070] text-xs font-['Montserrat',sans-serif] inline`}>
+    //                             {address}
+    //                         </p>
+    //                     </span>
+
+    //                     <span className={`flex py-1 self-center `}>
+    //                         <p className={`text-[#707070] text-xs inline font-['Montserrat',sans-serif] mr-auto `}>
+    //                             {numberOfBedrooms}BD | {numberOfBathrooms}BA | {parking ? 1 : 0} Parking
+
+    //                         </p>
+    //                         <p className={`text-[#707070] text-xs inline font-[600] mr-auto ml-2`}>
+    //                             {area} m2
+    //                         </p>
+    //                     </span>
+
+    //                 </span>
+
+    //             </span>
+
+    //             <span className={`bg-[#F8F8F8] flex p-2 `}>
+
+    //                 <span className={`flex mx-auto`}>
+    //                     <p className={`text-[#0097A7] font-['Montserrat',sans-serif] `}>
+    //                         {address}
+    //                     </p>
+    //                     <p className={`text-[grey] font-['Montserrat',sans-serif] ml-2`}>
+    //                         {`1 For ${rent ? 'Rent' : 'Sale'}`}
+    //                     </p>
+    //                 </span>
+
+    //             </span>
+
+    //         </div>
+    //     )
+    // }
+
+    // let htmlString = ReactDOMServer.renderToString(JSXTooltip())
+
+    //         // Ensure that if the map is zoomed out such that
+    //         // multiple copies of the feature are visible, the
+    //         // popup appears over the copy being pointed to.
+    //         // while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+    //         //     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+    //         // }
+
+    //         new mapboxgl.Popup()
+    //             .setLngLat(coordinates)
+    //             .setHTML(
+    //                 htmlString
+    //             )
+    //             .addTo(map.current);
+
+    //     }
+
+    //     return (
+    //         <button key={e.id} onClick={_onClick} className={'bg-[#07364B] text-white px-6 rounded-b-lg '}>
+    //             {e.properties.price}
+    //             {children}
+    //         </button>
+    //     );
+    // };
+
+
 
     // Used for intitializing map 
     useEffect(() => {
@@ -141,6 +264,7 @@ const Map = ({ Listings }) => {
                     'text-color': 'white'
                 }
             });
+
             // Unclustrered; Single Listing Styling
             map.current.addLayer({
                 id: 'unclustered-point',
@@ -148,24 +272,85 @@ const Map = ({ Listings }) => {
                 source: 'listings',
                 filter: ['!', ['has', 'point_count']],
                 paint: {
-                    'text-color': 'white',
-                    'text-halo-width': 5, // Adjust the halo width as needed
-                    'text-halo-color': [
-                        'case',
-                        ['boolean', ['feature-state', 'hover'], false],
-                        '#07364B', // Replace with the desired hover halo color
-                        '#0097A7' // Replace with the default halo color
-                    ],
+                    'text-color': 'white'
                 },
                 layout: {
                     'text-field': ['get', 'price'],
-                    'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                    // 'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
                     'text-size': 25,
                     'text-offset': [0, 0.6], // Adjust the offset as needed
-                    'text-anchor': 'top',
+                    'text-anchor': 'bottom',
+                    // 'text-line-height':'5',
                     'text-allow-overlap': true
                 },
             });
+
+            // objects for caching and keeping track of HTML marker objects (for performance)
+            const markers = {};
+            let markersOnScreen = {};
+
+
+            function updateMarkers() {
+
+                const newMarkers = {};
+                const features = map.current.querySourceFeatures('listings');
+                // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
+                // and add it to the map if it's not there already
+                for (const feature of features) {
+
+                    const coords = feature.geometry.coordinates;
+                    const props = feature.properties;
+
+                    if (props.cluster) continue;
+
+                    const id = props.id;
+                    let marker = markers[id];
+
+                    if (!marker) {
+
+                        const el = document.createElement('div');
+                        const root = createRoot(el)
+
+                        const JSXListingMarker = () => {
+
+                            return (
+                                <div className={`flex bg-[#07364B] hover:bg-[#0097A7] px-4 group z-10 border-x-[3px] border-white `} >
+                                    <p className={`text-white m-auto text-sm `} > {props.price} </p>
+                                    <div className={`group-hover:border-t-[#0097A7]  border-t-[#07364B] border-transparent w-0 h-0 absolute top-[99%] left-[50%] border-t-[9px] border-x-[8px] border-b-[0px] translate-x-[-50%]`}></div>
+                                </div>
+                            )
+
+                        }
+
+                        root.render(JSXListingMarker())
+
+                        marker = markers[id] = new mapboxgl.Marker({
+                            element: el
+                        }).setLngLat(coords);
+
+                    }
+
+                    newMarkers[id] = marker;
+
+                    if (!markersOnScreen[id]) marker.addTo(map.current);
+
+                }
+
+                // for every marker we've added previously, remove those that are no longer visible
+                for (const id in markersOnScreen) {
+                    if (!newMarkers[id]) markersOnScreen[id].remove();
+                }
+
+                markersOnScreen = newMarkers;
+
+            }
+
+            // after the GeoJSON data is loaded, update markers on the screen on every frame
+            map.current.on('render', () => {
+                if (!map.current.isSourceLoaded('listings')) return;
+                updateMarkers();
+            });
+
 
             let state = null
 
@@ -274,71 +459,73 @@ const Map = ({ Listings }) => {
                 const JSXTooltip = () => {
 
                     return (
-                        <div onClick={() => {
+                        <a className={`outline-none`} target="_blank" href={`/listing/${e.features[0].properties.id}`} rel="noopener noreferrer">
 
-                        }} className={`w-full grid shadow-md shadow-slate-500 rounded-[10px]`}>
+                            <div className={`w-full grid shadow-md shadow-slate-500 rounded-[10px]`}>
 
-                            <span className={`flex`}>
-                                <Image
-                                    priority
-                                    alt={coverImage}
-                                    src={coverImage}
-                                    width="0"
-                                    height="0"
-                                    sizes="100vw"
-                                    className="w-full h-auto m-2 rounded select-none max-h-[120px] max-w-[150px]"
+                                <span className={`flex`}>
+                                    <Image
+                                        priority
+                                        alt={coverImage}
+                                        src={coverImage}
+                                        width="0"
+                                        height="0"
+                                        sizes="100vw"
+                                        className="w-full h-full m-2 rounded select-none max-h-[100px] max-w-[150px]"
 
-                                // width={220}
-                                // height={160}
-                                // className={`m-2 rounded select-none max-h-[120px] max-w-[220px] w-auto h-auto`}
-                                />
-                                <span className={`grid ml-2 self-center flex-1`}>
+                                    // width={220}
+                                    // height={160}
+                                    // className={`m-2 rounded select-none max-h-[120px] max-w-[220px] w-auto h-auto`}
+                                    />
+                                    <span className={`grid ml-2 self-center flex-1`}>
 
-                                    <span className={`flex self-center `}>
-                                        <p className={`text-[#263238] text-base font-[600] font-['Montserrat',sans-serif] mr-auto`}>
-                                            {price}
-                                        </p>
-                                        <p className={`text-[#707070] text-xs ml-auto mr-2`}>
-                                            {when}
-                                        </p>
+                                        <span className={`flex self-center `}>
+                                            <p className={`text-[#263238] text-base font-[600] font-['Montserrat',sans-serif] mr-auto`}>
+                                                {price}
+                                            </p>
+                                            <p className={`text-[#707070] text-xs ml-auto mr-2`}>
+                                                {when}
+                                            </p>
+                                        </span>
+
+                                        <span className={`flex py-1 self-center `}>
+                                            <p className={`text-[#707070] text-xs font-['Montserrat',sans-serif] inline`}>
+                                                {address}
+                                            </p>
+                                        </span>
+
+                                        <span className={`flex py-1 self-center `}>
+                                            <p className={`text-[#707070] text-xs inline font-['Montserrat',sans-serif] mr-auto `}>
+                                                {numberOfBedrooms}BD | {numberOfBathrooms}BA | {parking ? 1 : 0} Parking
+
+                                            </p>
+                                            <p className={`text-[#707070] text-xs inline font-[600] mr-auto ml-2`}>
+                                                {area} m2
+                                            </p>
+                                        </span>
+
                                     </span>
 
-                                    <span className={`flex py-1 self-center `}>
-                                        <p className={`text-[#707070] text-xs font-['Montserrat',sans-serif] inline`}>
+                                </span>
+
+                                <span className={`bg-[#F8F8F8] flex p-2 `}>
+
+                                    <span className={`flex mx-auto`}>
+                                        <p className={`text-[#0097A7] font-['Montserrat',sans-serif] `}>
                                             {address}
                                         </p>
-                                    </span>
-
-                                    <span className={`flex py-1 self-center `}>
-                                        <p className={`text-[#707070] text-xs inline font-['Montserrat',sans-serif] mr-auto `}>
-                                            {numberOfBedrooms}BD | {numberOfBathrooms}BA | {parking ? 1 : 0} Parking
-
-                                        </p>
-                                        <p className={`text-[#707070] text-xs inline font-[600] mr-auto ml-2`}>
-                                            {area} m2
+                                        <p className={`text-[grey] font-['Montserrat',sans-serif] ml-2`}>
+                                            {`1 For ${rent ? 'Rent' : 'Sale'}`}
                                         </p>
                                     </span>
 
                                 </span>
 
-                            </span>
-
-                            <span className={`bg-[#F8F8F8] flex p-2 `}>
-
-                                <span className={`flex mx-auto`}>
-                                    <p className={`text-[#0097A7] font-['Montserrat',sans-serif] `}>
-                                        {address}
-                                    </p>
-                                    <p className={`text-[grey] font-['Montserrat',sans-serif] ml-2`}>
-                                        {`1 For ${rent ? 'Rent' : 'Sale'}`}
-                                    </p>
-                                </span>
-
-                            </span>
-
-                        </div>
+                            </div>
+                        </a>
                     )
                 }
+                
                 let htmlString = ReactDOMServer.renderToString(JSXTooltip())
 
                 // Ensure that if the map is zoomed out such that
@@ -411,7 +598,7 @@ const Map = ({ Listings }) => {
         // Clean up on unmount
         return () => map.current.remove();
 
-    },[]);
+    }, []);
 
     // Used for Updating map
     useEffect(() => {
