@@ -13,12 +13,12 @@ import ShowerOutlinedIcon from '@mui/icons-material/ShowerOutlined';
 import CropFreeOutlinedIcon from '@mui/icons-material/CropFreeOutlined';
 import ChairOutlinedIcon from '@mui/icons-material/ChairOutlined';
 import LocalParkingOutlinedIcon from '@mui/icons-material/LocalParkingOutlined';
-
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 
-import { Timestamp, collection, doc, getDocs, updateDoc } from "firebase/firestore";
+import { Timestamp, collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import moment from "moment";
 // React Toastify
 import { ToastContainer, toast } from 'react-toastify';
@@ -47,6 +47,28 @@ const ListingClientPage = ({ Listings, params, feature }) => {
     // #ADB0B5
     // Red
     // #EA0670
+
+    const [views, setViews] = useState(0)
+    // // runs once on render - get listing views
+    useEffect(() => {
+
+        const getListingViews = async () => {
+
+            const listingRef = doc(firebasedb, "Views", `${params.id}`);
+            // Atomically increment the population of the city by 50.
+            await getDoc(listingRef).then((res) => {
+                setViews(res.data().views)
+
+            }).catch((err) => {
+                console.log(err)
+            })
+
+
+        }
+
+        getListingViews()
+
+    }, [])
 
     const toastId = useRef(null);
 
@@ -94,7 +116,7 @@ const ListingClientPage = ({ Listings, params, feature }) => {
     }, [user.user]);
 
 
-    console.log(feature)
+
     const timeStamp = feature.properties.timeStamp;
     const timeObj = new Timestamp(timeStamp.seconds, timeStamp.nanoseconds);
     const when = moment(timeObj.toDate()).fromNow();
@@ -173,11 +195,12 @@ const ListingClientPage = ({ Listings, params, feature }) => {
     return (
         <>
             <NavBar />
+
             <ToastContainer />
 
-            <div className={`grid grid-rows-[auto,auto,100px] row-start-2 row-end-3 col-start-1 col-end-8 mx-12 my-4 min-h-[85vh]`}>
+            <div className={`grid grid-rows-[auto,auto,150px] row-start-2 row-end-3 col-start-1 col-end-8 mx-12 my-4 `}>
 
-                <span className={`self-center grid p-2 mx-2  shadow-md shadow-[#E3EFF1]`}>
+                <span className={`self-center grid p-2 mx-2 `}>
 
                     <span className={`flex self-center `}>
                         <p className={`text-base text-[#263238] font-[500] my-auto mr-auto `}>{feature.properties.streetName} - {feature.properties.buildingNumber} </p>
@@ -216,6 +239,8 @@ const ListingClientPage = ({ Listings, params, feature }) => {
 
                             <span onClick={() => {
                                 navigator.clipboard.writeText(`https://shoqaq.jo.vercel.app/listing/${feature.id}`)
+                                toastId.current = toast.success("Successfully copied link", { autoClose: true });
+
                             }} className={`my-auto mr-2 p-3 flex border-[#E3EFF1] hover:bg-[#F8F8F8] hover:cursor-pointer border-[1px] rounded group active:bg-[#07364B] active:text-white`}>
                                 <IosShareOutlinedIcon className={`fill-[#07364B] group-active:fill-white`} />
                                 <p className={`text-base text-[#07364B] group-active:text-white my-auto ml-2 rounded`}>Share </p>
@@ -263,9 +288,9 @@ const ListingClientPage = ({ Listings, params, feature }) => {
                         </Swiper>
                     </div>
                     :
-                    <span className={`flex `}>
+                    <span className={`grid self-center`}>
 
-                        <span className={`grow grid grid-rows-[auto,150px]`}>
+                        <span className={`flex self-center justify-self-start  shadow-md shadow-[#E3EFF1]`}>
 
                             {feature.properties.urls.map((url, index) => {
                                 return (
@@ -288,7 +313,7 @@ const ListingClientPage = ({ Listings, params, feature }) => {
                                             width="0"
                                             height="0"
                                             sizes="100vw"
-                                            className={`w-full h-auto m-2 select-none max-w-[650px] rounded-l self-center justify-self-start`}
+                                            className={`w-full h-full m-2 select-none max-w-[650px] rounded-l my-auto`}
 
                                         // width={220}
                                         // height={160}
@@ -298,86 +323,15 @@ const ListingClientPage = ({ Listings, params, feature }) => {
                                 )
                             })}
 
-                            <span className={`grid grid-rows-[auto,50px] self-center mx-2 shadow-md shadow-[#E3EFF1]`}>
+                            <span className={`my-auto grid `} >
 
-                                <span className={`flex self-center`}>
-                                    <span className={`grid mx-2 my-auto`}>
-                                        <Image className={`justify-self-center`} src={'/bed.svg'} width={30} height={30} alt="Bed" />
-                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline  self-center`}>
-                                            {feature.properties.bedrooms} bed
-                                        </p>
-                                    </span>
-                                    <span className={`grid mx-2 my-auto`}>
-                                        <Image className={`justify-self-center`} src={'/bathtub.svg'} width={25} height={30} alt="Bathtub" />
-                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline self-center `}>
-                                            {feature.properties.bathrooms} bath
-                                        </p>
-                                    </span>
-                                    <span className={`grid mx-2 my-auto`}>
-                                        <LocalParkingOutlinedIcon className={`justify-self-center text-[#07364B] p-1 rounded-[50%] border-[1px] border-[#07364B]`} />
-                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline  self-center`}>
-                                            {feature.properties.parking ? 1 : 0} parking
-                                        </p>
-                                    </span>
-                                    <span className={`grid mx-2 my-auto`}>
-                                        <CropFreeOutlinedIcon className={`justify-self-center text-[#07364B] `} />
-                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline self-center`}>
-                                            {feature.properties.area} m2
-                                        </p>
-                                    </span>
+                                {feature.properties.urls.map((url, index) => {
+                                    return (
+                                        <Fragment key={url}>
 
-                                    <span className={`grid mx-2 my-auto`}>
-                                        <Image className={`justify-self-center`} src={'/sofa.svg'} width={25} height={30} alt="Bathtub" />
-                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline justify-self-center`}>
-                                            {feature.properties.furnished ? 'Furnished' : 'Not Furnished'}
-                                        </p>
-                                    </span>
-
-                                </span>
-
-                                <span className={`flex self-center `}>
-                                    <p className={` text-xs text-[#07364B] bg-[#F8F8F8] p-2 inline rounded my-auto`}>
-                                        {feature.properties.rent ? 'For Rent' : 'For Sale'}
-                                    </p>
-
-                                    <p className={` text-xs text-[#0097A7] bg-[#E5F4F6] inline rounded px-2 ml-4 my-auto`}>
-                                        {when}
-                                    </p>
-                                </span>
-
-                            </span>
-                        </span>
-
-                        <span className={`grow justify-end grid gap-[10px]`}>
-
-                            {feature.properties.urls.map((url, index) => {
-                                return (
-                                    <Fragment key={url}>
-                                        {index == 1 && <Image
-                                            // placeholder="blur"	
-                                            onClick={() => {
-                                                console.log('Show on')
-                                                if (user.user) {
-                                                    setShow(!show)
-                                                }
-                                                else {
-                                                    toastId.current = toast.error("Create an account or sign-in to view more pictures", { autoClose: true });
-
-                                                }
-                                            }}
-
-                                            priority
-                                            alt={url}
-                                            src={url}
-                                            width="0"
-                                            height="0"
-                                            sizes="100vw"
-                                            className={`w-full h-auto m-2 rounded select-none max-w-[420px] max-h-[165px] rounded-r self-center`}
-                                        />}
-                                        {index == 2 &&
-                                            <span className={`grid grid-rows-1 self-center`}>
+                                            {index == 1 &&
                                                 <Image
-                                                    // placeholder="blur"
+                                                    // placeholder="blur"	
                                                     onClick={() => {
                                                         console.log('Show on')
                                                         if (user.user) {
@@ -395,23 +349,112 @@ const ListingClientPage = ({ Listings, params, feature }) => {
                                                     width="0"
                                                     height="0"
                                                     sizes="100vw"
-                                                    className={`max-h-[165px] row-start-1 col-start-1 w-full h-auto m-2 rounded select-none max-w-[420px] rounded-r`}
+                                                    className={`w-full h-full m-2 rounded select-none max-w-[420px] max-h-[165px] rounded-r self-center`}
                                                 />
-                                                <p className={`mx-2 row-start-1 col-start-1 justify-self-end self-end text-sm text-[#F8F8F8] bg-[#000] p-2 inline rounded `}>
-                                                    {feature.properties.urls.length} +
-                                                </p>
-                                            </span>
-                                        }
-                                    </Fragment>
-                                )
-                            })}
+                                            }
+                                            {index == 2 &&
+                                                <span className={`grid grid-rows-1 self-center`}>
+                                                    <Image
+                                                        // placeholder="blur"
+                                                        onClick={() => {
+                                                            console.log('Show on')
+                                                            if (user.user) {
+                                                                setShow(!show)
+                                                            }
+                                                            else {
+                                                                toastId.current = toast.error("Create an account or sign-in to view more pictures", { autoClose: true });
 
-                            <span className={`flex self-center justify-self-end mx-2`}>
+                                                            }
+                                                        }}
+
+                                                        priority
+                                                        alt={url}
+                                                        src={url}
+                                                        width="0"
+                                                        height="0"
+                                                        sizes="100vw"
+                                                        className={`max-h-[165px]  w-full h-full m-2 rounded select-none max-w-[420px] rounded-r`}
+                                                    />
+                                                    <p className={`mx-2 row-start-1 col-start-1 justify-self-end self-end text-sm text-[#F8F8F8] bg-[#000] p-2 inline rounded `}>
+                                                        {feature.properties.urls.length} +
+                                                    </p>
+                                                </span>
+                                            }
+                                        </Fragment>
+                                    )
+                                })}
+                            </span>
+
+                        </span>
+
+                        <span className={`self-center flex my-4`}>
+
+                            <span className={`grid grid-rows-[auto,50px] my-auto mr-auto  `}>
+
+                                <span className={`flex self-center`}>
+                                    <span className={`grid mx-2 my-auto`}>
+                                        <Image className={`justify-self-center select-none`} src={'/bed.svg'} width={30} height={30} alt="Bed" />
+                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline  self-center`}>
+                                            {feature.properties.bedrooms} bed
+                                        </p>
+                                    </span>
+                                    <span className={`grid mx-2 my-auto`}>
+                                        <Image className={`justify-self-center select-none`} src={'/bathtub.svg'} width={30} height={30} alt="Bathtub" />
+                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline self-center `}>
+                                            {feature.properties.bathrooms} bath
+                                        </p>
+                                    </span>
+                                    <span className={`grid mx-2 my-auto`}>
+                                        <LocalParkingOutlinedIcon className={`justify-self-center text-[#07364B] p-1 rounded-[50%] border-[1px] border-[#07364B] select-none`} />
+                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline  self-center`}>
+                                            {feature.properties.parking ? 1 : 0} parking
+                                        </p>
+                                    </span>
+                                    <span className={`grid mx-2 my-auto`}>
+                                        <CropFreeOutlinedIcon className={`justify-self-center text-[#07364B] select-none`} />
+                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline self-center`}>
+                                            {feature.properties.area} m2
+                                        </p>
+                                    </span>
+
+                                    <span className={`grid mx-2 my-auto`}>
+                                        <Image className={`justify-self-center select-none`} src={'/sofa.svg'} width={25} height={30} alt="Bathtub" />
+                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline justify-self-center`}>
+                                            {feature.properties.furnished ? 'Furnished' : 'Not Furnished'}
+                                        </p>
+                                    </span>
+
+                                </span>
+
+                                <span className={`flex self-center mx-2`}>
+                                    <p className={` text-xs text-[#07364B] bg-[#F8F8F8] p-2 inline rounded my-auto`}>
+                                        {feature.properties.rent ? 'For Rent' : 'For Sale'}
+                                    </p>
+
+                                    <p className={` text-xs text-[#0097A7] bg-[#E5F4F6] inline rounded px-2 ml-4 my-auto`}>
+                                        {when}
+                                    </p>
+
+
+                                    <span className={`flex bg-[#F8F8F8] px-2 rounded ml-4`}>
+                                        <VisibilityOutlinedIcon className={` text-base text-[#0097A7] inline  my-auto`} />
+                                        <p className={` text-xs text-[#0097A7] inline rounded ml-2 my-auto`}>
+                                            {views !== 0 ? views : '-'}
+                                        </p>
+                                    </span>
+
+                                </span>
+
+                            </span>
+
+                            <span className={`flex my-auto ml-auto mr-2`}>
                                 <p className={` text-2xl text-[#07364B] bg-[#F8F8F8] p-2 inline rounded my-auto`}>
                                     {feature.properties.price}
                                 </p>
                             </span>
+
                         </span>
+
 
                     </span>
                 }

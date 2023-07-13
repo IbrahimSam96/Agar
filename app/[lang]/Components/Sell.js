@@ -11,7 +11,7 @@ import BedOutlinedIcon from '@mui/icons-material/BedOutlined';
 import ShowerOutlinedIcon from '@mui/icons-material/ShowerOutlined';
 import CropFreeOutlinedIcon from '@mui/icons-material/CropFreeOutlined';
 import ChairOutlinedIcon from '@mui/icons-material/ChairOutlined';
- import LocalParkingOutlinedIcon from '@mui/icons-material/LocalParkingOutlined';
+import LocalParkingOutlinedIcon from '@mui/icons-material/LocalParkingOutlined';
 import LoopIcon from '@mui/icons-material/Loop';
 
 // Prime React 
@@ -33,6 +33,9 @@ import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 
 // Helper tools. 
 import { uid } from 'uid/secure';
+// Phone Input
+import { PatternFormat } from 'react-number-format';
+
 
 const Sell = ({ Governorates, docID, open, setOpen }) => {
     // Cluster Colors
@@ -124,6 +127,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
     const [furnished, setFurnished] = useState(false);
     const [agent, setAgent] = useState(false);
     const [agentName, setAgentName] = useState('');
+    const [phone, setPhone] = useState('');
 
     const [unitDescription, setUnitDescription] = useState('');
 
@@ -212,7 +216,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                     </span>
 
-                    <span className={`self-center grid py-4 border-[#E3EFF1] border-t-2`} >
+                    <span className={`self-center grid py-4 border-[#E3EFF1] border-t-2 `} >
 
                     </span>
 
@@ -743,6 +747,58 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                             </span>
 
 
+                            <span className={`self-center grid py-4 border-[#E3EFF1] border-b-2`} >
+
+                            </span>
+
+                            <span className={`self-center flex py-2 mx-2`}>
+                                <span className={` ml-2 mr-auto flex`}>
+                                    <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline font-[600] mr-auto `}>
+                                        Contact Information
+                                    </p>
+                                </span>
+                            </span>
+
+                            <span className={`flex self-center py-2 mx-2`} >
+
+                                <span className={` ml-2 mr-auto my-auto flex`}>
+                                    <p className={` text-[0.5em] sm:text-[0.8em] text-[#263238] inline `}>
+                                        Phone Number
+                                    </p>
+                                </span>
+                                <PatternFormat
+                                    onChange={(e) => {
+                                        setPhone(e.target.value)
+                                    }}
+                                    value={phone}
+                                    format=" ( ### ) ### ####"
+                                    mask="_"
+                                    allowEmptyFormatting
+                                    autoComplete='true'
+                                    type="tel"
+                                    customInput={TextField}
+                                    className={`h-[40px] ml-auto mr-2 `}
+                                />
+
+                                {/* 
+                                <TextField
+                                    value={phone}
+                                    type={'tel'}
+                                    // error={}
+                                    autoComplete='false'
+                                    required
+                                    sx={{ marginRight: "10px" }}
+                                    autoFocus={true}
+                                    id="outlined-basic"
+                                    helperText="Phone Number *"
+                                    variant="outlined"
+                                    size="small"
+                                    onChange={(e) => {
+                                        setPhone(e.target.value)
+                                    }}
+                                /> */}
+                            </span>
+
                             <span className={`self-center flex py-2 mx-2`}>
                                 <span className={` ml-2 mr-auto flex`}>
                                     <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline font-[600] mr-auto `}>
@@ -824,6 +880,10 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                     else if (agent === true && agentName == '') {
                                         toastId.current = toast.error("Brokerage Name cannot be empty", { autoClose: true });
                                     }
+                                    else if (phone == '' || phone == ' ( ___ ) ___ ____') {
+                                        toastId.current = toast.error("Contact Information cannot be empty", { autoClose: true });
+                                    }
+
                                     else if (unitDescription === '' || unitDescription.length < 10) {
                                         toastId.current = toast.error("Unit Description cannot be less than 10 characters or empty", { autoClose: true });
                                     }
@@ -834,6 +894,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                         // Every Condition satisfied
                                         // Display Preview 
                                         setPreview(true);
+                                        console.log(phone)
 
                                     }
                                 }} className={`w-full p-4 my-auto mx-4 bg-[#07364B] border-[1px] border-[#102C3A] text-white text-center hover:cursor-pointer`}>
@@ -845,10 +906,10 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                     {preview &&
                         <span onClick={() => {
                             console.log('hey')
-                        }} className={`self-start grid shadow-md shadow-slate-500 rounded-[10px] m-2 max-w-[500px]`}>
+                        }} className={`self-start grid shadow-md shadow-[#E3EFF1] rounded-[10px] m-2 max-w-[500px]`}>
 
-                            <span className={`flex`}>
-                                <div className={`m-2 shadow-md shadow-slate-200 border-[1px] border-[#E3EFF1] w-[150px] h-[auto] rounded`}>
+                            <span className={`flex p-2`}>
+                                <div className={`m-2 rounded shadow-md shadow-[#E3EFF1]  w-[150px] h-[100px] max-h-[100px] max-w-[150px] overflow-hidden`}>
 
                                     <Swiper modules={[Navigation, Pagination, Scrollbar, A11y]}
                                         navigation={true}
@@ -870,8 +931,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                                         width="0"
                                                         height="0"
                                                         sizes="100vw"
-                                                        className="w-full h-auto m-2 rounded select-none max-h-[120px] max-w-[150px]"
-
+                                                        className="w-full h-full rounded select-none max-h-[100px] max-w-[150px]"
                                                     // width={220}
                                                     // height={160}
                                                     // className={`m-2 rounded select-none max-h-[120px] max-w-[220px] w-auto h-auto`}
@@ -905,10 +965,16 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                         <p className={`text-[#707070] text-xs inline font-['Montserrat',sans-serif] mr-auto `}>
                                             {numberOfBedrooms}BD | {numberOfBathrooms}BA | {parking ? 1 : 0} Parking
                                         </p>
-                                        <p className={`text-[#707070] text-xs inline font-[600] mr-auto ml-2`}>
+                                        <p className={`text-[#707070] text-xs inline font-[600] ml-auto mr-2`}>
                                             {area} m2
                                         </p>
                                     </span>
+
+                                    {agent && <span className={`flex py-1 self-center overflow-x-hidden whitespace-nowrap text-ellipsis mr-2`}>
+                                        <p className={`text-[#707070] text-xs font-['Montserrat',sans-serif] inline `}>
+                                            Realtor: {agentName} 
+                                        </p>
+                                    </span>}
 
                                 </span>
 
@@ -934,45 +1000,56 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                         <span className={`grid grid-rows-[40px,auto] self-center mx-2`}>
 
                             <span className={` ml-2 mr-auto flex self-center`}>
-                                <p className={` text-sm sm:text-base text-[#07364B] inline font-[600] mr-auto `}>
+                                <p className={` text-sm sm:text-base text-[#07364B] inline font-[500] mr-auto `}>
                                     Key Facts
                                 </p>
                             </span>
 
-                            <span className={`flex self-center mx-2 `}>
-                                <span className={`grid mx-2`}>
-                                    <BedOutlinedIcon className={`justify-self-center text-[#07364B] font-[600]`} />
-                                    <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline  `}>
-                                        {numberOfBedrooms} bed
-                                    </p>
-                                </span>
-                                <span className={`grid mx-2`}>
-                                    <ShowerOutlinedIcon className={`justify-self-center text-[#07364B] font-[600]`} />
-                                    <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline `}>
-                                        {numberOfBathrooms} bath
-                                    </p>
-                                </span>
-                                <span className={`grid mx-2`}>
-                                    <LocalParkingOutlinedIcon className={`justify-self-center text-[#07364B] font-[600] p-1 rounded-[50%] border-[1px] border-[#07364B]`} />
-                                    <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline  `}>
-                                        {parking ? 1 : 0} parking
-                                    </p>
-                                </span>
-                                <span className={`grid mx-2`}>
-                                    <CropFreeOutlinedIcon className={`justify-self-center text-[#07364B] font-[600]`} />
-                                    <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline `}>
-                                        {area} m2
-                                    </p>
+                            <span className={`grid grid-rows-[auto,50px] self-center mx-2 shadow-md shadow-[#E3EFF1]`}>
+
+                                <span className={`flex self-center`}>
+                                    <span className={`grid mx-2 my-auto`}>
+                                        <Image className={`justify-self-center`} src={'/bed.svg'} width={30} height={30} alt="Bed" />
+                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline  self-center`}>
+                                            {numberOfBedrooms} bed
+                                        </p>
+                                    </span>
+                                    <span className={`grid mx-2 my-auto`}>
+                                        <Image className={`justify-self-center`} src={'/bathtub.svg'} width={30} height={30} alt="Bathtub" />
+                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline self-center `}>
+                                            {numberOfBathrooms}bath
+                                        </p>
+                                    </span>
+                                    <span className={`grid mx-2 my-auto`}>
+                                        <LocalParkingOutlinedIcon className={`justify-self-center text-[#07364B] p-1 rounded-[50%] border-[1px] border-[#07364B]`} />
+                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline  self-center`}>
+                                            {parking ? 1 : 0} parking
+                                        </p>
+                                    </span>
+                                    <span className={`grid mx-2 my-auto`}>
+                                        <CropFreeOutlinedIcon className={`justify-self-center text-[#07364B] `} />
+                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline self-center`}>
+                                            {area} m2
+                                        </p>
+                                    </span>
+
+                                    <span className={`grid mx-2 my-auto`}>
+                                        <Image className={`justify-self-center`} src={'/sofa.svg'} width={25} height={30} alt="Bathtub" />
+                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline justify-self-center`}>
+                                            {furnished ? 'Furnished' : 'Not Furnished'}
+                                        </p>
+                                    </span>
+
                                 </span>
 
-                                <span className={`grid mx-2`}>
-                                    <ChairOutlinedIcon className={`justify-self-center text-[#07364B] font-[600]`} />
-                                    <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline justify-self-center`}>
-                                        {furnished ? 'Furnished' : 'Not Furnished'}
+                                <span className={`flex self-center mx-2 `}>
+                                    <p className={` text-xs text-[#07364B] bg-[#F8F8F8] p-2 inline rounded my-auto`}>
+                                        {rent ? 'For Rent' : 'For Sale'}
                                     </p>
                                 </span>
 
                             </span>
+
                         </span>
                     }
 
@@ -980,7 +1057,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                         <span className={`grid grid-rows-[50px,auto] self-center mx-2`}>
 
                             <span className={`flex self-center ml-2`}>
-                                <p className={` text-sm sm:text-base text-[#07364B] inline font-[600] mr-auto `}>
+                                <p className={` text-sm sm:text-base text-[#07364B] inline font-[500] mr-auto `}>
                                     Description
                                 </p>
                             </span>
@@ -1062,6 +1139,9 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                                         agentName: agentName,
                                                         description: unitDescription,
                                                         timeStamp: Timestamp.now(),
+                                                        status: 'pending',
+                                                        phone: phone,
+                                                        views: 1,
                                                         urls: res
                                                     },
                                                 })
@@ -1104,7 +1184,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                 }}
                             >
-                                {loading ? <LoopIcon className={`animate-spin text-[white] text-2xl inline mx-2`} /> : 'Confirm'}
+                                {loading ? <LoopIcon className={`animate-spin text-[white] text-2xl inline mx-2`} /> : 'Create Listing'}
                             </span>
                         </span>
                     }

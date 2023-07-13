@@ -446,12 +446,15 @@ const Map = ({ Listings }) => {
 
                 const numberOfBathrooms = e.features[0].properties.bathrooms;
                 const parking = e.features[0].properties.parking
+                const agent = e.features[0].properties.agent;
+                const agentName = e.features[0].properties.agentName;
+
 
                 const address = e.features[0].properties.streetName + '-' + e.features[0].properties.buildingNumber;
                 const timeStamp = JSON.parse(e.features[0].properties.timeStamp);
 
                 const timeObj = new Timestamp(timeStamp.seconds, timeStamp.nanoseconds);
-                const when = moment(timeObj.toDate()).fromNow()
+                const when = moment(timeObj.toDate()).fromNow();
 
                 const coverImage = JSON.parse(e.features[0].properties.urls)[0]
 
@@ -463,7 +466,7 @@ const Map = ({ Listings }) => {
 
                             <div className={`w-full grid shadow-md shadow-slate-500 rounded-[10px]`}>
 
-                                <span className={`flex`}>
+                                <span className={`flex p-2`}>
                                     <Image
                                         priority
                                         alt={coverImage}
@@ -480,10 +483,10 @@ const Map = ({ Listings }) => {
                                     <span className={`grid ml-2 self-center flex-1`}>
 
                                         <span className={`flex self-center `}>
-                                            <p className={`text-[#263238] text-base font-[600] font-['Montserrat',sans-serif] mr-auto`}>
+                                            <p className={`text-[#263238] text-base font-[600] font-['Montserrat',sans-serif] my-auto  mr-auto`}>
                                                 {price}
                                             </p>
-                                            <p className={`text-[#707070] text-xs ml-auto mr-2`}>
+                                            <p className={`text-[#707070] text-xs my-auto ml-auto mr-2`}>
                                                 {when}
                                             </p>
                                         </span>
@@ -503,6 +506,14 @@ const Map = ({ Listings }) => {
                                                 {area} m2
                                             </p>
                                         </span>
+
+                                        {
+                                            <span className={`flex py-1 self-center `}>
+                                                <p className={`text-[#707070] text-xs inline font-['Montserrat',sans-serif] mr-auto `}>
+                                                    Realtor: {agent ? agentName : 'N/A'}
+                                                </p>
+                                            </span>
+                                        }
 
                                     </span>
 
@@ -525,7 +536,7 @@ const Map = ({ Listings }) => {
                         </a>
                     )
                 }
-                
+
                 let htmlString = ReactDOMServer.renderToString(JSXTooltip())
 
                 // Ensure that if the map is zoomed out such that

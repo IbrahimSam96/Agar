@@ -2,7 +2,7 @@
 import ListingClientPage from "../Component/PageComponent";
 
 // Firebase
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, getDocFromServer, getDocs, increment, setDoc, updateDoc } from "firebase/firestore";
 import { firebasedb } from "../../utils/InitFirebase";
 
 // export async function generateMetadata({ params, searchParams }) {
@@ -63,7 +63,6 @@ export async function generateStaticParams({ params: { lang } }) {
 
 export default async function Page({ params, searchParams }) {
 
-  let docID;
 
   const getlistings = async () => {
     // setLoading(true)
@@ -74,7 +73,6 @@ export default async function Page({ params, searchParams }) {
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
       // console.log(doc.id, " => ", doc.data());
-      docID = doc.id;
 
       let listing = {}
       listing = doc.data();
@@ -99,6 +97,25 @@ export default async function Page({ params, searchParams }) {
 
   const pageListing = await Listings[0].features.filter((feature) => feature.id == params.id);
 
+  // Increment listing views for each page visit. 
+
+  const IncrementListingView = async () => {
+
+    const listingRef = doc(firebasedb, "Views", `${params.id}`);
+
+    // Atomically increment the population of the city by 50.
+    await setDoc(listingRef, {
+      views: increment(1)
+    }, { merge: true }).then((res) => {
+      console.log(res, 'Updated View Count');
+
+    }).catch((err) => {
+      console.log(err)
+    })
+
+  }
+
+  IncrementListingView();
 
 
   return (

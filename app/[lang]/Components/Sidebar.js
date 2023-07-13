@@ -663,7 +663,7 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
 
                             </span>
 
-                            <span className={`flex self-center mx-2`}>
+                            <span className={`flex self-center mx-2 shadow-md shadow-[#E3EFF1]`}>
 
                                 <span className={`ml-2 mr-auto border-[1px] border-[#F8F8F8] border-b-2 border-b-[#0097A7] shadow-md shadow-[#F8F8F8] p-2 w-[150px] `}>
 
@@ -748,37 +748,34 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
                                                                     </svg>
                                                                 }
                                                                 {user.user &&
-                                                                    <>
-                                                                        <a className={`outline-none`} target="_blank" href={`/listing/${feature.properties.id}`} rel="noopener noreferrer">
+                                                                    <a className={`row-start-1 col-start-1 outline-none`} target="_blank" href={`/listing/${feature.properties.id}`} rel="noopener noreferrer">
 
-                                                                            <Image
-                                                                                // placeholder="blur"	
-                                                                                priority
-                                                                                alt={url}
-                                                                                src={url}
-                                                                                width="0"
-                                                                                height="0"
-                                                                                sizes="100vw"
-                                                                                className="row-start-1 col-start-1 w-full h-auto rounded select-none max-h-[160px] max-w-[240px]"
-                                                                            />
-                                                                        </a>
-                                                                    </>
+                                                                        <Image
+                                                                            // placeholder="blur"	
+                                                                            priority
+                                                                            alt={url}
+                                                                            src={url}
+                                                                            width="0"
+                                                                            height="0"
+                                                                            sizes="100vw"
+                                                                            className="row-start-1 col-start-1 w-full h-auto rounded select-none max-h-[160px] max-w-[240px]"
+                                                                        />
+                                                                    </a>
                                                                 }
+                                                                
                                                                 {!user.user && index < 2 &&
-                                                                    <>
-                                                                        <a className={`outline-none`} target="_blank" href={`/listing/${feature.properties.id}`} rel="noopener noreferrer">
-                                                                            <Image
-                                                                                // placeholder="blur"	
-                                                                                priority
-                                                                                alt={url}
-                                                                                src={url}
-                                                                                width="0"
-                                                                                height="0"
-                                                                                sizes="100vw"
-                                                                                className="row-start-1 col-start-1 w-full h-auto rounded select-none max-h-[160px] max-w-[240px]"
-                                                                            />
-                                                                        </a>
-                                                                    </>
+                                                                    <a className={`row-start-1 col-start-1 outline-none`} target="_blank" href={`/listing/${feature.properties.id}`} rel="noopener noreferrer">
+                                                                        <Image
+                                                                            // placeholder="blur"	
+                                                                            priority
+                                                                            alt={url}
+                                                                            src={url}
+                                                                            width="0"
+                                                                            height="0"
+                                                                            sizes="100vw"
+                                                                            className="row-start-1 col-start-1 w-full h-auto rounded select-none max-h-[160px] max-w-[240px]"
+                                                                        />
+                                                                    </a>
                                                                 }
 
                                                                 {!user.user && index >= 2 && <p className="justify-self-center self-center rounded select-none text-xs text-[#263238] bg-[#F8F8F8] p-4 ">Sign-in to view more!</p>}
