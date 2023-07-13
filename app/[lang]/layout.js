@@ -17,6 +17,8 @@ import 'swiper/css/scrollbar';
 // Auth Provider Component 
 import { AuthProvider } from '@/app/[lang]/utils/Authenticator';
 import { i18n } from '@/i18n-config';
+import { Analytics } from '@vercel/analytics/react';
+
 
 export async function generateStaticParams() {
   return i18n.locales.map((locale) => ({ lang: locale }))
@@ -42,6 +44,7 @@ export default function RootLayout({ children, params }) {
     <html lang={params.lang}>
       <body className={inter.className}>
         <AuthProvider>
+          <Analytics />
           {children}
         </AuthProvider>
       </body>

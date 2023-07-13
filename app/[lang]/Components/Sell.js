@@ -228,7 +228,6 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                         Unit Info
                                     </p>
                                 </span>
-
                             </span>
 
                             <span className={`self-center grid grid-rows-1 py-2 mx-2`}>

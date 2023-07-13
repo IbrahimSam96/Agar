@@ -21,6 +21,7 @@ import Link from 'next/link';
 import { Checkbox, FormControlLabel, IconButton, InputAdornment, OutlinedInput } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import LoopIcon from '@mui/icons-material/Loop';
 
 
 
@@ -31,6 +32,8 @@ const Login = () => {
 
     const user = useAuth();
     const router = useRouter();
+
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         console.log(user.user)
@@ -48,6 +51,7 @@ const Login = () => {
     const provider = new GoogleAuthProvider();
 
     const SignUp = (e) => {
+        setLoading(!loading)
         e.preventDefault();
         createUserWithEmailAndPassword(firebaseauth, email, password)
             .then((userCredential) => {
@@ -60,6 +64,7 @@ const Login = () => {
                     uid: user.uid,
                     Favourites: []
                 }, { merge: true }).then((res) => {
+                    setLoading(!loading)
                     console.log(res)
                     console.log("Success")
                     // ...
@@ -72,13 +77,15 @@ const Login = () => {
                 const errorMessage = error.message;
                 // ..
                 console.log(error)
-
+                setLoading(!loading)
             });
 
     }
 
     const SignIn = (e) => {
         e.preventDefault();
+        setLoading(!loading)
+
         signInWithEmailAndPassword(firebaseauth, email, password)
             .then((userCredential) => {
                 // Signed in 
@@ -92,16 +99,20 @@ const Login = () => {
                 }, { merge: true }).then((res) => {
                     console.log(res)
                     console.log("Success")
+                    setLoading(!loading)
+
                     // ...
                     window.location = '/';
                 }).catch((err) => {
                     console.log(err)
+                    setLoading(!loading)
                 })
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.log(error)
+                setLoading(!loading)
                 if (error == 'FirebaseError: Firebase: Error (auth/wrong-password).') {
                     SignInWithGoogle()
                 }
@@ -110,6 +121,7 @@ const Login = () => {
     }
 
     const SignInWithGoogle = () => {
+        setLoading(!loading)
         signInWithPopup(firebaseauth, provider)
             .then((result) => {
                 // This gives you a Google Access Token. You can use it to access the Google API.
@@ -124,6 +136,8 @@ const Login = () => {
                 }, { merge: true }).then((res) => {
                     console.log(res)
                     console.log("Success")
+                    setLoading(!loading)
+
                     // ...
                     window.location = '/';
                 }).catch((err) => {
@@ -143,6 +157,8 @@ const Login = () => {
                 const credential = GoogleAuthProvider.credentialFromError(error);
                 // ...
                 console.log(error)
+                setLoading(!loading)
+
             });
     }
 
@@ -190,6 +206,7 @@ const Login = () => {
                     />
                     <OutlinedInput
                         required
+                        placeholder='Password'
                         sx={{ margin: "10px" }}
                         label="Password"
                         autoComplete="current-password"
@@ -224,7 +241,10 @@ const Login = () => {
 
                     <span onClick={(e) => SignIn(e)} className={`text-center p-2 mx-3 self-center border-[1px] border-[#0097A7] bg-[#07364B] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                         <p className={`text-[white] text-sm font-bold`}>
-                            Log In
+                            {loading ? <LoopIcon className={`animate-spin text-[white] text-2xl inline mx-2`} />
+                                :
+                                'Log In'
+                            }
                         </p>
                     </span>
 
@@ -323,7 +343,10 @@ const Login = () => {
 
                     <span onClick={(e) => { SignUp(e) }} className={`text-center p-2 mx-3 self-center border-[1px] border-[#0097A7] bg-[#07364B] hover:cursor-pointer hover:opacity-100 opacity-80`}>
                         <p className={`text-[white] text-sm font-bold`}>
-                            Continue
+                            {loading ? <LoopIcon className={`animate-spin text-[white] text-2xl inline mx-2`} />
+                                :
+                                'Continue'
+                            }
                         </p>
                     </span>
 

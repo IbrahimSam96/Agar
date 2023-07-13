@@ -212,7 +212,7 @@ const ListingClientPage = ({ Listings, params, feature }) => {
                                 <span onClick={() => {
                                     removeListing(feature.id);
                                 }} className={`my-auto mr-2 p-3 flex border-[#E3EFF1] hover:bg-[#F8F8F8] hover:cursor-pointer border-[1px] rounded`}>
-                                    <FavoriteOutlinedIcon className={`text-[#EA0670] z-10`} />
+                                    <FavoriteOutlinedIcon className={`text-xl my-auto text-[#EA0670] z-10`} />
                                     <p className={`text-base text-[#EA0670] my-auto ml-2 rounded`}>Favourite </p>
                                 </span>
                                 :
@@ -225,8 +225,8 @@ const ListingClientPage = ({ Listings, params, feature }) => {
 
                                     }
                                 }} className={`my-auto mr-2 p-3 flex border-[#E3EFF1] hover:bg-[#F8F8F8] hover:cursor-pointer border-[1px] rounded`}>
-                                    <svg className={`z-10 rounded-[50%]`}
-                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" data-name="Favourite Outline" id="favourite">
+                                    <svg className={`z-10  my-auto`}
+                                        xmlns="http://www.w3.org/2000/svg" width="22" height="22" data-name="Favourite Outline" id="favourite">
                                         <path fill="#F8F8F8" d="M0 0h24v24H0Z" opacity=".24">
                                         </path>
                                         <path fill="#EA0670" d="M11.994 20.696a1.407 1.407 0 0 1-.986-.41L4.08 13.359a5.712 5.712 0 0 1 7.926-8.226 5.715 5.715 0 0 1 7.918 8.241l-6.944 6.922a1.4 1.4 0 0 1-.986.4Zm-.284-1.68Zm-3.6-13.62a3.913 3.913 0 0 0-2.757 6.69L12 18.73l6.652-6.634a3.915 3.915 0 1 0-5.534-5.539l-1.112 1.116-1.12-1.12A3.9 3.9 0 0 0 8.11 5.396Z" data-name="Path 2729">
@@ -449,12 +449,47 @@ const ListingClientPage = ({ Listings, params, feature }) => {
 
                             <span className={`flex my-auto ml-auto mr-2`}>
                                 <p className={` text-2xl text-[#07364B] bg-[#F8F8F8] p-2 inline rounded my-auto`}>
-                                    {feature.properties.price}
+                                    {feature.properties.price} {feature.properties.rent ? '/ Month ' : ''}
                                 </p>
                             </span>
 
                         </span>
 
+
+                        <span className={`self-center flex my-4`}>
+
+                            <span className={`flex my-auto ml-auto mr-2`}>
+
+                                {feature.properties.phone ?
+                                    <>
+                                        <p className={` text-base text-[#07364B] p-2 inline rounded my-auto`}>
+                                            {feature.properties.agentt ? 'Contact Realtor' : 'Contact Owner'}
+                                        </p>
+
+
+                                        <span onClick={() => {
+                                            
+                                            if (!user, user) {
+                                                toastId.current = toast.error("Create an account or sign-in to view phone number", { autoClose: true });
+                                            }
+                                            else{
+
+                                            }
+                                        }} className={`bg-[#F8F8F8] border-[1px] border-[#07364B] p-2 rounded flex min-w-[160px]`}>
+
+                                            <p className={` text-xl text-[#07364B] font-[500] inline my-auto `}>
+                                                {user.user ? feature.properties.phone : ' '}
+                                            </p>
+                                        </span>
+
+                                    </>
+                                    :
+                                    <>
+                                    </>
+                                }
+
+                            </span>
+                        </span>
 
                     </span>
                 }

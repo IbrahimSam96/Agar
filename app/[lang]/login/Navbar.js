@@ -67,11 +67,11 @@ const NavBar = () => {
                 <p className={` whitespace-nowrap text-sm	text-white font-['Montserrat',sans-serif] `}> Rent / Sell </p>
               </span>
 
-              <span onClick={() => {
+              {/* <span onClick={() => {
                 router.push('/my-account')
               }} className={`hover:bg-[#102C3A] p-4 `}>
-                <p className={` whitespace-nowrap text-sm	text-white font-['Montserrat',sans-serif] `}>  My Profile </p>
-              </span>
+                <p className={` whitespace-nowrap text-sm	text-white font-['Montserrat',sans-serif] `}> Settings </p>
+              </span> */}
 
               <span onClick={() => {
                 SignOut()
