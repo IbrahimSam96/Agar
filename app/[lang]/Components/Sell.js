@@ -37,7 +37,7 @@ import { uid } from 'uid/secure';
 import { PatternFormat } from 'react-number-format';
 
 
-const Sell = ({ Governorates, docID, open, setOpen }) => {
+const Sell = ({ Governorates, docID, open, setOpen, lat, lng }) => {
     // Cluster Colors
     // '#07364B', // HOVER color
     // '#0097A7' // Normal color
@@ -394,18 +394,39 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                             </span>
 
-                            <span className={`self-center justify-self-start grid py-2 mx-2`}>
+                            <span className={`self-center justify-self-start flex py-2 mx-2`}>
+
                                 <span onClick={() => {
                                     getLocation()
-                                }} className={`self-center justify-self-start row-start-1 col-start-1 mx-2 flex hover:cursor-pointer`}>
+                                }} className={`my-auto mr-auto ml-2 flex hover:cursor-pointer`}>
                                     <LocationOnOutlinedIcon sx={{ color: '#0097A7' }} />
-                                    <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline font-[600] ml-1 my-auto`}>
+                                    <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline font-[500] ml-1 my-auto`}>
                                         Use Current Location
                                     </p>
                                     <p className={`${geoLocationError ? 'inline' : 'hidden'} text-[red] text-sm ml-2 my-auto cursor-default`}>
                                         Please check your browser permission
                                     </p>
+
+
                                 </span>
+
+                                <p className={` text-[0.5em] sm:text-[0.8em] text-[#0097A7] inline font-[500] ml-4 my-auto`}>
+                                    or
+                                </p>
+
+                                <span className={`my-auto ml-4 flex `}>
+
+                                    <p onClick={() => {
+                                        setLatitude(lng)
+                                        setLongitude(lat)
+                                    }} className={` text-[0.5em] sm:text-[0.8em] text-[#0097A7] inline font-[500] my-auto hover:cursor-pointer`}>
+                                        ( {lat.toFixed(4)} - {lng.toFixed(4)} )
+                                    </p>
+
+                                </span>
+
+
+
                             </span>
 
                             <span className={`flex self-center py-2 mx-2`} >
@@ -971,7 +992,7 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
 
                                     {agent && <span className={`flex py-1 self-center overflow-x-hidden whitespace-nowrap text-ellipsis mr-2`}>
                                         <p className={`text-[#707070] text-xs font-['Montserrat',sans-serif] inline `}>
-                                            Realtor: {agentName} 
+                                            Realtor: {agentName}
                                         </p>
                                     </span>}
 
@@ -1140,7 +1161,8 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                                         timeStamp: Timestamp.now(),
                                                         status: 'pending',
                                                         phone: phone,
-                                                        views: 1,
+                                                        seller: user.user.uid,
+                                                        // views: 1,
                                                         urls: res
                                                     },
                                                 })
@@ -1166,6 +1188,8 @@ const Sell = ({ Governorates, docID, open, setOpen }) => {
                                                 setLongitude('')
                                                 setLatitude('')
                                                 setMediaList([])
+
+                                                window.location = `/listing/${id}`
 
                                             }).catch((err) => {
                                                 setLoading(false)

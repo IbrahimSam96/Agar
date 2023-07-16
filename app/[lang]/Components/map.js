@@ -16,12 +16,12 @@ import { Timestamp } from 'firebase/firestore';
 import { createRoot } from 'react-dom/client';
 
 
-const Map = ({ Listings }) => {
+const Map = ({ Listings, lng, lat, setLat, setLng }) => {
 
     const mapContainer = useRef(null);
     const map = useRef(null);
-    const [lng, setLng] = useState(35.90719);
-    const [lat, setLat] = useState(31.97182);
+    // const [lng, setLng] = useState(35.90719);
+    // const [lat, setLat] = useState(31.97182);
     const [zoom, setZoom] = useState(11.5);
     const [mapIsLoaded, setMapIsLoaded] = useState(false);
 
@@ -37,126 +37,6 @@ const Map = ({ Listings }) => {
     console.log('appClient state responce :', Listings)
 
 
-    // const Marker = ({ children, e }) => {
-
-    //     console.log(e)
-    //     const rent = e.properties.rent;
-    //     const coordinates = e.geometry.coordinates.slice();
-    //     const price = e.properties.price;
-    //     const area = e.properties.area;
-    //     const numberOfBedrooms = e.properties.bedrooms;
-
-    //     const numberOfBathrooms = e.properties.bathrooms;
-    //     const parking = e.properties.parking
-
-    //     const address = e.properties.streetName + '-' + e.properties.buildingNumber;
-    //     const timeStamp = e.properties.timeStamp;
-
-    //     const timeObj = new Timestamp(timeStamp.seconds, timeStamp.nanoseconds);
-    //     const when = moment(timeObj.toDate()).fromNow()
-
-    //     const coverImage = e.properties.urls[0]
-
-
-    //     const _onClick = () => {
-
-    // const JSXTooltip = () => {
-
-    //     return (
-    //         <div onClick={() => {
-
-    //         }} className={`w-full grid shadow-md shadow-slate-500 rounded-[10px]`}>
-
-    //             <span className={`flex`}>
-    //                 <Image
-    //                     priority
-    //                     alt={coverImage}
-    //                     src={coverImage}
-    //                     width="0"
-    //                     height="0"
-    //                     sizes="100vw"
-    //                     className="w-full h-auto m-2 rounded select-none max-h-[120px] max-w-[150px]"
-
-    //                 // width={220}
-    //                 // height={160}
-    //                 // className={`m-2 rounded select-none max-h-[120px] max-w-[220px] w-auto h-auto`}
-    //                 />
-    //                 <span className={`grid ml-2 self-center flex-1`}>
-
-    //                     <span className={`flex self-center `}>
-    //                         <p className={`text-[#263238] text-base font-[600] font-['Montserrat',sans-serif] mr-auto`}>
-    //                             {price}
-    //                         </p>
-    //                         <p className={`text-[#707070] text-xs ml-auto mr-2`}>
-    //                             {when}
-    //                         </p>
-    //                     </span>
-
-    //                     <span className={`flex py-1 self-center `}>
-    //                         <p className={`text-[#707070] text-xs font-['Montserrat',sans-serif] inline`}>
-    //                             {address}
-    //                         </p>
-    //                     </span>
-
-    //                     <span className={`flex py-1 self-center `}>
-    //                         <p className={`text-[#707070] text-xs inline font-['Montserrat',sans-serif] mr-auto `}>
-    //                             {numberOfBedrooms}BD | {numberOfBathrooms}BA | {parking ? 1 : 0} Parking
-
-    //                         </p>
-    //                         <p className={`text-[#707070] text-xs inline font-[600] mr-auto ml-2`}>
-    //                             {area} m2
-    //                         </p>
-    //                     </span>
-
-    //                 </span>
-
-    //             </span>
-
-    //             <span className={`bg-[#F8F8F8] flex p-2 `}>
-
-    //                 <span className={`flex mx-auto`}>
-    //                     <p className={`text-[#0097A7] font-['Montserrat',sans-serif] `}>
-    //                         {address}
-    //                     </p>
-    //                     <p className={`text-[grey] font-['Montserrat',sans-serif] ml-2`}>
-    //                         {`1 For ${rent ? 'Rent' : 'Sale'}`}
-    //                     </p>
-    //                 </span>
-
-    //             </span>
-
-    //         </div>
-    //     )
-    // }
-
-    // let htmlString = ReactDOMServer.renderToString(JSXTooltip())
-
-    //         // Ensure that if the map is zoomed out such that
-    //         // multiple copies of the feature are visible, the
-    //         // popup appears over the copy being pointed to.
-    //         // while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-    //         //     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-    //         // }
-
-    //         new mapboxgl.Popup()
-    //             .setLngLat(coordinates)
-    //             .setHTML(
-    //                 htmlString
-    //             )
-    //             .addTo(map.current);
-
-    //     }
-
-    //     return (
-    //         <button key={e.id} onClick={_onClick} className={'bg-[#07364B] text-white px-6 rounded-b-lg '}>
-    //             {e.properties.price}
-    //             {children}
-    //         </button>
-    //     );
-    // };
-
-
-
     // Used for intitializing map 
     useEffect(() => {
         if (map.current) return; // initialize map only once
@@ -167,6 +47,8 @@ const Map = ({ Listings }) => {
             center: [lng, lat],
             zoom: zoom,
             hash: true,
+            // cooperativeGestures: true
+
             // bounds:[]
         });
 
@@ -191,6 +73,27 @@ const Map = ({ Listings }) => {
                 clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
             });
             setMapIsLoaded(true)
+
+            // Function to get coordinates on move
+            function getCoordinates() {
+                var center = map.current.getCenter();
+                var latitude = center.lat;
+                var longitude = center.lng;
+                setLat(latitude);
+                setLng(longitude);
+            }
+            map.current.on('move', getCoordinates);
+
+
+            // gets locations
+            // map.current.on('move', (e) => {
+            //     console.log('A move event occurred.', e);
+            //     var latitude = e.lngLat.lat;
+            //     var longitude = e.lngLat.lng;
+            //     setLat(latitude);
+            //     setLng(longitude);
+            // });
+
             // Setting up Clusters - Color scale styling based on size of Cluseters
             map.current.addLayer({
                 id: 'clusters',
@@ -618,7 +521,11 @@ const Map = ({ Listings }) => {
             return;
         }
         console.log('Updating map with new data')
-        map.current.getSource("listings").setData(Listings);
+
+        if (map.current.isSourceLoaded('listings')) {
+            map.current.getSource("listings").setData(Listings);
+        }
+
 
     }, [Listings, mapIsLoaded])
 

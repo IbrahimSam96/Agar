@@ -198,7 +198,7 @@ const ListingClientPage = ({ Listings, params, feature }) => {
 
             <ToastContainer />
 
-            <div className={`grid grid-rows-[auto,auto,150px] row-start-2 row-end-3 col-start-1 col-end-8 mx-12 my-4 `}>
+            <div className={`grid grid-rows-[auto,auto,150px] row-start-2 row-end-3 col-start-1 col-end-8 mx-2 sm:mx-12 my-4 `}>
 
                 <span className={`self-center grid p-2 mx-2 `}>
 
@@ -460,34 +460,27 @@ const ListingClientPage = ({ Listings, params, feature }) => {
 
                             <span className={`flex my-auto ml-auto mr-2`}>
 
-                                {feature.properties.phone ?
+                                {feature.properties.phone &&
                                     <>
                                         <p className={` text-base text-[#07364B] p-2 inline rounded my-auto`}>
                                             {feature.properties.agentt ? 'Contact Realtor' : 'Contact Owner'}
                                         </p>
 
-
                                         <span onClick={() => {
-                                            
-                                            if (!user, user) {
-                                                toastId.current = toast.error("Create an account or sign-in to view phone number", { autoClose: true });
-                                            }
-                                            else{
 
+                                            if (!user.user) {
+                                                router.push('/login')
                                             }
-                                        }} className={`bg-[#F8F8F8] border-[1px] border-[#07364B] p-2 rounded flex min-w-[160px]`}>
 
-                                            <p className={` text-xl text-[#07364B] font-[500] inline my-auto `}>
-                                                {user.user ? feature.properties.phone : ' '}
+                                        }} className={`bg-[#F8F8F8] border-[1px] border-[#07364B] px-2 rounded flex min-w-[160px]`}>
+
+                                            <p className={` text-xl text-[#07364B] font-[500] inline my-auto hover:blur-none blur-sm `}>
+                                                {user.user ? feature.properties.phone : 'Sign in to view number'}
                                             </p>
                                         </span>
 
                                     </>
-                                    :
-                                    <>
-                                    </>
                                 }
-
                             </span>
                         </span>
 

@@ -2,9 +2,6 @@
 // Firebase
 import { collection, getDocs } from "firebase/firestore";
 import { firebasedb } from './utils/InitFirebase';
-import { AdminAuth } from "./utils/AdminFirebase";
-import { cookies } from 'next/headers'
-
 // local
 import AppClientPage from './Components/appClientPage';
 import { getDictionary } from '@/get-dictionary';

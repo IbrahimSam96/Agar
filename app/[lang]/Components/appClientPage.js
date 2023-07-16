@@ -10,6 +10,7 @@ import NavBar from "./NavBar";
 import Sidebar from "./Sidebar";
 import Sell from "./Sell";
 import Favourites from "./Favourites";
+import MyListings from "./MyListings";
 
 // Cluster Colors
 // '#07364B', // HOVER color
@@ -30,26 +31,39 @@ const AppClientPage = ({ docID, Listings, dictionary, lang }) => {
     // Favourites sidebar
     const [favouritesSideBar, setFavouritesSideBar] = useState(false);
 
+    // My Listings sidebar
+    const [myListingsSideBar, setMyListingsSideBar] = useState(false);
+
+
     // Data
     const [allListings, setAllListings] = useState(Listings[0]);
 
     const [UpdatedListings, setUpdatedListings] = useState(Listings[0]);
 
+    // map coordinates
+    const [lng, setLng] = useState(35.90719);
+    const [lat, setLat] = useState(31.97182);
 
+    console.log(lng,lat)
     return (
         <>
             <NavBar open={sellOpen} setOpen={setSellOpen} />
-            <Map Listings={UpdatedListings} />
+            <Map Listings={UpdatedListings} lat={lat} lng={lng} setLat={setLat} setLng={setLng}/>
             <Sidebar
-                allListings={allListings} 
+                allListings={allListings}
                 setSharedListings={setUpdatedListings}
                 open={sideBarOpen} setOpen={setSideBarOpen}
                 dictionary={dictionary} Governorates={Governorates}
                 lang={lang} sellOpen={sellOpen} setSellOpen={setSellOpen}
                 setFavouritesSideBar={setFavouritesSideBar} favouritesSideBar={favouritesSideBar}
+                myListingsSideBar={myListingsSideBar} setMyListingsSideBar={setMyListingsSideBar}
             />
-            <Sell open={sellOpen} setOpen={setSellOpen} Governorates={Governorates} docID={docID} />
+
+            <Sell open={sellOpen} setOpen={setSellOpen} Governorates={Governorates} docID={docID} lat={lat} lng={lng} />
+
             <Favourites open={favouritesSideBar} setOpen={setFavouritesSideBar} dictionary={dictionary} allListings={allListings} />
+
+            <MyListings open={myListingsSideBar} setOpen={setMyListingsSideBar} dictionary={dictionary} allListings={allListings} docID={docID} />
         </>
     )
 }

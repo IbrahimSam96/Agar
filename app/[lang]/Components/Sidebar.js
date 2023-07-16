@@ -34,9 +34,9 @@ import moment from 'moment';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 import { ToastContainer, toast } from 'react-toastify';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import AutoAwesomeMotionOutlinedIcon from '@mui/icons-material/AutoAwesomeMotionOutlined';
 
-
-const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Governorates, setSellOpen, sellOpen, setFavouritesSideBar, favouritesSideBar, lang }) => {
+const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Governorates, setSellOpen, sellOpen, setFavouritesSideBar, favouritesSideBar, myListingsSideBar, setMyListingsSideBar, lang }) => {
 
     // type:'ListingsCollection',
     // features:[{...}]
@@ -426,7 +426,7 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
             <ToastContainer />
 
             {open ?
-                <div className={`row-start-2 row-end-3 col-start-1 col-end-8 max-w-[80px] min-h-[85vh] mt-4 grid grid-rows-[50px,10px,70px,70px,70px,auto] bg-[#FFFFFF] z-[100]  ease-in-out duration-300  shadow-md shadow-[#707070]  ${open ? "translate-x-0 " : "translate-x-[250%]"} `} >
+                <div className={`row-start-2 row-end-3 col-start-1 col-end-8 max-w-[80px] min-h-[85vh] mt-4 grid grid-rows-[50px,10px,70px,70px,1px,70px,70px,auto] bg-[#FFFFFF] z-[100]  ease-in-out duration-300  shadow-md shadow-[#707070]  ${open ? "translate-x-0 " : "translate-x-[250%]"} `} >
 
                     <span onClick={() => {
                         setOpen(!open)
@@ -468,20 +468,46 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
                         <p className={`text-sm text-[#EA0670] font-['Montserrat',sans-serif] self-center justify-self-center group-hover:text-[white]`}>Favourites</p>
                     </span>
 
-                    <span onClick={() => {
-                        if (user.user) {
-                            setSellOpen(!sellOpen)
-                        }
-                        else {
-                            toastId.current = toast.error("Sign-in or create a new account to create new listings ", { autoClose: true });
 
-                        }
-                    }} className={`grid group hover:cursor-pointer hover:bg-[#07364B] `}>
 
-                        <AddOutlinedIcon className={`select-none w-[25px] h-[25px] self-end justify-self-center text-[#0097A7] group-hover:text-[white] text-base`} />
+                    {user.user &&
+                        <>
+                            <span className={`border-b-[1px] border-[grey]`}>
 
-                        <p className={`text-sm text-[#263238] font-['Montserrat',sans-serif] self-center justify-self-center group-hover:text-[white]`}> Create </p>
-                    </span>
+                            </span>
+
+                            <span onClick={() => {
+                                if (user.user) {
+                                    setSellOpen(!sellOpen)
+                                }
+                                else {
+                                    toastId.current = toast.error("Sign-in or create a new account to create new listings ", { autoClose: true });
+                                }
+                            }} className={`grid group hover:cursor-pointer hover:bg-[#07364B] `}>
+
+                                <AddOutlinedIcon className={`select-none w-[25px] h-[25px] self-end justify-self-center text-[#07364B] group-hover:text-[white] text-base`} />
+
+                                <p className={`text-sm text-[#263238] font-['Montserrat',sans-serif] self-center justify-self-center group-hover:text-[white]`}> Create </p>
+                            </span>
+
+                            <span onClick={() => {
+                                if (user.user) {
+                                    setMyListingsSideBar(!myListingsSideBar)
+                                }
+                                else {
+                                    toastId.current = toast.error("Sign-in or create a new account to view your listings ", { autoClose: true });
+                                }
+
+                            }} className={`grid group hover:cursor-pointer hover:bg-[#07364B] `}>
+
+                                <AutoAwesomeMotionOutlinedIcon className={`select-none w-[25px] h-[25px] self-end justify-self-center text-[#07364B] group-hover:text-[white] text-base`} />
+
+                                <p className={`text-sm text-[#263238] font-['Montserrat',sans-serif] self-center justify-self-center group-hover:text-[white]`}> My Listings </p>
+                            </span>
+                        </>
+                    }
+
+
                 </div>
                 :
                 <div className={`row-start-2 row-end-3 col-start-1 col-end-8 max-w-[520px] max-h-[85vh] overflow-y-scroll grid ${!moreFilters ? `grid-rows-[60px,120px,80px,65px,auto,50px]` : `grid-rows-[60px,120px,auto,auto,auto,auto,auto,auto,120px]`}  bg-[#FFFFFF] z-[100] ease-in-out duration-300 shadow-md shadow-[#707070]`}>
@@ -762,7 +788,7 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
                                                                         />
                                                                     </a>
                                                                 }
-                                                                
+
                                                                 {!user.user && index < 2 &&
                                                                     <a className={`row-start-1 col-start-1 outline-none`} target="_blank" href={`/listing/${feature.properties.id}`} rel="noopener noreferrer">
                                                                         <Image
