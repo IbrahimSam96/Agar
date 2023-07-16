@@ -275,7 +275,7 @@ const MyListings = ({ open, setOpen, allListings, dictionary, docID }) => {
 
                             return (
 
-                                <Listing feature={feature} setMyListings={setMyListings} myListings={myListings} dictionary={dictionary} docID={docID} />
+                                <Listing key={feature.id} feature={feature} setMyListings={setMyListings} myListings={myListings} dictionary={dictionary} docID={docID} />
                             )
                         })
                             :
