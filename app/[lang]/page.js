@@ -24,8 +24,6 @@ export default async function Home({ params: { lang } }) {
       let listing = {}
       listing = doc.data();
 
-
-      // console.log(JSON.parse(listing.features[0].properties.urls))
       active_Lisitings.push(listing);
     });
 
@@ -48,7 +46,7 @@ export default async function Home({ params: { lang } }) {
 
     <div className={`w-full h-full min-h-full grid grid-cols-7 grid-rows-[60px,1fr,auto] `} >
 
-      <AppClientPage docID={docID} Listings={Listings} dictionary={dictionary} lang={lang} />
+      <AppClientPage docID={docID} Listings={JSON.parse(JSON.stringify(Listings))} dictionary={dictionary} lang={lang} />
 
     </div>
   )

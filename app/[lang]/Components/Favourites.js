@@ -185,7 +185,7 @@ const Favourites = ({ open, setOpen, allListings, dictionary }) => {
                             return (
                                 <>
                                     {favouritedListing &&
-                                        <div key={feature.id} className={`m-2 shadow-md shadow-slate-200 border-[1px] border-[#E3EFF1] w-[240px] h-[auto] rounded`}>
+                                        <div key={feature.id} className={`m-2 shadow-md shadow-slate-200 border-[1px] border-[#E3EFF1] w-[240px] h-max rounded`}>
 
                                             <Swiper modules={[Navigation, Pagination, Scrollbar, A11y]}
                                                 navigation={true}
@@ -223,6 +223,7 @@ const Favourites = ({ open, setOpen, allListings, dictionary }) => {
                                                                         </path>
                                                                     </svg>
                                                                 }
+
                                                                 <Image
                                                                     // placeholder="blur"	
                                                                     priority
@@ -234,60 +235,68 @@ const Favourites = ({ open, setOpen, allListings, dictionary }) => {
                                                                     className="row-start-1 col-start-1 w-full h-auto rounded select-none max-h-[160px] max-w-[240px]"
                                                                 />
                                                             </span>
+
                                                         </SwiperSlide>
                                                     )
                                                 }
                                                 )}
                                             </Swiper>
 
-                                            <span className={`flex m-2`}>
-                                                <p className={`text-[#263238] text-base font-[600] font-['Montserrat',sans-serif] inline mr-auto ml-1 `}>
-                                                    {feature.properties.price}
-                                                </p>
-                                            </span>
+                                            <a className={`outline-none row-start-1 col-start-1`} target="_blank" href={`/listing/${feature.properties.id}`} rel="noopener noreferrer">
 
-                                            <span className={`flex mx-2 overflow-hidden text-ellipsis whitespace-nowrap`}>
-                                                <p className={`text-[#263238] text-xs inline mr-auto ml-1 `}> {feature.properties.streetName} - {feature.properties.buildingNumber} </p>
-                                            </span>
+                                                <span className={`grid cursor-pointer`}>
 
-                                            <span className={`flex m-2`}>
-                                                <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 whitespace-nowrap`}>
-                                                    {dictionary['Numbers'][feature.properties.bedrooms]} {dictionary['Properties']['BD']}
-                                                </p>
-                                                <span className={`text-[#707070] text-xs`}>
-                                                    |
+
+                                                    <span className={`flex m-2`}>
+                                                        <p className={`text-[#263238] text-base font-[600] font-['Montserrat',sans-serif] inline mr-auto ml-1 `}>
+                                                            {feature.properties.price}
+                                                        </p>
+                                                    </span>
+
+                                                    <span className={`flex mx-2 overflow-hidden text-ellipsis whitespace-nowrap`}>
+                                                        <p className={`text-[#263238] text-xs inline mr-auto ml-1 `}> {feature.properties.streetName} - {feature.properties.buildingNumber} </p>
+                                                    </span>
+
+                                                    <span className={`flex m-2`}>
+                                                        <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 whitespace-nowrap`}>
+                                                            {dictionary['Numbers'][feature.properties.bedrooms]} {dictionary['Properties']['BD']}
+                                                        </p>
+                                                        <span className={`text-[#707070] text-xs`}>
+                                                            |
+                                                        </span>
+                                                        <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 whitespace-nowrap`}>
+                                                            {dictionary['Numbers'][feature.properties.bathrooms]} {dictionary['Properties']['BA']}
+                                                        </p>
+                                                        <span className={`text-[#707070] text-xs`}>
+                                                            |
+                                                        </span>
+                                                        <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 whitespace-nowrap`}>
+                                                            {feature.properties.parking ? dictionary['Numbers']['1'] : dictionary['Numbers']['0']} {dictionary['Properties']['Parking']}
+                                                        </p>
+                                                        <span className={`text-[#707070] text-xs`}>
+                                                            |
+                                                        </span>
+                                                        <p className={`text-[#263238] font-['Montserrat',sans-serif] text-xs font-[600] inline mr-auto ml-1 `}>  {feature.properties.area} m2  </p>
+                                                    </span>
+
+                                                    <span className={`flex m-2 `}>
+                                                        <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1  whitespace-nowrap`}> {dictionary['Properties']['Listing ID']}: {feature.properties.id}  </p>
+                                                    </span>
+
+                                                    <span className={`flex m-2`}>
+                                                        <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1 whitespace-nowrap`}> {feature.properties.agent && dictionary['Properties']['Agent'] + ':'} {feature.properties.agent && feature.properties.agentName}  </p>
+                                                    </span>
+
+                                                    <span className={`flex border-[#f8f8f8] border-t-[1px] m-2 `}>
+                                                    </span>
+
+                                                    <span className={`flex m-2 `}>
+                                                        <p className={`text-[#ADB0B5] font-[500] font-['Montserrat',sans-serif] text-xs inline ml-auto mr-2  whitespace-nowrap`}>
+                                                            {when}
+                                                        </p>
+                                                    </span>
                                                 </span>
-                                                <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 whitespace-nowrap`}>
-                                                    {dictionary['Numbers'][feature.properties.bathrooms]} {dictionary['Properties']['BA']}
-                                                </p>
-                                                <span className={`text-[#707070] text-xs`}>
-                                                    |
-                                                </span>
-                                                <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 whitespace-nowrap`}>
-                                                    {feature.properties.parking ? dictionary['Numbers']['1'] : dictionary['Numbers']['0']} {dictionary['Properties']['Parking']}
-                                                </p>
-                                                <span className={`text-[#707070] text-xs`}>
-                                                    |
-                                                </span>
-                                                <p className={`text-[#263238] font-['Montserrat',sans-serif] text-xs font-[600] inline mr-auto ml-1 `}>  {feature.properties.area} m2  </p>
-                                            </span>
-
-                                            <span className={`flex m-2 `}>
-                                                <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1  whitespace-nowrap`}> {dictionary['Properties']['Listing ID']}: {feature.properties.id}  </p>
-                                            </span>
-
-                                            <span className={`flex m-2`}>
-                                                <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1 whitespace-nowrap`}> {feature.properties.agent && dictionary['Properties']['Agent'] + ':'} {feature.properties.agent && feature.properties.agentName}  </p>
-                                            </span>
-
-                                            <span className={`flex border-[#f8f8f8] border-t-[1px] m-2 `}>
-                                            </span>
-
-                                            <span className={`flex m-2 `}>
-                                                <p className={`text-[#ADB0B5] font-[500] font-['Montserrat',sans-serif] text-xs inline ml-auto mr-2  whitespace-nowrap`}>
-                                                    {when}
-                                                </p>
-                                            </span>
+                                            </a>
 
                                         </div>
                                     }

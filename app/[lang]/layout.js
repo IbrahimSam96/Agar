@@ -14,6 +14,11 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
+import 'swiper/css/free-mode';
+import 'swiper/css/thumbs';
+
+import 'swiper/css/zoom';
+
 // Auth Provider Component 
 import { AuthProvider } from '@/app/[lang]/utils/Authenticator';
 import { i18n } from '@/i18n-config';

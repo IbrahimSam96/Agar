@@ -44,7 +44,7 @@ const AppClientPage = ({ docID, Listings, dictionary, lang }) => {
     const [lng, setLng] = useState(35.90719);
     const [lat, setLat] = useState(31.97182);
 
-    console.log(lng,lat)
+    console.log('app Client Page')
     return (
         <>
             <NavBar open={sellOpen} setOpen={setSellOpen} />

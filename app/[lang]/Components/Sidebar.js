@@ -439,7 +439,7 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
                             className={`rounded-[50%] p-2 bg-[#F8F8F8] `} />
                     </span>
 
-                    <span className={`border-b-[1px] border-[grey]`}>
+                    <span className={`border-b-[1px] border-[#ADB0B5]`}>
 
                     </span>
 
@@ -454,24 +454,21 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
                         <p className={`text-sm text-[#263238] font-['Montserrat',sans-serif] self-center justify-self-center group-hover:text-[white]`}>Filter</p>
                     </span>
 
-                    <span onClick={() => {
-                        setFavouritesSideBar(!favouritesSideBar)
-                    }} className={`grid group hover:cursor-pointer hover:bg-[#07364B] `}>
-
-                        <svg className={`select-none w-[25px] h-[25px] self-end justify-self-center text-base`}
-                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" data-name="Favourite Outline" id="favourite">
-                            <path fill="none" d="M0 0h24v24H0Z" opacity=".24">
-                            </path>
-                            <path className={`group-hover:fill-[white]`} fill="#EA0670" d="M11.994 20.696a1.407 1.407 0 0 1-.986-.41L4.08 13.359a5.712 5.712 0 0 1 7.926-8.226 5.715 5.715 0 0 1 7.918 8.241l-6.944 6.922a1.4 1.4 0 0 1-.986.4Zm-.284-1.68Zm-3.6-13.62a3.913 3.913 0 0 0-2.757 6.69L12 18.73l6.652-6.634a3.915 3.915 0 1 0-5.534-5.539l-1.112 1.116-1.12-1.12A3.9 3.9 0 0 0 8.11 5.396Z" data-name="Path 2729">
-                            </path>
-                        </svg>
-                        <p className={`text-sm text-[#EA0670] font-['Montserrat',sans-serif] self-center justify-self-center group-hover:text-[white]`}>Favourites</p>
-                    </span>
-
-
-
                     {user.user &&
                         <>
+                            <span onClick={() => {
+                                setFavouritesSideBar(!favouritesSideBar)
+                            }} className={`grid group hover:cursor-pointer hover:bg-[#07364B] `}>
+
+                                <svg className={`select-none w-[25px] h-[25px] self-end justify-self-center text-base`}
+                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" data-name="Favourite Outline" id="favourite">
+                                    <path fill="none" d="M0 0h24v24H0Z" opacity=".24">
+                                    </path>
+                                    <path className={`group-hover:fill-[white]`} fill="#EA0670" d="M11.994 20.696a1.407 1.407 0 0 1-.986-.41L4.08 13.359a5.712 5.712 0 0 1 7.926-8.226 5.715 5.715 0 0 1 7.918 8.241l-6.944 6.922a1.4 1.4 0 0 1-.986.4Zm-.284-1.68Zm-3.6-13.62a3.913 3.913 0 0 0-2.757 6.69L12 18.73l6.652-6.634a3.915 3.915 0 1 0-5.534-5.539l-1.112 1.116-1.12-1.12A3.9 3.9 0 0 0 8.11 5.396Z" data-name="Path 2729">
+                                    </path>
+                                </svg>
+                                <p className={`text-sm text-[#EA0670] font-['Montserrat',sans-serif] self-center justify-self-center group-hover:text-[white]`}>Favourites</p>
+                            </span>
                             <span className={`border-b-[1px] border-[grey]`}>
 
                             </span>
@@ -500,7 +497,8 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
 
                             }} className={`grid group hover:cursor-pointer hover:bg-[#07364B] `}>
 
-                                <AutoAwesomeMotionOutlinedIcon className={`select-none w-[25px] h-[25px] self-end justify-self-center text-[#07364B] group-hover:text-[white] text-base`} />
+                                {/* <AutoAwesomeMotionOutlinedIcon className={`select-none w-[25px] h-[25px] self-end justify-self-center text-[#07364B] group-hover:text-[white] text-base`} /> */}
+                                <svg className={`self-center justify-self-center`} fill="#000000" width="25px" height="25px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" ><path className={`group-hover:stroke-[white]`} id="secondary" d="M11,21V15H7v6ZM7,7h4M7,11h4" style={{ fill: 'none', stroke: 'rgb(44, 169, 188)', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '2px' }} ></path><path className={`group-hover:stroke-[white]`} id="primary" d="M15,21H3V4A1,1,0,0,1,4,3H14a1,1,0,0,1,1,1Zm0,0h6V8.72a1,1,0,0,0-.68-1L15,6Z" style={{ fill: 'none', stroke: 'rgb(0, 0, 0)', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '2px' }}></path></svg>
 
                                 <p className={`text-sm text-[#263238] font-['Montserrat',sans-serif] self-center justify-self-center group-hover:text-[white]`}> My Listings </p>
                             </span>
@@ -510,7 +508,7 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
 
                 </div>
                 :
-                <div className={`row-start-2 row-end-3 col-start-1 col-end-8 max-w-[520px] max-h-[85vh] overflow-y-scroll grid ${!moreFilters ? `grid-rows-[60px,120px,80px,65px,auto,50px]` : `grid-rows-[60px,120px,auto,auto,auto,auto,auto,auto,120px]`}  bg-[#FFFFFF] z-[100] ease-in-out duration-300 shadow-md shadow-[#707070]`}>
+                <div className={`row-start-2 row-end-3 col-start-1 col-end-8 max-w-[520px] max-h-[85vh] overflow-y-scroll grid ${!moreFilters ? `grid-rows-[80px,120px,80px,65px,auto,50px]` : `grid-rows-[60px,120px,auto,auto,auto,auto,auto,auto,120px]`}  bg-[#FFFFFF] z-[100] ease-in-out duration-300 shadow-md shadow-[#707070]`}>
 
 
                     <span className={`flex self-center mx-2 sticky top-0 bg-[#FFFFFF] z-[100]`}>
@@ -522,13 +520,12 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
                         <span onClick={() => {
                             setOpen(!open)
                         }} className={`hover:cursor-pointer ml-auto my-auto `}>
-                            <ArrowBackIosIcon sx={{ color: '#0097A7', fontSize: '35px', }}
-                                className={`rounded-[50%] p-2 hover:bg-[#F8F8F8] border-[#263238] border-[1px]`} />
+                            <ArrowBackIosIcon sx={{ color: '#0097A7', fontSize: '35px', }} className={`rounded-[50%] p-2 hover:bg-[#F8F8F8] border-[#ADB0B5] border-[1px]`} />
                         </span>
 
                     </span>
 
-                    <span className={`border-t-[3px] border-grey grid sticky top-0 bg-[#FFFFFF] z-[100] shadow-md shadow-[#707070]`}>
+                    <span className={`border-t-[1px] border-[#ADB0B5] grid sticky top-0 bg-[#FFFFFF] z-[100] shadow-md shadow-[#ADB0B5]`}>
 
                         <span className={`flex self-center mx-2`}>
 
@@ -536,7 +533,7 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
                                 id="categoryPopup"
                                 ref={categoryPopupRef}
                                 onClick={() => { setCategoryPopup(!categoryPopup) }}
-                                className={`group ml-2 mr-auto hover:cursor-pointer border-[1px] border-[grey] p-2`}>
+                                className={`group ml-2 mr-auto hover:cursor-pointer border-[1px] border-[#ADB0B5] p-2`}>
 
                                 <span className={`flex items-center w-[200px]`}>
 
@@ -552,7 +549,7 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
                                     {category !== 'For Rent' &&
                                         <span onClick={() => {
                                             setCategory('For Rent')
-                                        }} className={`hover:opacity-80 p-3 border-b-[1px] border-slate-300`}>
+                                        }} className={`hover:opacity-80 p-3 `}>
                                             <p className={` whitespace-nowrap text-sm text-[#263238]`}> {dictionary['Sidebar'].Category['For Rent']} </p>
                                         </span>
                                     }
@@ -560,7 +557,7 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
 
                                         <span onClick={() => {
                                             setCategory('For Sale')
-                                        }} className={`hover:opacity-80 p-3 border-b-[1px] border-slate-300`}>
+                                        }} className={`hover:opacity-80 p-3 `}>
                                             <p className={` whitespace-nowrap text-sm text-[#263238]`}> {dictionary['Sidebar'].Category['For Sale']}  </p>
                                         </span>
                                     }
@@ -586,7 +583,7 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
                             <span
                                 id="pricePopup"
                                 ref={pricePopupRef}
-                                className={`group ml-auto mr-2  border-[1px] border-[grey] p-2`}>
+                                className={`group ml-auto mr-2  border-[1px] border-[#ADB0B5] p-2`}>
 
                                 <span onClick={() => { setPricePopup(!pricePopup) }}
                                     className={`flex items-center w-[200px] hover:cursor-pointer`}>
@@ -614,7 +611,7 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
 
                                     <span className={`p-4 flex self-center`}>
 
-                                        <span className={`flex py-4 px-6 border-[1px] border-[#07364B] ml-2 mr-auto w-[175px]`}>
+                                        <span className={`flex py-4 px-6 border-[1px] border-[#ADB0B5] ml-2 mr-auto w-[175px]`}>
                                             <p className={`m-auto inline text-base text-[#263238]`}>{handleMinMaxformat('min')}  </p>
                                         </span>
 
@@ -623,7 +620,7 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
                                         </span>
 
 
-                                        <span className={`flex py-4 px-6 border-[1px] border-[#07364B] ml-auto mr-2 w-[175px]`}>
+                                        <span className={`flex py-4 px-6 border-[1px] border-[#ADB0B5] ml-auto mr-2 w-[175px]`}>
                                             <p className={`m-auto text-base text-[#263238]`}> {handleMinMaxformat('max')}  </p>
                                         </span>
                                     </span>
@@ -657,7 +654,7 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
 
                             <span
                                 onClick={() => { setMoreFilters(!moreFilters) }}
-                                className={`group mr-auto ml-2 hover:cursor-pointer border-[1px] border-[grey] p-2 ${moreFilters ? 'bg-[#07364B] hover:opacity-80' : 'bg-transparent'} ease-in-out	duration-300  `}>
+                                className={`group mr-auto ml-2 hover:cursor-pointer border-[1px] border-[#ADB0B5] p-2 ${moreFilters ? 'bg-[#07364B] hover:opacity-80' : 'bg-transparent'} ease-in-out	duration-300  `}>
 
                                 <span className={`flex items-center w-[200px]`}>
 
@@ -712,7 +709,11 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
 
 
                                     }} className={`flex mx-auto hover:cursor-pointer`}>
-                                        <FilterListIcon sx={{ color: '#0097A7' }} className={` ease-in-out duration-300 ${sort ? 'rotate-0' : 'rotate-180'}`} />
+                                        <svg className={` ease-in-out duration-300 ${sort ? 'rotate-0' : 'rotate-180'}`} width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M16 18L16 16M16 6L20 10.125M16 6L12 10.125M16 6L16 13" stroke="#1C274C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M8 18L12 13.875M8 18L4 13.875M8 18L8 11M8 6V8" stroke="#0097A7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                        {/* <FilterListIcon sx={{ color: '#0097A7' }} className={` ease-in-out duration-300 ${sort ? 'rotate-0' : 'rotate-180'}`} /> */}
                                         <p className={`text-sm font-bold mx-auto text-[#07364B] my-auto`}>
                                             {dictionary['Sort']}
                                         </p>
@@ -758,53 +759,53 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
                                                         <SwiperSlide key={url}>
 
                                                             <span className={`grid grid-rows-1 grid-cols-1`}>
-                                                                {favouritedListing ?
-                                                                    <FavoriteOutlinedIcon onClick={() => {
-                                                                        removeListing(feature.id);
-                                                                    }} className={`row-start-1 col-start-1 justify-self-end self-start m-2 text-[#EA0670] z-10 hover:cursor-pointer `} />
-                                                                    :
-                                                                    <svg onClick={() => {
-                                                                        addListing(feature.id)
-                                                                    }} className={`row-start-1 col-start-1 justify-self-end self-start m-2 z-10 rounded-[50%] hover:cursor-pointer`}
-                                                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" data-name="Favourite Outline" id="favourite">
-                                                                        <path fill="none" d="M0 0h24v24H0Z" opacity=".24">
-                                                                        </path>
-                                                                        <path fill="#EA0670" d="M11.994 20.696a1.407 1.407 0 0 1-.986-.41L4.08 13.359a5.712 5.712 0 0 1 7.926-8.226 5.715 5.715 0 0 1 7.918 8.241l-6.944 6.922a1.4 1.4 0 0 1-.986.4Zm-.284-1.68Zm-3.6-13.62a3.913 3.913 0 0 0-2.757 6.69L12 18.73l6.652-6.634a3.915 3.915 0 1 0-5.534-5.539l-1.112 1.116-1.12-1.12A3.9 3.9 0 0 0 8.11 5.396Z" data-name="Path 2729">
-                                                                        </path>
-                                                                    </svg>
+                                                                {user.user &&
+                                                                    <>
+                                                                        {favouritedListing ?
+                                                                            <FavoriteOutlinedIcon onClick={() => {
+                                                                                removeListing(feature.id);
+                                                                            }} className={`row-start-1 col-start-1 justify-self-end self-start m-2 text-[#EA0670] z-10 hover:cursor-pointer `} />
+                                                                            :
+                                                                            <svg onClick={() => {
+                                                                                addListing(feature.id)
+                                                                            }} className={`row-start-1 col-start-1 justify-self-end self-start m-2 z-10 rounded-[50%] hover:cursor-pointer`}
+                                                                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" data-name="Favourite Outline" id="favourite">
+                                                                                <path fill="none" d="M0 0h24v24H0Z" opacity=".24">
+                                                                                </path>
+                                                                                <path fill="#EA0670" d="M11.994 20.696a1.407 1.407 0 0 1-.986-.41L4.08 13.359a5.712 5.712 0 0 1 7.926-8.226 5.715 5.715 0 0 1 7.918 8.241l-6.944 6.922a1.4 1.4 0 0 1-.986.4Zm-.284-1.68Zm-3.6-13.62a3.913 3.913 0 0 0-2.757 6.69L12 18.73l6.652-6.634a3.915 3.915 0 1 0-5.534-5.539l-1.112 1.116-1.12-1.12A3.9 3.9 0 0 0 8.11 5.396Z" data-name="Path 2729">
+                                                                                </path>
+                                                                            </svg>
+                                                                        }
+                                                                    </>
                                                                 }
                                                                 {user.user &&
-                                                                    <a className={`row-start-1 col-start-1 outline-none`} target="_blank" href={`/listing/${feature.properties.id}`} rel="noopener noreferrer">
 
-                                                                        <Image
-                                                                            // placeholder="blur"	
-                                                                            priority
-                                                                            alt={url}
-                                                                            src={url}
-                                                                            width="0"
-                                                                            height="0"
-                                                                            sizes="100vw"
-                                                                            className="row-start-1 col-start-1 w-full h-auto rounded select-none max-h-[160px] max-w-[240px]"
-                                                                        />
-                                                                    </a>
+                                                                    <Image
+                                                                        // placeholder="blur"	
+                                                                        priority
+                                                                        alt={url}
+                                                                        src={url}
+                                                                        width="0"
+                                                                        height="0"
+                                                                        sizes="100vw"
+                                                                        className="row-start-1 col-start-1 w-full h-auto rounded select-none max-h-[160px] max-w-[240px]"
+                                                                    />
                                                                 }
 
                                                                 {!user.user && index < 2 &&
-                                                                    <a className={`row-start-1 col-start-1 outline-none`} target="_blank" href={`/listing/${feature.properties.id}`} rel="noopener noreferrer">
-                                                                        <Image
-                                                                            // placeholder="blur"	
-                                                                            priority
-                                                                            alt={url}
-                                                                            src={url}
-                                                                            width="0"
-                                                                            height="0"
-                                                                            sizes="100vw"
-                                                                            className="row-start-1 col-start-1 w-full h-auto rounded select-none max-h-[160px] max-w-[240px]"
-                                                                        />
-                                                                    </a>
+                                                                    <Image
+                                                                        // placeholder="blur"	
+                                                                        priority
+                                                                        alt={url}
+                                                                        src={url}
+                                                                        width="0"
+                                                                        height="0"
+                                                                        sizes="100vw"
+                                                                        className="row-start-1 col-start-1 w-full h-auto rounded select-none max-h-[160px] max-w-[240px]"
+                                                                    />
                                                                 }
 
-                                                                {!user.user && index >= 2 && <p className="justify-self-center self-center rounded select-none text-xs text-[#263238] bg-[#F8F8F8] p-4 ">Sign-in to view more!</p>}
+                                                                {!user.user && index >= 2 && <p className="justify-self-center self-center rounded select-none text-xs text-[#263238] bg-[#F8F8F8] p-4 mt-[50px] ">Sign-in to view more!</p>}
                                                             </span>
                                                         </SwiperSlide>
                                                     )
@@ -812,55 +813,58 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
                                                 )}
                                             </Swiper>
 
-                                            <span className={`flex m-2`}>
-                                                <p className={`text-[#263238] text-base font-[600] font-['Montserrat',sans-serif] inline mr-auto ml-1 `}>
-                                                    {feature.properties.price}
-                                                </p>
-                                            </span>
+                                            <a className={` outline-none`} target="_blank" href={`/listing/${feature.properties.id}`} rel="noopener noreferrer">
 
-                                            <span className={`flex mx-2 overflow-hidden text-ellipsis whitespace-nowrap`}>
-                                                <p className={`text-[#263238] text-xs inline mr-auto ml-1 `}> {feature.properties.streetName} - {feature.properties.buildingNumber} </p>
-                                            </span>
 
-                                            <span className={`flex m-2`}>
-                                                <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 whitespace-nowrap`}>
-                                                    {dictionary['Numbers'][feature.properties.bedrooms]} {dictionary['Properties']['BD']}
-                                                </p>
-                                                <span className={`text-[#707070] text-xs`}>
-                                                    |
+                                                <span className={`flex m-2`}>
+                                                    <p className={`text-[#263238] text-base font-[600] font-['Montserrat',sans-serif] inline mr-auto ml-1 `}>
+                                                        {feature.properties.price}
+                                                    </p>
                                                 </span>
-                                                <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 whitespace-nowrap`}>
-                                                    {dictionary['Numbers'][feature.properties.bathrooms]} {dictionary['Properties']['BA']}
-                                                </p>
-                                                <span className={`text-[#707070] text-xs`}>
-                                                    |
+
+                                                <span className={`flex mx-2 overflow-hidden text-ellipsis whitespace-nowrap`}>
+                                                    <p className={`text-[#263238] text-xs inline mr-auto ml-1 `}> {feature.properties.streetName} - {feature.properties.buildingNumber} </p>
                                                 </span>
-                                                <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 whitespace-nowrap`}>
-                                                    {feature.properties.parking ? dictionary['Numbers']['1'] : dictionary['Numbers']['0']} {dictionary['Properties']['Parking']}
-                                                </p>
-                                                <span className={`text-[#707070] text-xs`}>
-                                                    |
+
+                                                <span className={`flex m-2`}>
+                                                    <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 whitespace-nowrap`}>
+                                                        {dictionary['Numbers'][feature.properties.bedrooms]} {dictionary['Properties']['BD']}
+                                                    </p>
+                                                    <span className={`text-[#707070] text-xs`}>
+                                                        |
+                                                    </span>
+                                                    <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 whitespace-nowrap`}>
+                                                        {dictionary['Numbers'][feature.properties.bathrooms]} {dictionary['Properties']['BA']}
+                                                    </p>
+                                                    <span className={`text-[#707070] text-xs`}>
+                                                        |
+                                                    </span>
+                                                    <p className={`text-[#263238] text-xs font-['Montserrat',sans-serif] inline mr-auto ml-1 whitespace-nowrap`}>
+                                                        {feature.properties.parking ? dictionary['Numbers']['1'] : dictionary['Numbers']['0']} {dictionary['Properties']['Parking']}
+                                                    </p>
+                                                    <span className={`text-[#707070] text-xs`}>
+                                                        |
+                                                    </span>
+                                                    <p className={`text-[#263238] font-['Montserrat',sans-serif] text-xs font-[600] inline mr-auto ml-1 `}>  {feature.properties.area} m2  </p>
                                                 </span>
-                                                <p className={`text-[#263238] font-['Montserrat',sans-serif] text-xs font-[600] inline mr-auto ml-1 `}>  {feature.properties.area} m2  </p>
-                                            </span>
 
-                                            <span className={`flex m-2 `}>
-                                                <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1  whitespace-nowrap`}> {dictionary['Properties']['Listing ID']}: {feature.properties.id}  </p>
-                                            </span>
+                                                <span className={`flex m-2 `}>
+                                                    <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1  whitespace-nowrap`}> {dictionary['Properties']['Listing ID']}: {feature.properties.id}  </p>
+                                                </span>
 
-                                            <span className={`flex m-2`}>
-                                                <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1 whitespace-nowrap`}> {feature.properties.agent && dictionary['Properties']['Agent'] + ':'} {feature.properties.agent && feature.properties.agentName}  </p>
-                                            </span>
+                                                <span className={`flex m-2`}>
+                                                    <p className={`text-[#707070] font-[500] font-['Montserrat',sans-serif] text-xs inline mr-auto ml-1 whitespace-nowrap`}> {feature.properties.agent && dictionary['Properties']['Agent'] + ':'} {feature.properties.agent && feature.properties.agentName}  </p>
+                                                </span>
 
-                                            <span className={`flex border-[#f8f8f8] border-t-[1px] m-2 `}>
-                                            </span>
+                                                <span className={`flex border-[#f8f8f8] border-t-[1px] m-2 `}>
+                                                </span>
 
-                                            <span className={`flex m-2 `}>
-                                                <p className={`text-[#ADB0B5] font-[500] font-['Montserrat',sans-serif] text-xs inline ml-auto mr-2  whitespace-nowrap`}>
-                                                    {when}
-                                                </p>
-                                            </span>
-
+                                                <span className={`flex m-2 `}>
+                                                    <p className={`text-[#ADB0B5] font-[500] font-['Montserrat',sans-serif] text-xs inline ml-auto mr-2  whitespace-nowrap`}>
+                                                        {when}
+                                                    </p>
+                                                </span>
+                                            </a>
                                         </div>
                                     )
 

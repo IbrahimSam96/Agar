@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 /* Mapbox  */
-.mapboxgl-popup-close-button{
+.mapboxgl-popup-close-button {
     display: none !important;
 }
 
-.mapboxgl-popup-tip{
+.mapboxgl-popup-tip {
     display: none !important;
 }
 
-.mapboxgl-popup-content{
+.mapboxgl-popup-content {
     padding: 0px !important;
     min-width: 400px;
     border-radius: 10px !important;
@@ -19,46 +19,95 @@
 
 /* Swiper */
 
-.swiper-button-next::after{
-    color: #0097A7 !important;
-    font-size: 22px !important;
-}
-.swiper-button-prev::after{
+.swiper-button-next::after {
     color: #0097A7 !important;
     font-size: 22px !important;
 }
 
-.swiper-pagination-fraction{
+.swiper-button-prev::after {
+    color: #0097A7 !important;
+    font-size: 22px !important;
+}
+
+.swiper-pagination-fraction {
     margin-left: 175px;
     margin-bottom: 5px;
     background: rgba(16, 16, 16, 0.6)
 }
 
-.swiper-pagination-horizontal{
+.swiper-pagination-horizontal {
     display: flex;
     width: 50px !important;
     color: whitesmoke !important;
     font-size: small;
 }
+
 .swiper-pagination-current {
     margin: auto;
-
 }
-.swiper-pagination-total{
+
+.swiper-pagination-total {
     margin: auto;
+}
+
+/* Listing Page Double Swipper */
+.mySwiper2 {
+    height: 100%;
+    width: 100%;
+}
+
+.mySwiper2 .swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* mySwiper is the mini horizontal  */
+.mySwiper {
+    box-sizing: border-box;
+    padding: 10px 10px;
+    background: #F8F8F8;
+    border: 2px solid #E3EFF1;
+    max-width: 85vw;
+    width: 100%;
+
+    overflow: hidden;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    padding: 10px;
 
 }
+
+.mySwiper .swiper {
+    width: 100%;
+    height: 100px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.mySwiper .swiper-slide {
+    height: 100%;
+    opacity: 0.4;
+}
+
+
+.mySwiper .swiper-slide-thumb-active {
+    opacity: 1;
+}
+
+
 
 /* PrimeReact  */
 .p-button {
     background-color: #07364B !important;
 }
-.p-button:hover{
+
+.p-button:hover {
     background-color: #102C3A !important;
 }
 
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-  margin: 0; 
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }

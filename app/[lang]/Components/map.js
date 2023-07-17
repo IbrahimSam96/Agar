@@ -34,7 +34,7 @@ const Map = ({ Listings, lng, lat, setLat, setLng }) => {
     // Divider
     // #E3EFF1 
 
-    console.log('appClient state responce :', Listings)
+    console.log('appClient state responce (map):', Listings)
 
 
     // Used for intitializing map 

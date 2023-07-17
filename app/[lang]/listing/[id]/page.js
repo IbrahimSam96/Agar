@@ -97,32 +97,29 @@ export default async function Page({ params, searchParams }) {
 
   const pageListing = await Listings[0].features.filter((feature) => feature.id == params.id);
 
-  // Increment listing views for each page visit. 
-
-  const IncrementListingView = async () => {
+  const getListingViews = async () => {
+    let views;
 
     const listingRef = doc(firebasedb, "Views", `${params.id}`);
-
     // Atomically increment the population of the city by 50.
-    await setDoc(listingRef, {
-      views: increment(1)
-    }, { merge: true }).then((res) => {
-      console.log(res, 'Updated View Count');
-
+    await getDoc(listingRef).then((res) => {
+      views = res.data().views
+      console.log(res.data().views)
     }).catch((err) => {
       console.log(err)
     })
 
+    return views
   }
 
-  IncrementListingView();
+  const views = await getListingViews();
 
 
   return (
 
     <div className={`w-full h-full min-h-screen grid grid-cols-7 grid-rows-[60px,auto,auto,auto]`} >
 
-      <ListingClientPage Listings={Listings} feature={pageListing[0]} params={params} />
+      <ListingClientPage Listings={JSON.parse(JSON.stringify(Listings))} feature={JSON.parse(JSON.stringify(pageListing[0]))} params={params} views={views} />
 
     </div>
   )

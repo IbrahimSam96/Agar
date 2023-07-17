@@ -16,9 +16,9 @@ import LocalParkingOutlinedIcon from '@mui/icons-material/LocalParkingOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
+import { Navigation, Pagination, Scrollbar, A11y, Thumbs, FreeMode, Zoom } from 'swiper';
 
-import { Timestamp, collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+import { Timestamp, collection, doc, getDoc, getDocs, increment, setDoc, updateDoc } from "firebase/firestore";
 import moment from "moment";
 // React Toastify
 import { ToastContainer, toast } from 'react-toastify';
@@ -31,7 +31,7 @@ import { useAuth } from "../../utils/Authenticator";
 import { firebasedb } from "../../utils/InitFirebase";
 import { useRouter } from "next/navigation";
 
-const ListingClientPage = ({ Listings, params, feature }) => {
+const ListingClientPage = ({ Listings, params, feature, views }) => {
     // Cluster Colors
     // '#07364B', // HOVER color
     // '#0097A7' // Normal color
@@ -48,27 +48,26 @@ const ListingClientPage = ({ Listings, params, feature }) => {
     // Red
     // #EA0670
 
-    const [views, setViews] = useState(0)
     // // runs once on render - get listing views
-    useEffect(() => {
+    // useEffect(() => {
 
-        const getListingViews = async () => {
+    //     const getListingViews = async () => {
 
-            const listingRef = doc(firebasedb, "Views", `${params.id}`);
-            // Atomically increment the population of the city by 50.
-            await getDoc(listingRef).then((res) => {
-                setViews(res.data().views)
+    //         const listingRef = doc(firebasedb, "Views", `${params.id}`);
+    //         // Atomically increment the population of the city by 50.
+    //         await getDoc(listingRef).then((res) => {
+    //             setViews(res.data().views)
 
-            }).catch((err) => {
-                console.log(err)
-            })
+    //         }).catch((err) => {
+    //             console.log(err)
+    //         })
 
 
-        }
+    //     }
 
-        getListingViews()
+    //     getListingViews()
 
-    }, [])
+    // }, [])
 
     const toastId = useRef(null);
 
@@ -116,6 +115,28 @@ const ListingClientPage = ({ Listings, params, feature }) => {
     }, [user.user]);
 
 
+    // Increment listing views for each page visit. 
+    useEffect(() => {
+
+        const IncrementListingView = async () => {
+
+            const listingRef = doc(firebasedb, "Views", `${params.id}`);
+
+            // Atomically increment the population of the city by 50.
+            await updateDoc(listingRef, {
+                views: increment(1)
+            }).then((res) => {
+                console.log('Updated View Count');
+
+            }).catch((err) => {
+                console.log(err)
+            })
+
+        }
+
+        IncrementListingView();
+
+    }, [])
 
     const timeStamp = feature.properties.timeStamp;
     const timeObj = new Timestamp(timeStamp.seconds, timeStamp.nanoseconds);
@@ -191,6 +212,8 @@ const ListingClientPage = ({ Listings, params, feature }) => {
 
     }
 
+    const [thumbsSwiper, setThumbsSwiper] = useState(null);
+
 
     return (
         <>
@@ -246,8 +269,6 @@ const ListingClientPage = ({ Listings, params, feature }) => {
                                 <p className={`text-base text-[#07364B] group-active:text-white my-auto ml-2 rounded`}>Share </p>
                             </span>
 
-                            {show && <p onClick={() => { setShow(!show) }} className={`my-auto ml-auto mr-2 p-3 text-base text-[white] hover:cursor-pointer bg-[#07364B] hover:bg-[#0097A7] rounded active:bg-[transparent] active:text-[#07364B]`}> Close </p>}
-
                         </span>
 
                     </span>
@@ -256,236 +277,190 @@ const ListingClientPage = ({ Listings, params, feature }) => {
 
                 </span>
 
-                {show ?
-                    <div className={`m-2 rounded border-[1px] border-[#E3EFF1] w-[85vw] h-[auto] max-h-[85vh] justify-self-center `}>
+                <span className={`grid self-center`}>
 
-                        <Swiper modules={[Navigation, Pagination, Scrollbar, A11y]}
-                            navigation={true}
-                            pagination={{
-                                type: "fraction",
-                            }}
-                            spaceBetween={50}
-                            slidesPerView={1}
-                            onSlideChange={() => console.log('slide change')}
-                            onSwiper={(swiper) => console.log(swiper)}
-                        >
-                            {feature.properties.urls.map((url) => {
-                                return (
-                                    <SwiperSlide key={url}>
-                                        <Image
-                                            priority
-                                            src={url}
-                                            alt={url}
-                                            width="0"
-                                            height="0"
-                                            sizes="100vw"
-                                            className="w-full h-auto m-2 rounded select-none"
-                                        />
-                                    </SwiperSlide>
+                    <span className={`grid grid-rows-[500px,120px] self-center justify-self-start shadow-md shadow-[#E3EFF1] max-w-[95vw]`}>
+                        <>
+                            <Swiper
+                                style={{
+                                    '--swiper-navigation-color': '#fff',
+                                    '--swiper-pagination-color': '#fff',
+                                }}
+                                spaceBetween={10}
+                                navigation={true}
+                                thumbs={{ swiper: thumbsSwiper }}
+                                modules={[FreeMode, Navigation, Thumbs, Zoom]}
+                                className="mySwiper2"
+                                zoom={true}
 
-                                )
-                            })}
-                        </Swiper>
-                    </div>
-                    :
-                    <span className={`grid self-center`}>
-
-                        <span className={`flex self-center justify-self-start  shadow-md shadow-[#E3EFF1]`}>
-
-                            {feature.properties.urls.map((url, index) => {
-                                return (
-                                    <Fragment key={url}>
-                                        {index == 0 && <Image
-                                            // placeholder="blur"
-                                            onClick={() => {
-                                                console.log('Show on')
-                                                if (user.user) {
-                                                    setShow(!show)
-                                                }
-                                                else {
-                                                    toastId.current = toast.error("Create an account or sign-in to view more pictures", { autoClose: true });
-
-                                                }
-                                            }}
-                                            priority
-                                            alt={url}
-                                            src={url}
-                                            width="0"
-                                            height="0"
-                                            sizes="100vw"
-                                            className={`w-full h-full m-2 select-none max-w-[650px] rounded-l my-auto`}
-
-                                        // width={220}
-                                        // height={160}
-                                        // className={`m-2 rounded select-none max-h-[120px] max-w-[220px] w-auto h-auto`}
-                                        />}
-                                    </Fragment>
-                                )
-                            })}
-
-                            <span className={`my-auto grid `} >
-
+                            >
                                 {feature.properties.urls.map((url, index) => {
                                     return (
                                         <Fragment key={url}>
-
-                                            {index == 1 &&
-                                                <Image
-                                                    // placeholder="blur"	
-                                                    onClick={() => {
-                                                        console.log('Show on')
-                                                        if (user.user) {
-                                                            setShow(!show)
-                                                        }
-                                                        else {
-                                                            toastId.current = toast.error("Create an account or sign-in to view more pictures", { autoClose: true });
-
-                                                        }
-                                                    }}
-
-                                                    priority
-                                                    alt={url}
-                                                    src={url}
-                                                    width="0"
-                                                    height="0"
-                                                    sizes="100vw"
-                                                    className={`w-full h-full m-2 rounded select-none max-w-[420px] max-h-[165px] rounded-r self-center`}
-                                                />
-                                            }
-                                            {index == 2 &&
-                                                <span className={`grid grid-rows-1 self-center`}>
+                                            <SwiperSlide>
+                                                <div className={`swiper-zoom-container`}>
                                                     <Image
-                                                        // placeholder="blur"
-                                                        onClick={() => {
-                                                            console.log('Show on')
-                                                            if (user.user) {
-                                                                setShow(!show)
-                                                            }
-                                                            else {
-                                                                toastId.current = toast.error("Create an account or sign-in to view more pictures", { autoClose: true });
-
-                                                            }
-                                                        }}
-
                                                         priority
                                                         alt={url}
                                                         src={url}
                                                         width="0"
                                                         height="0"
                                                         sizes="100vw"
-                                                        className={`max-h-[165px]  w-full h-full m-2 rounded select-none max-w-[420px] rounded-r`}
+                                                        className={`w-full h-full m-2 select-none my-auto`}
                                                     />
-                                                    <p className={`mx-2 row-start-1 col-start-1 justify-self-end self-end text-sm text-[#F8F8F8] bg-[#000] p-2 inline rounded `}>
-                                                        {feature.properties.urls.length} +
-                                                    </p>
-                                                </span>
-                                            }
+                                                </div>
+                                            </SwiperSlide>
+
                                         </Fragment>
                                     )
                                 })}
-                            </span>
 
-                        </span>
+                            </Swiper>
 
-                        <span className={`self-center flex my-4`}>
+                            <Swiper
+                                onSwiper={setThumbsSwiper}
+                                spaceBetween={10}
+                                slidesPerView={4}
+                                freeMode={true}
+                                watchSlidesProgress={true}
+                                modules={[FreeMode, Navigation, Thumbs]}
+                                className="mySwiper"
+                            >
+                                {feature.properties.urls.map((url, index) => {
+                                    return (
+                                        <Fragment key={url}>
+                                            <SwiperSlide>
+                                                <div className={`swiper-zoom-container`}>
+                                                    <Image
+                                                        priority
+                                                        alt={url}
+                                                        src={url}
+                                                        width="0"
+                                                        height="0"
+                                                        sizes="100vw"
+                                                        className={`w-full h-full object-cover mx-2 select-none rounded border-2 border-[#E3EFF1]`}
+                                                    />
+                                                </div>
+                                            </SwiperSlide>
 
-                            <span className={`grid grid-rows-[auto,50px] my-auto mr-auto  `}>
+                                        </Fragment>
+                                    )
+                                })}
 
-                                <span className={`flex self-center`}>
-                                    <span className={`grid mx-2 my-auto`}>
-                                        <Image className={`justify-self-center select-none`} src={'/bed.svg'} width={30} height={30} alt="Bed" />
-                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline  self-center`}>
-                                            {feature.properties.bedrooms} bed
-                                        </p>
-                                    </span>
-                                    <span className={`grid mx-2 my-auto`}>
-                                        <Image className={`justify-self-center select-none`} src={'/bathtub.svg'} width={30} height={30} alt="Bathtub" />
-                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline self-center `}>
-                                            {feature.properties.bathrooms} bath
-                                        </p>
-                                    </span>
-                                    <span className={`grid mx-2 my-auto`}>
-                                        <LocalParkingOutlinedIcon className={`justify-self-center text-[#07364B] p-1 rounded-[50%] border-[1px] border-[#07364B] select-none`} />
-                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline  self-center`}>
-                                            {feature.properties.parking ? 1 : 0} parking
-                                        </p>
-                                    </span>
-                                    <span className={`grid mx-2 my-auto`}>
-                                        <CropFreeOutlinedIcon className={`justify-self-center text-[#07364B] select-none`} />
-                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline self-center`}>
-                                            {feature.properties.area} m2
-                                        </p>
-                                    </span>
+                            </Swiper>
+                        </>
+                    </span>
 
-                                    <span className={`grid mx-2 my-auto`}>
-                                        <Image className={`justify-self-center select-none`} src={'/sofa.svg'} width={25} height={30} alt="Bathtub" />
-                                        <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline justify-self-center`}>
-                                            {feature.properties.furnished ? 'Furnished' : 'Not Furnished'}
-                                        </p>
-                                    </span>
+                    <span className={`self-center flex my-4`}>
 
+                        <span className={`grid grid-rows-[auto,50px] my-auto mr-auto  `}>
+
+                            <span className={`flex self-center`}>
+                                <span className={`grid mx-2 my-auto`}>
+                                    <Image className={`justify-self-center select-none`} src={'/bed.svg'} width={30} height={30} alt="Bed" />
+                                    <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline  self-center`}>
+                                        {feature.properties.bedrooms} bed
+                                    </p>
+                                </span>
+                                <span className={`grid mx-2 my-auto`}>
+                                    <Image className={`justify-self-center select-none`} src={'/bathtub.svg'} width={30} height={30} alt="Bathtub" />
+                                    <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline self-center `}>
+                                        {feature.properties.bathrooms} bath
+                                    </p>
+                                </span>
+                                <span className={`grid mx-2 my-auto`}>
+                                    <LocalParkingOutlinedIcon className={`justify-self-center text-[#07364B] p-1 rounded-[50%] border-[1px] border-[#07364B] select-none`} />
+                                    <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline  self-center`}>
+                                        {feature.properties.parking ? 1 : 0} parking
+                                    </p>
+                                </span>
+                                <span className={`grid mx-2 my-auto`}>
+                                    <CropFreeOutlinedIcon className={`justify-self-center text-[#07364B] select-none`} />
+                                    <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline self-center`}>
+                                        {feature.properties.area} m2
+                                    </p>
                                 </span>
 
-                                <span className={`flex self-center mx-2`}>
-                                    <p className={` text-xs text-[#07364B] bg-[#F8F8F8] p-2 inline rounded my-auto`}>
-                                        {feature.properties.rent ? 'For Rent' : 'For Sale'}
+                                <span className={`grid mx-2 my-auto`}>
+                                    <Image className={`justify-self-center select-none`} src={'/sofa.svg'} width={25} height={30} alt="Bathtub" />
+                                    <p className={` text-[0.5em] sm:text-[0.8em] text-[#07364B] inline justify-self-center`}>
+                                        {feature.properties.furnished ? 'Furnished' : 'Not Furnished'}
                                     </p>
-
-                                    <p className={` text-xs text-[#0097A7] bg-[#E5F4F6] inline rounded px-2 ml-4 my-auto`}>
-                                        {when}
-                                    </p>
-
-
-                                    <span className={`flex bg-[#F8F8F8] px-2 rounded ml-4`}>
-                                        <VisibilityOutlinedIcon className={` text-base text-[#0097A7] inline  my-auto`} />
-                                        <p className={` text-xs text-[#0097A7] inline rounded ml-2 my-auto`}>
-                                            {views !== 0 ? views : '-'}
-                                        </p>
-                                    </span>
-
                                 </span>
 
                             </span>
 
-                            <span className={`flex my-auto ml-auto mr-2`}>
-                                <p className={` text-2xl text-[#07364B] bg-[#F8F8F8] p-2 inline rounded my-auto`}>
-                                    {feature.properties.price} {feature.properties.rent ? '/ Month ' : ''}
+                            <span className={`flex self-center mx-2`}>
+                                <p className={` text-xs text-[#07364B] bg-[#F8F8F8] p-2 inline rounded my-auto`}>
+                                    {feature.properties.rent ? 'For Rent' : 'For Sale'}
                                 </p>
+
+                                <p className={` text-xs text-[#0097A7] bg-[#E5F4F6] inline rounded px-2 ml-4 my-auto`}>
+                                    {when}
+                                </p>
+
+
+                                <span className={`flex bg-[#F8F8F8] px-2 rounded ml-4`}>
+                                    <VisibilityOutlinedIcon className={` text-base text-[#0097A7] inline  my-auto`} />
+                                    <p className={` text-xs text-[#0097A7] inline rounded ml-2 my-auto`}>
+                                        {views}
+                                    </p>
+                                </span>
+
                             </span>
 
                         </span>
 
-
-                        <span className={`self-center flex my-4`}>
-
-                            <span className={`flex my-auto ml-auto mr-2`}>
-
-                                {feature.properties.phone &&
-                                    <>
-                                        <p className={` text-base text-[#07364B] p-2 inline rounded my-auto`}>
-                                            {feature.properties.agentt ? 'Contact Realtor' : 'Contact Owner'}
-                                        </p>
-
-                                        <span onClick={() => {
-
-                                            if (!user.user) {
-                                                router.push('/login')
-                                            }
-
-                                        }} className={`bg-[#F8F8F8] border-[1px] border-[#07364B] px-2 rounded flex min-w-[160px]`}>
-
-                                            <p className={` text-xl text-[#07364B] font-[500] inline my-auto hover:blur-none blur-sm `}>
-                                                {user.user ? feature.properties.phone : 'Sign in to view number'}
-                                            </p>
-                                        </span>
-
-                                    </>
-                                }
-                            </span>
+                        <span className={`flex my-auto ml-auto mr-2`}>
+                            <p className={` text-2xl text-[#07364B] bg-[#F8F8F8] p-2 inline rounded my-auto`}>
+                                {feature.properties.price} {feature.properties.rent ? '/ Month ' : ''}
+                            </p>
                         </span>
 
                     </span>
-                }
+                    <span className={`self-center flex `}>
+
+                        <span className={`flex my-auto ml-auto mr-2`}>
+
+                            {feature.properties.phone &&
+                                <>
+                                    <p className={` text-base text-[#07364B] p-2 inline rounded my-auto`}>
+                                        {feature.properties.agentt ? 'Contact Realtor' : 'Contact Owner'}
+                                    </p>
+
+                                    <span onClick={() => {
+
+                                        if (!user.user) {
+                                            router.push('/login')
+                                        }
+
+                                    }} className={`bg-[#F8F8F8] border-[1px] border-[#07364B] px-2 rounded flex min-w-[160px]`}>
+
+                                        <p className={` text-xl text-[#07364B] font-[500] inline my-auto hover:blur-none blur-sm `}>
+                                            {user.user ? feature.properties.phone : 'Sign in to view number'}
+                                        </p>
+                                    </span>
+
+                                </>
+                            }
+                        </span>
+                    </span>
+
+                    <span className={`grid mx-2 `}>
+
+                        <p className={`text-base text-[#263238] font-[500] self-center justify-self-start my-2`}> Proeprty Description </p>
+
+                        <span className={`grid overflow-y-auto min-h-[200px] border-2 border-slate-300 px-2 max-h-[250px]`}>
+                            <pre className={`text-sm sm:text-base text-[#07364B] inline mr-auto whitespace-pre-wrap `}>
+                                {feature.properties.description}
+                            </pre>
+                        </span>
+
+                    </span>
+
+
+
+                </span>
 
             </div>
 
