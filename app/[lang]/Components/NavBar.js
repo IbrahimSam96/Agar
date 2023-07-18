@@ -40,6 +40,7 @@ const NavBar = ({ open, setOpen }) => {
         router.push('/')
       }} className={`my-auto mr-auto ml-4 flex cursor-pointer`}>
         <Image
+          priority
           src={'/jordan.png'}
           alt={'/jordan.png'}
           width={30}

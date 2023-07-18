@@ -36,7 +36,8 @@ export function middleware(request) {
             '/sofa.svg',
             '/bed.svg',
             '/bathtub.svg',
-            '/favourite.svg'
+            '/favourite.svg',
+            '/logo.png'
             // Your other files in `public`
         ].includes(pathname)
     )

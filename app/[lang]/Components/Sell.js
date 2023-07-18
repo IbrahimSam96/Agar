@@ -1198,7 +1198,7 @@ const Sell = ({ Governorates, docID, open, setOpen, lat, lng }) => {
                                                 setLatitude('')
                                                 setMediaList([])
 
-                                                window.location = `/listing/${id}`
+                                                // window.location = `/listing/${id}`
 
                                             }).catch((err) => {
                                                 setLoading(false)
