@@ -46,7 +46,12 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
         return Number(number.replace(/[^0-9.-]+/g, ""))
     }
 
-    const [sortedListings, setSortedListings] = useState(allListings);
+    let approvedListings = allListings.features.filter((feature) => feature.properties.status == 'approved').map((listing) => listing);
+    let finalListings = allListings
+
+    finalListings.features = approvedListings;
+
+    const [sortedListings, setSortedListings] = useState(finalListings);
 
     // category Popup 
     const [categoryPopup, setCategoryPopup] = useState(false);
@@ -420,6 +425,7 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
 
     }
 
+    
 
     return (
         <>

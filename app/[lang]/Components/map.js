@@ -14,9 +14,12 @@ import ReactDOMServer from 'react-dom/server';
 import moment from 'moment/moment';
 import { Timestamp } from 'firebase/firestore';
 import { createRoot } from 'react-dom/client';
+import { useAuth } from '../utils/Authenticator';
 
 
 const Map = ({ Listings, lng, lat, setLat, setLng }) => {
+
+    const user = useAuth();
 
     const mapContainer = useRef(null);
     const map = useRef(null);
@@ -36,6 +39,10 @@ const Map = ({ Listings, lng, lat, setLat, setLng }) => {
 
     console.log('appClient state responce (map):', Listings)
 
+    let approvedListings = Listings.features.filter((feature) => feature.properties.status == 'approved').map((listing) => listing);
+    let finalListings = Listings
+
+    finalListings.features = approvedListings;
 
     // Used for intitializing map 
     useEffect(() => {
@@ -67,7 +74,7 @@ const Map = ({ Listings, lng, lat, setLat, setLng }) => {
             // add the point_count property to your source data.
             map.current.addSource('listings', {
                 type: 'geojson',
-                data: Listings,
+                data: finalListings,
                 cluster: true,
                 clusterMaxZoom: 14, // Max zoom to cluster points on
                 clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
@@ -167,7 +174,6 @@ const Map = ({ Listings, lng, lat, setLat, setLng }) => {
                     'text-color': 'white'
                 }
             });
-
             // Unclustrered; Single Listing Styling
             map.current.addLayer({
                 id: 'unclustered-point',
@@ -215,14 +221,12 @@ const Map = ({ Listings, lng, lat, setLat, setLng }) => {
                         const root = createRoot(el)
 
                         const JSXListingMarker = () => {
-
                             return (
-                                <div className={`flex bg-[#07364B] hover:bg-[#0097A7] px-4 group z-10 border-x-[3px] border-white `} >
+                                <div className={`flex bg-[#07364B] hover:bg-[#0097A7] px-4 group z-10 border-x-[3px]`} >
                                     <p className={`text-white m-auto text-sm `} > {props.price} </p>
-                                    <div className={`group-hover:border-t-[#0097A7]  border-t-[#07364B] border-transparent w-0 h-0 absolute top-[99%] left-[50%] border-t-[9px] border-x-[8px] border-b-[0px] translate-x-[-50%]`}></div>
+                                    <div className={` group-hover:border-t-[#0097A7]  border-t-[#07364B]  border-transparent w-0 h-0 absolute top-[99%] left-[50%] border-t-[9px] border-x-[8px] border-b-[0px] translate-x-[-50%]`}></div>
                                 </div>
                             )
-
                         }
 
                         root.render(JSXListingMarker())
@@ -230,7 +234,6 @@ const Map = ({ Listings, lng, lat, setLat, setLng }) => {
                         marker = markers[id] = new mapboxgl.Marker({
                             element: el
                         }).setLngLat(coords);
-
                     }
 
                     newMarkers[id] = marker;
@@ -521,12 +524,9 @@ const Map = ({ Listings, lng, lat, setLat, setLng }) => {
             return;
         }
         console.log('Updating map with new data')
-
         if (map.current.isSourceLoaded('listings')) {
-            map.current.getSource("listings").setData(Listings);
+            map.current.getSource("listings").setData(finalListings);
         }
-
-
     }, [Listings, mapIsLoaded])
 
     return (
