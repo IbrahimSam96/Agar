@@ -20,7 +20,7 @@ import { FileUpload } from 'primereact/fileupload';
 import { useAuth } from "../utils/Authenticator";
 import { firebasedb, storage } from "../utils/InitFirebase";
 // db
-import { doc, updateDoc, arrayUnion, arrayRemove, getDoc, Timestamp } from "firebase/firestore";
+import { doc, updateDoc, arrayUnion, arrayRemove, getDoc, Timestamp, setDoc } from "firebase/firestore";
 // storage
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
@@ -424,7 +424,7 @@ const Sell = ({ Governorates, docID, open, setOpen, lat, lng }) => {
                                         <path d="M15 3.5V7M15 17V11" stroke="#1C274C" strokeWidth="1.5" strokeLinecap="round" />
                                         <path d="M9 20.5V17M9 7V13" stroke="#1C274C" strokeWidth="1.5" strokeLinecap="round" />
                                     </svg>
-                                    
+
                                     <p onClick={() => {
                                         setLatitude(lng)
                                         setLongitude(lat)
@@ -1175,7 +1175,8 @@ const Sell = ({ Governorates, docID, open, setOpen, lat, lng }) => {
                                                         urls: res
                                                     },
                                                 })
-                                            }).then((res) => {
+                                            }).then((res1) => {
+
                                                 console.log('Listing Created');
                                                 setOpen(!open);
                                                 setPreview(!preview);
@@ -1206,6 +1207,16 @@ const Sell = ({ Governorates, docID, open, setOpen, lat, lng }) => {
                                                 console.log('Something went wrong with uploading ', err)
                                                 toastId.current = toast.error("Something went wrong with creating the Listing. Please refresh page.", { autoClose: true });
                                             });
+
+                                            // Create Listing Counter  
+                                            const viewdocRef = doc(firebasedb, "Views", id);
+                                            setDoc(viewdocRef, {
+                                                views: 0
+                                            }).then((res2) => {
+                                                console.log('Listing Views Counter Created');
+                                            }).catch((err) => {
+                                                console.log(err)
+                                            })
                                         })
 
                                     }
