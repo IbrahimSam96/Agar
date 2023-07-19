@@ -46,12 +46,7 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
         return Number(number.replace(/[^0-9.-]+/g, ""))
     }
 
-    let approvedListings = allListings.features.filter((feature) => feature.properties.status == 'approved').map((listing) => listing);
-    let finalListings = allListings
-
-    finalListings.features = approvedListings;
-
-    const [sortedListings, setSortedListings] = useState(finalListings);
+    const [sortedListings, setSortedListings] = useState(allListings);
 
     // category Popup 
     const [categoryPopup, setCategoryPopup] = useState(false);
@@ -191,9 +186,12 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
             }
             return false;
         }
+        function filterApproved(listing) {
+            return listing.properties.status == 'approved';
+        }
 
         list = [...allListings.features].filter(listing => {
-            return filterBedroom(listing) && filterBathrooms(listing) && filterParking(listing) && filterFurnished(listing) && filterAgent(listing) && filterPrice(listing) && filterCategory(listing)
+            return filterBedroom(listing) && filterBathrooms(listing) && filterParking(listing) && filterFurnished(listing) && filterAgent(listing) && filterPrice(listing) && filterCategory(listing) && filterApproved(listing)
         });
 
         if (sort) {
@@ -425,7 +423,6 @@ const Sidebar = ({ allListings, setSharedListings, open, setOpen, dictionary, Go
 
     }
 
-    
 
     return (
         <>

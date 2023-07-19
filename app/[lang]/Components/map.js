@@ -39,10 +39,12 @@ const Map = ({ Listings, lng, lat, setLat, setLng }) => {
 
     console.log('appClient state responce (map):', Listings)
 
-    let approvedListings = Listings.features.filter((feature) => feature.properties.status == 'approved').map((listing) => listing);
-    let finalListings = Listings
+    let approvedListings = [...Listings.features].filter((feature) => feature.properties.status == 'approved').map((listing) => listing);
+    let finalListings = {...Listings}
 
     finalListings.features = approvedListings;
+
+    console.log(finalListings)
 
     // Used for intitializing map 
     useEffect(() => {

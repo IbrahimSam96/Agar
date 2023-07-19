@@ -232,14 +232,16 @@ const MyListings = ({ open, setOpen, allListings, dictionary, docID }) => {
     const [myListings, setMyListings] = useState([]);
 
     useEffect(() => {
+        console.log(allListings, 'My allListings')
 
         if (user.user) {
-            let FilteredListings;
-            FilteredListings = allListings.features.filter((feature) => feature.properties.seller == user.user.uid).map((feature) => feature);
+            let FilteredListings
+
+            FilteredListings = [...allListings.features].filter((feature) => feature.properties.seller == user.user.uid).map((feature) => feature);
             console.log(FilteredListings, 'My FilteredListings')
+
             setMyListings(FilteredListings)
         }
-
     }, [user.user]);
 
 
