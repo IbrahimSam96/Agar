@@ -1,3 +1,5 @@
+export const revalidate = 3600 // revalidate at most every hour
+import { cache } from 'react'
 
 // Firebase
 import { collection, getDocs } from "firebase/firestore";
@@ -10,7 +12,7 @@ export default async function Home({ params: { lang } }) {
 
   let docID;
 
-  const getlistings = async () => {
+  const getlistings = cache(async () => {
     // setLoading(true)
     const colRef = collection(firebasedb, "Listings");
     const querySnapshot = await getDocs(colRef);
@@ -36,7 +38,7 @@ export default async function Home({ params: { lang } }) {
     // setLoading(false)
 
     return active_Lisitings
-  }
+  })
 
   const Listings = await getlistings();
 

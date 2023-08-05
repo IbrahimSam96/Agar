@@ -330,7 +330,7 @@ const Login = () => {
                     />
 
                     <p className={`m-3 text-[0.8em] font-medium font-serif whitespace-nowrap `}>
-                        Password should be a minimum of 5 characters
+                        Password should be a minimum of 6 characters
                     </p>
 
                     <span className={`flex mx-2 p-4`}>
