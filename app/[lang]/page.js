@@ -1,4 +1,4 @@
-export const revalidate = 3600 // revalidate at most every hour
+export const revalidate = 1200 // revalidate at most every minute
 import { cache } from 'react'
 
 // Firebase
