@@ -5,7 +5,7 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import LoopIcon from '@mui/icons-material/Loop';
 
 import { useAuth } from '../utils/Authenticator';
-import { Timestamp, arrayRemove, collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+import { Timestamp, arrayRemove, collection, doc, getDoc, getDocs, onSnapshot, updateDoc } from "firebase/firestore";
 import { firebasedb } from '../utils/InitFirebase';
 
 import { useEffect, useRef, useState } from "react";
@@ -32,7 +32,6 @@ const Listing = ({ feature, myListings, setMyListings, dictionary, docID }) => {
 
     const listingRef = doc(firebasedb, "Views", `${feature.properties.id}`);
 
-    // Atomically increment the population of the city by 50.
     getDoc(listingRef).then((res) => {
         console.log('got the number of views', res.data().views)
         setViews(res.data().views)
@@ -243,6 +242,42 @@ const MyListings = ({ open, setOpen, allListings, dictionary, docID }) => {
             setMyListings(FilteredListings)
         }
     }, [user.user]);
+
+
+    useEffect(() => {
+
+        // Set up a onSnapshot Listener
+        const getListings = async () => {
+
+            const unsubscribe = onSnapshot(doc(firebasedb, "Listings", docID), (doc) => {
+                console.log("Snapshot Data Fired: ", doc.data());
+                let newAllListings = doc.data()
+                if (user.user) {
+                    let FilteredListings
+
+                    FilteredListings = [...newAllListings.features].filter((feature) => feature.properties.seller == user.user.uid).map((feature) => feature);
+                    console.log(FilteredListings, 'My FilteredListings')
+        
+                    setMyListings(FilteredListings)
+
+                }
+            });
+
+        }
+
+        let unsubscribe;
+
+        const getListingsAndSubscribe = async () => {
+            unsubscribe = await getListings();
+        }
+
+        getListingsAndSubscribe();
+
+        return () => {
+            unsubscribe?.();
+        };
+    }, []);
+
 
 
     return (

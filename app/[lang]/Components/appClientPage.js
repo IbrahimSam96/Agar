@@ -34,7 +34,6 @@ const AppClientPage = ({ docID, Listings, dictionary, lang }) => {
     // My Listings sidebar
     const [myListingsSideBar, setMyListingsSideBar] = useState(false);
 
-
     // Data
     const [allListings, setAllListings] = useState(Listings[0]);
 
